@@ -1,38 +1,26 @@
 import React from 'react';
 import {
+  Navigate,
   Route,
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
 } from 'react-router-dom';
 
-import './App.css';
-import logo from './logo.svg';
+import routes from './constants/routes';
+import { lazyWithRetry } from './tools';
+
+const ExpertPage = lazyWithRetry(() => import('./pages/ExpertPage'));
 
 const router = createBrowserRouter(
-  createRoutesFromElements(
+  createRoutesFromElements([
+    <Route key={routes.EXPERT} path={routes.EXPERT} element={<ExpertPage />} />,
     <Route
-      path='/'
-      element={
-        <div className='App'>
-          <header className='App-header'>
-            <img src={logo} className='App-logo' alt='logo' />
-            <p>
-              Edit <code>src/App.tsx</code> and save to reload.
-            </p>
-            <a
-              className='App-link'
-              href='https://reactjs.org'
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              Learn React
-            </a>
-          </header>
-        </div>
-      }
+      key='*'
+      path='*'
+      element={<Navigate to={routes.EXPERT} replace />}
     />,
-  ),
+  ]),
 );
 
 const App = () => <RouterProvider router={router} />;
