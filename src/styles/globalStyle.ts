@@ -23,7 +23,6 @@ export const globalStyle = css`
 
   body {
     font-family: ${theme.fonts.main};
-    font-size: ${theme.fontSizes.md};
     font-weight: 400;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;

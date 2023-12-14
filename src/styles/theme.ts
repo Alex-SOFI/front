@@ -20,32 +20,8 @@ export const theme = {
     primary: '#6558f5',
   },
 
-  shadows: {
-    primary: '0 8px 16px 0 rgba(0, 0, 0, 0.12)',
-    secondary: '0 2px 7px 0 rgba(0, 0, 0, 0.08)',
-  },
-
   fonts: {
     main: '"Roboto", sans-serif',
-  },
-
-  fontSizes: {
-    xs: '1.2rem',
-    sm: '1.4rem',
-    md: '1.6rem',
-    h4: '1.8rem',
-    h3: '2rem',
-    h2: '2.4rem',
-    h1: '2.8rem',
-    desktop: '3.2rem',
-    desktopXl: '4rem',
-  },
-
-  fontWeights: {
-    regular: '400',
-    medium: '500',
-    semiBold: '600',
-    bold: '700',
   },
 
   space: {
@@ -71,14 +47,6 @@ export const theme = {
     closeFullButtonSm: '0.8rem 1.6rem',
   },
 
-  lineHeights: {
-    xxs: '1',
-    xs: '1.2',
-    sm: '1.3',
-    md: '1.4',
-    lg: '1.5',
-  },
-
   radii: {
     circle: '50%',
     xxs: '4px',
@@ -99,6 +67,6 @@ export const theme = {
   },
 
   breakpoints: {
-    sm: '25em',
+    sm: '40em',
   },
 };
