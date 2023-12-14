@@ -3,6 +3,7 @@ import { FunctionComponent, ReactNode } from 'react';
 import styled from '@emotion/styled';
 
 import HeaderContainer from '../containers/HeaderContainer';
+import { muiTheme } from '../styles/globalStyle';
 import { theme } from '../styles/theme';
 
 const Section = styled.section`
@@ -14,6 +15,7 @@ const Section = styled.section`
     display: flex;
     flex-direction: column;
   }
+  margin: ${muiTheme.spacing(1)};
 `;
 
 const Main = styled.main`
@@ -24,7 +26,13 @@ const Main = styled.main`
   width: 100%;
 `;
 
-const Footer = styled.footer``;
+const Footer = styled.footer`
+  max-width: ${theme.breakpoints.sm};
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: ${theme.space.lg};
+  width: 100%;
+`;
 
 interface LayoutProps {
   main: ReactNode;

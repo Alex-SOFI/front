@@ -42,7 +42,7 @@ export const muiTheme = createTheme({
     allVariants: {
       fontFamily: theme.fonts.main,
       textTransform: 'none',
-      fontSize: 16,
+      fontSize: 18,
       fontWeight: 400,
     },
     button: { fontWeight: 500 },
