@@ -7,6 +7,7 @@ interface ButtonProps extends PropsWithChildren {
   type?: 'submit' | 'reset' | undefined;
   variant?: 'text';
   isPrimaryColor?: boolean;
+  disabled?: boolean;
 }
 
 const Button: FunctionComponent<ButtonProps> = ({
@@ -14,6 +15,7 @@ const Button: FunctionComponent<ButtonProps> = ({
   type,
   variant,
   isPrimaryColor,
+  disabled,
   children,
 }) => {
   return (
@@ -26,6 +28,7 @@ const Button: FunctionComponent<ButtonProps> = ({
         ...(variant ? { fontWeight: isPrimaryColor ? 500 : 400 } : {}),
       }}
       onClick={onClick}
+      disabled={disabled || false}
     >
       {children}
     </BasicButton>

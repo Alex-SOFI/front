@@ -72,6 +72,7 @@ const ExpertPageMain: FunctionComponent = () => {
           placeholder='0'
           value={USDCInputValue}
           setValue={setUSDCInputValue}
+          disabled={!isConnected} // temporary
         />
       </Box>
       <Box
@@ -109,13 +110,17 @@ const ExpertPageMain: FunctionComponent = () => {
           placeholder='0'
           value={SOFIInputValue}
           setValue={setSOFIInputValue}
+          disabled={!isConnected} // temporary
         />
       </Box>
       <Text variant='body2' color={theme.colors.grayMedium} mb='2rem'>
         Fees Ï 0.00%
       </Text>
       {isConnected ? (
-        <Button onClick={noop}>
+        <Button
+          onClick={noop}
+          disabled={!USDCInputValue || !SOFIInputValue} /* temporary */
+        >
           {/* TODO: add onClick */}
           {isMintSelected ? 'Mint' : 'Redeem'}
         </Button>

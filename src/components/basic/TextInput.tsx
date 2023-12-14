@@ -8,6 +8,7 @@ interface TextInputProps {
   value: string;
   setValue: Dispatch<SetStateAction<string>>;
   placeholder: string;
+  disabled?: boolean;
 }
 
 const TextInput: FunctionComponent<TextInputProps> = ({
@@ -16,6 +17,7 @@ const TextInput: FunctionComponent<TextInputProps> = ({
   value,
   setValue,
   placeholder,
+  disabled,
 }) => {
   return (
     <TextField
@@ -26,6 +28,7 @@ const TextInput: FunctionComponent<TextInputProps> = ({
       onChange={(e) => {
         setValue(e.target.value);
       }}
+      disabled={disabled || false}
     />
   );
 };
