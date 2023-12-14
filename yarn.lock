@@ -1145,7 +1145,7 @@
   dependencies:
     regenerator-runtime "^0.14.0"
 
-"@babel/runtime@^7.18.3", "@babel/runtime@^7.23.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.7":
+"@babel/runtime@^7.18.3", "@babel/runtime@^7.23.4", "@babel/runtime@^7.23.5", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.7":
   version "7.23.6"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.23.6.tgz#c05e610dc228855dc92ef1b53d07389ed8ab521d"
   integrity sha512-zHd0eUrf5GZoOWVCXp6koAKQTfZV07eit6bGPmJgnZdnSAvvZee6zniW2XMF7Cmc4ISOOnPy3QaSiIJGJkVEDQ==
@@ -1834,6 +1834,13 @@
   version "5.14.20"
   resolved "https://registry.yarnpkg.com/@mui/core-downloads-tracker/-/core-downloads-tracker-5.14.20.tgz#c9ce5ccfcc7972d3bc1623440e041e0a01386626"
   integrity sha512-fXoGe8VOrIYajqALysFuyal1q1YmBARqJ3tmnWYDVl0scu8f6h6tZQbS2K8BY28QwkWNGyv4WRfuUkzN5HR3Ow==
+
+"@mui/icons-material@^5.15.0":
+  version "5.15.0"
+  resolved "https://registry.yarnpkg.com/@mui/icons-material/-/icons-material-5.15.0.tgz#fdc93611ca77ce3b79128be02fb6c1ae79b972b8"
+  integrity sha512-zHY6fOkaK7VfhWeyxO8MjO3IAjEYpYMXuqUhX7TkUZJ9+TSH/9dn4ClG4K2j6hdgBU5Yrq2Z/89Bo6BHHp7AdQ==
+  dependencies:
+    "@babel/runtime" "^7.23.5"
 
 "@mui/material@^5.14.20":
   version "5.14.20"
@@ -4457,6 +4464,11 @@ emojis-list@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-3.0.0.tgz#5570662046ad29e2e916e71aae260abdff4f6a78"
   integrity sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==
+
+emotion-normalize@^11.0.1:
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/emotion-normalize/-/emotion-normalize-11.0.1.tgz#266e6b93ef9b3ff972a9615d83ab0a7483ac7af9"
+  integrity sha512-68+TdnChNbELbOVtA2oOdSc9W40KPH4dKYdXgk2KfkuGu+qK7glVVO4h5Q+hoAf2JqJfTV55wPeBMPuun+3fVA==
 
 encodeurl@~1.0.2:
   version "1.0.2"
