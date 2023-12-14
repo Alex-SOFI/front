@@ -1,13 +1,10 @@
 import { FunctionComponent } from 'react';
 
-import HeaderContainer from '../containers/HeaderContainer';
+import { Layout } from '../components';
+import { ExpertPageMain } from '../components/pagesComponents';
 
 const ExpertPage: FunctionComponent = () => {
-  return (
-    <>
-      <HeaderContainer />
-    </>
-  );
+  return <Layout main={<ExpertPageMain />} />;
 };
 
 export default ExpertPage;

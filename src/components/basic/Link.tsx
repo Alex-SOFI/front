@@ -11,6 +11,7 @@ interface LinkProps extends PropsWithChildren {
   href: string;
   target?: HTMLAttributeAnchorTarget;
   margin?: string | number;
+  ariaLabel?: string;
 }
 
 const Link1: FunctionComponent<LinkProps> = ({
@@ -18,6 +19,7 @@ const Link1: FunctionComponent<LinkProps> = ({
   href,
   target,
   margin,
+  ariaLabel,
   children,
 }) => {
   return (
@@ -29,7 +31,7 @@ const Link1: FunctionComponent<LinkProps> = ({
       fontSize={20}
       href={href}
       target={target}
-      aria-label='Visit sophie.fi main page which opens in a new window.'
+      aria-label={ariaLabel}
     >
       {children}
     </BasicLink>

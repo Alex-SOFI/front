@@ -97,4 +97,8 @@ export const theme = {
     xs: '1px',
     sm: '2px',
   },
+
+  breakpoints: {
+    sm: '25em',
+  },
 };
