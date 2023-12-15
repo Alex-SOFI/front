@@ -6,8 +6,18 @@ import {
   ExpertPageMain,
 } from '../components/pagesComponents/expertPage';
 
-const ExpertPage: FunctionComponent = () => {
-  return <Layout main={<ExpertPageMain />} footer={<ExpertPageLinksBlock />} />;
-};
+/* interface ExpertPageProps {
+  connect: () => void;
+}
+ */
+const ExpertPage: FunctionComponent /* <ExpertPageProps> */ =
+  (/* { connect } */) => {
+    return (
+      <Layout
+        main={<ExpertPageMain /* connect={connect} */ />}
+        footer={<ExpertPageLinksBlock />}
+      />
+    );
+  };
 
 export default ExpertPage;

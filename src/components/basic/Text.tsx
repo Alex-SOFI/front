@@ -16,7 +16,7 @@ const Text: FunctionComponent<TextProps> = ({
   ...props
 }) => {
   return (
-    <Typography color={color ? color : 'black'} variant={variant} {...props}>
+    <Typography color={color || 'black'} variant={variant} {...props}>
       {children}
     </Typography>
   );

@@ -1,6 +1,7 @@
 import { FunctionComponent, useState } from 'react';
 
 import Box from '@mui/material/Box';
+import { useConnect } from 'wagmi';
 
 import { theme } from '../../../styles/theme';
 import { noop } from '../../../tools';
@@ -11,6 +12,10 @@ const ExpertPageMain: FunctionComponent = () => {
   const [isMintSelected, setIsMintSelected] = useState<boolean>(true);
   const [USDCInputValue, setUSDCInputValue] = useState<string>('');
   const [SOFIInputValue, setSOFIInputValue] = useState<string>('');
+
+  const { connect, connectors, error, isLoading, pendingConnector } =
+    useConnect();
+  console.log(connect, connectors);
 
   // temporary
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -125,7 +130,7 @@ const ExpertPageMain: FunctionComponent = () => {
           {isMintSelected ? 'Mint' : 'Redeem'}
         </Button>
       ) : (
-        <Button onClick={noop}>
+        <Button onClick={() => connect({ connector: connectors[0] })}>
           {/* TODO: add onClick */}
           Connect Wallet
         </Button>
