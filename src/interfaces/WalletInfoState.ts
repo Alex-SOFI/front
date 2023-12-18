@@ -1,5 +1,5 @@
 interface WalletInfoState {
-  isLoading: boolean;
+  chainId: number | undefined;
   error: Error | null;
   address: `0x${string}` | undefined;
   isConnected: boolean;

@@ -1,23 +1,25 @@
 import { FunctionComponent, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 import { useConnect } from 'wagmi';
 
+import { PUBLIC_URL } from '../../../config';
+import { selectWalletInfo } from '../../../ducks/wallet';
 import { theme } from '../../../styles/theme';
 import { noop } from '../../../tools';
-import { Button, Text, TextInput } from '../../basic';
-import ButtonWithIcon from '../../basic/ButtonWithIcon';
+import { Button, ButtonWithIcon, Picture, Text, TextInput } from '../../basic';
 
 const InputGridBox = styled(Box)`
   display: grid;
-  grid-template-columns: 1fr 1.5fr 1fr;
+  grid-template-columns: 0.25fr 0.75fr 1.5fr 1fr;
   width: 100%;
   margin-bottom: 1rem;
   align-items: center;
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 0.25fr 0.75fr 2fr 1fr;
   }
 `;
 
@@ -26,13 +28,9 @@ const ExpertPageMain: FunctionComponent = () => {
   const [USDCInputValue, setUSDCInputValue] = useState<string>('');
   const [SOFIInputValue, setSOFIInputValue] = useState<string>('');
 
-  const { connect, connectors, error, isLoading, pendingConnector } =
-    useConnect();
-  console.log(connect, connectors);
+  const { connect, connectors } = useConnect();
 
-  // temporary
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const { isConnected } = useSelector(selectWalletInfo);
 
   return (
     <Box
@@ -71,10 +69,19 @@ const ExpertPageMain: FunctionComponent = () => {
         </Button>
       </Box>
       <InputGridBox>
-        <Text justifySelf='end' pr='2rem' variant='body1'>
-          USDC
-        </Text>
-
+        <Box
+          sx={{
+            gridColumn: 2,
+            display: 'flex',
+            marginLeft: '1rem',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Picture src={`${PUBLIC_URL}/logo_usdc.png`} alt='USDC logo' />
+          <Text pl='0.5rem' pr='2rem' variant='body1'>
+            USDC
+          </Text>
+        </Box>
         <TextInput
           placeholder='0'
           value={USDCInputValue}
@@ -98,9 +105,19 @@ const ExpertPageMain: FunctionComponent = () => {
         <Text variant='body1'>Max: 0</Text>
       </Box>
       <InputGridBox>
-        <Text justifySelf='end' pr='2rem' variant='body1'>
-          SOFI
-        </Text>
+        <Box
+          sx={{
+            gridColumn: 2,
+            display: 'flex',
+            marginLeft: '1rem',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Picture src={`${PUBLIC_URL}/favicon.webp`} alt='SOFI logo' />
+          <Text pl='0.5rem' pr='2rem' variant='body1'>
+            SOFI
+          </Text>
+        </Box>
 
         <TextInput
           placeholder='0'
@@ -112,6 +129,24 @@ const ExpertPageMain: FunctionComponent = () => {
       <Text variant='body2' color={theme.colors.grayMedium} mb='2rem'>
         Fees Ï 0.00%
       </Text>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: '0.25fr 3.25fr',
+          width: '100%',
+          marginBottom: '2rem',
+        }}
+      >
+        <Text
+          sx={{ gridColumn: 2 }}
+          variant='body2'
+          color={theme.colors.error}
+          mb='2rem'
+          ml='1rem'
+        >
+          Error
+        </Text>
+      </Box>
       {isConnected ? (
         <Button
           onClick={noop}

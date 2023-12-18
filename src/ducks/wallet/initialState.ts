@@ -1,7 +1,7 @@
 import { WalletInfoState } from '../../interfaces';
 
 export const initialState: WalletInfoState = {
-  isLoading: false,
+  chainId: undefined,
   error: null,
   address: undefined,
   isConnected: false,

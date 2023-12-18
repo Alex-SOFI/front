@@ -1,14 +1,17 @@
 import { FunctionComponent } from 'react';
 
 import styled from '@emotion/styled';
+import { useDisconnect } from 'wagmi';
 
 import { Button } from '../components/basic';
+import { muiTheme } from '../styles/globalStyle';
 import { Link } from './basic';
 
 const StyledHeader = styled.header`
   display: flex;
   justify-content: space-between;
   margin-bottom: 5rem;
+  padding: ${muiTheme.spacing(1)};
 `;
 
 interface HeaderProps {
@@ -17,6 +20,8 @@ interface HeaderProps {
 }
 
 const Header: FunctionComponent<HeaderProps> = ({ onClick, isLinkOnly }) => {
+  const { disconnect } = useDisconnect();
+
   return (
     <StyledHeader>
       <Link
@@ -25,7 +30,9 @@ const Header: FunctionComponent<HeaderProps> = ({ onClick, isLinkOnly }) => {
       >
         sophie.fi
       </Link>
-      {!isLinkOnly && <Button onClick={onClick}>Connect Wallet</Button>}
+      {!isLinkOnly && (
+        <Button onClick={/* onClick */ disconnect}>Connect Wallet</Button>
+      )}
     </StyledHeader>
   );
 };

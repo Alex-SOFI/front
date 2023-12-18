@@ -12,9 +12,9 @@ export const walletSlice = createSlice({
   reducers: {
     storeWalletInfo(state, { payload }: { payload: WalletInfoState }) {
       state.address = payload.address;
-      state.isLoading = payload.isLoading;
       state.error = payload.error;
       state.isConnected = payload.isConnected;
+      state.chainId = payload.chainId;
     },
   },
 });

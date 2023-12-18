@@ -5,19 +5,10 @@ import {
   ExpertPageLinksBlock,
   ExpertPageMain,
 } from '../components/pagesComponents/expertPage';
+import { selectWalletInfo } from '../ducks/wallet';
 
-/* interface ExpertPageProps {
-  connect: () => void;
-}
- */
-const ExpertPage: FunctionComponent /* <ExpertPageProps> */ =
-  (/* { connect } */) => {
-    return (
-      <Layout
-        main={<ExpertPageMain /* connect={connect} */ />}
-        footer={<ExpertPageLinksBlock />}
-      />
-    );
-  };
+const ExpertPage: FunctionComponent = () => {
+  return <Layout main={<ExpertPageMain />} footer={<ExpertPageLinksBlock />} />;
+};
 
 export default ExpertPage;

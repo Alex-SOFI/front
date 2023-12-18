@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { ReactNode, Suspense, useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Navigate,
@@ -8,8 +8,9 @@ import {
   createRoutesFromElements,
 } from 'react-router-dom';
 
-import { useAccount, useConnect } from 'wagmi';
+import { useAccount, useConnect, useNetwork } from 'wagmi';
 
+import { LoadingSpinner } from './components/basic';
 import routes from './constants/routes';
 import { storeWalletInfo } from './ducks/wallet/slice';
 import { lazyWithRetry } from './tools';
@@ -19,19 +20,29 @@ const ExpertPage = lazyWithRetry(() => import('./pages/ExpertPage'));
 const App = () => {
   const { address, isConnected } = useAccount();
   const { error, isLoading } = useConnect();
+  const { chain } = useNetwork();
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(storeWalletInfo({ address, isConnected, error, isLoading }));
-  }, [address, dispatch, error, isConnected, isLoading]);
+    dispatch(
+      storeWalletInfo({ address, isConnected, error, chainId: chain?.id }),
+    );
+  }, [address, chain?.id, dispatch, error, isConnected, isLoading]);
+
+  const elementWithSuspense = useCallback(
+    (element: ReactNode) => (
+      <Suspense fallback={<LoadingSpinner />}>{element}</Suspense>
+    ),
+    [],
+  );
 
   const router = createBrowserRouter(
     createRoutesFromElements([
       <Route
         key={routes.EXPERT}
         path={routes.EXPERT}
-        element={<ExpertPage /* connect={connect} */ />}
+        element={elementWithSuspense(<ExpertPage />)}
       />,
       <Route
         key='*'
