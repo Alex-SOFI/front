@@ -1,5 +1,6 @@
 import { FunctionComponent, useState } from 'react';
 
+import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 import { useConnect } from 'wagmi';
 
@@ -7,6 +8,18 @@ import { theme } from '../../../styles/theme';
 import { noop } from '../../../tools';
 import { Button, Text, TextInput } from '../../basic';
 import ButtonWithIcon from '../../basic/ButtonWithIcon';
+
+const InputGridBox = styled(Box)`
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr;
+  width: 100%;
+  margin-bottom: 1rem;
+  align-items: center;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    grid-template-columns: 1fr 2fr 1fr;
+  }
+`;
 
 const ExpertPageMain: FunctionComponent = () => {
   const [isMintSelected, setIsMintSelected] = useState<boolean>(true);
@@ -57,18 +70,7 @@ const ExpertPageMain: FunctionComponent = () => {
           Redeem
         </Button>
       </Box>
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1.5fr 1fr',
-          width: '100%',
-          marginBottom: '1rem',
-          alignItems: 'center',
-          '@media (max-width: 768px)': {
-            gridTemplateColumns: '1fr 2fr 1fr',
-          },
-        }}
-      >
+      <InputGridBox>
         <Text justifySelf='end' pr='2rem' variant='body1'>
           USDC
         </Text>
@@ -79,7 +81,7 @@ const ExpertPageMain: FunctionComponent = () => {
           setValue={setUSDCInputValue}
           disabled={!isConnected} // temporary
         />
-      </Box>
+      </InputGridBox>
       <Box
         sx={{
           display: 'flex',
@@ -95,18 +97,7 @@ const ExpertPageMain: FunctionComponent = () => {
         />
         <Text variant='body1'>Max: 0</Text>
       </Box>
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1.5fr 1fr',
-          width: '100%',
-          marginBottom: '1rem',
-          alignItems: 'center',
-          '@media (max-width: 768px)': {
-            gridTemplateColumns: '1fr 2fr 1fr',
-          },
-        }}
-      >
+      <InputGridBox>
         <Text justifySelf='end' pr='2rem' variant='body1'>
           SOFI
         </Text>
@@ -117,7 +108,7 @@ const ExpertPageMain: FunctionComponent = () => {
           setValue={setSOFIInputValue}
           disabled={!isConnected} // temporary
         />
-      </Box>
+      </InputGridBox>
       <Text variant='body2' color={theme.colors.grayMedium} mb='2rem'>
         Fees Ï 0.00%
       </Text>
