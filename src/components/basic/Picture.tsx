@@ -10,9 +10,10 @@ const ImgStyled = styled.img`
   object-position: center;
 `;
 
-interface PictureStyledProps extends PropsWithChildren {
+interface PictureStyledProps {
   width?: number;
   height?: number;
+  marginRight?: string;
 }
 
 const PictureStyled = styled.picture<PictureStyledProps>`
@@ -21,6 +22,7 @@ const PictureStyled = styled.picture<PictureStyledProps>`
   height: ${(props) => (props.height ? `${props.height}px` : '25px')};
   position: relative;
   border-radius: inherit;
+  ${(props) => props.marginRight && `margin-right: ${props.marginRight}`}
 `;
 
 interface PictureProps extends PropsWithChildren, PictureStyledProps {
@@ -33,10 +35,11 @@ const Picture: FunctionComponent<PictureProps> = ({
   src,
   width,
   height,
+  marginRight,
   ...props
 }) => {
   return (
-    <PictureStyled width={width} height={height}>
+    <PictureStyled width={width} height={height} marginRight={marginRight}>
       <ImgStyled
         src={src}
         alt={alt}

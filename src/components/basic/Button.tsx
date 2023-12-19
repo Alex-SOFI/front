@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FunctionComponent, PropsWithChildren } from 'react';
 
 import { default as BasicButton } from '@mui/material/Button';
@@ -8,6 +9,7 @@ interface ButtonProps extends PropsWithChildren {
   variant?: 'text';
   isPrimaryColor?: boolean;
   disabled?: boolean;
+  marginLeft?: string;
 }
 
 const Button: FunctionComponent<ButtonProps> = ({

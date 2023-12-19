@@ -1,5 +1,5 @@
 import React, { ReactNode, Suspense, useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Navigate,
   Route,
@@ -8,10 +8,11 @@ import {
   createRoutesFromElements,
 } from 'react-router-dom';
 
-import { useAccount, useConnect, useNetwork } from 'wagmi';
+import { useAccount, useBalance, useConnect, useNetwork } from 'wagmi';
 
 import { LoadingSpinner } from './components/basic';
 import routes from './constants/routes';
+import { selectIsWrongNetwork } from './ducks/wallet';
 import { storeWalletInfo } from './ducks/wallet/slice';
 import { lazyWithRetry } from './tools';
 
@@ -21,14 +22,33 @@ const App = () => {
   const { address, isConnected } = useAccount();
   const { error, isLoading } = useConnect();
   const { chain } = useNetwork();
-
+  const { data } = useBalance({
+    address,
+  });
   const dispatch = useDispatch();
+
+  const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
   useEffect(() => {
     dispatch(
-      storeWalletInfo({ address, isConnected, error, chainId: chain?.id }),
+      storeWalletInfo({
+        address,
+        isConnected,
+        error,
+        chainId: chain?.id,
+        balance: isWrongNetwork ? 0 : data?.formatted || 0,
+      }),
     );
-  }, [address, chain?.id, dispatch, error, isConnected, isLoading]);
+  }, [
+    address,
+    chain?.id,
+    data?.formatted,
+    dispatch,
+    error,
+    isConnected,
+    isLoading,
+    isWrongNetwork,
+  ]);
 
   const elementWithSuspense = useCallback(
     (element: ReactNode) => (

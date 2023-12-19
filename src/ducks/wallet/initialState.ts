@@ -5,4 +5,5 @@ export const initialState: WalletInfoState = {
   error: null,
   address: undefined,
   isConnected: false,
+  balance: 0,
 };
