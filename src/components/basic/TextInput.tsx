@@ -1,8 +1,4 @@
-import {
-  ChangeEventHandler,
-  FunctionComponent,
-  KeyboardEventHandler,
-} from 'react';
+import { ChangeEventHandler, FunctionComponent } from 'react';
 
 import TextField from '@mui/material/TextField';
 
@@ -10,13 +6,10 @@ interface TextInputProps {
   paddingLeft?: string | number;
   marginRight?: string | number;
   value: string;
-  onChange:
-    | ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
-    | undefined;
+  onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   placeholder: string;
   disabled?: boolean;
   readOnly?: boolean;
-  onKeyDown?: KeyboardEventHandler<HTMLInputElement> | undefined;
 }
 
 const TextInput: FunctionComponent<TextInputProps> = ({
@@ -27,7 +20,6 @@ const TextInput: FunctionComponent<TextInputProps> = ({
   placeholder,
   disabled,
   readOnly,
-  onKeyDown,
 }) => {
   return (
     <TextField
@@ -39,7 +31,6 @@ const TextInput: FunctionComponent<TextInputProps> = ({
       disabled={disabled || false}
       inputProps={{ readOnly }}
       fullWidth
-      {...(onKeyDown ? { onKeyDown } : {})}
     />
   );
 };

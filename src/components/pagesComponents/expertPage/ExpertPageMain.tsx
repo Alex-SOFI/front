@@ -1,8 +1,7 @@
 import {
-  ChangeEvent,
+  ChangeEventHandler,
   Dispatch,
   FunctionComponent,
-  KeyboardEvent,
   SetStateAction,
 } from 'react';
 
@@ -45,10 +44,9 @@ interface ExpertPageMainProps {
   isMintSelected: boolean;
   setIsMintSelected: Dispatch<SetStateAction<boolean>>;
   USDCInputValue: string;
-  setUSDCInputValue: Dispatch<SetStateAction<string>>;
+  handleUSDCInputValueChange: ChangeEventHandler<HTMLInputElement>;
   SOFIInputValue: string;
   setSOFIInputValue: Dispatch<SetStateAction<string>>;
-  handleUSDCInputKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void;
 }
 
 const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
@@ -60,10 +58,9 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   isMintSelected,
   setIsMintSelected,
   USDCInputValue,
-  setUSDCInputValue,
+  handleUSDCInputValueChange,
   SOFIInputValue,
   setSOFIInputValue,
-  handleUSDCInputKeyDown,
 }) => {
   return (
     <Box
@@ -118,8 +115,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         <TextInput
           placeholder='0'
           value={USDCInputValue}
-          onChange={(e) => setUSDCInputValue(e.target.value)}
-          onKeyDown={handleUSDCInputKeyDown}
+          onChange={handleUSDCInputValueChange}
           disabled={!isConnected || isWrongNetwork} // temporary
         />
       </InputGridBox>
@@ -158,9 +154,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         <TextInput
           placeholder='0'
           value={SOFIInputValue}
-          onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-            setSOFIInputValue(e.target.value)
-          }
+          onChange={(e) => setSOFIInputValue(e.target.value)}
           disabled={!isConnected || isWrongNetwork} // temporary
         />
       </InputGridBox>

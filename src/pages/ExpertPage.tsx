@@ -1,6 +1,6 @@
 import {
+  ChangeEvent,
   FunctionComponent,
-  KeyboardEvent,
   useCallback,
   useMemo,
   useState,
@@ -46,24 +46,13 @@ const ExpertPage: FunctionComponent = () => {
     [connect, connectors],
   );
 
-  const [isDotEntered, setIsDotEntered] = useState(false);
-  const handleUSDCInputKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === '.' && !isDotEntered) {
-        setIsDotEntered(true);
-      }
-      if (event.key === '.' && isDotEntered) {
-        event.preventDefault();
-      }
-      if (
-        isNaN(Number(event.key)) &&
-        event.key !== 'Backspace' &&
-        event.key !== '.'
-      ) {
-        event.preventDefault();
+  const handleUSDCInputValueChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      if (!isNaN(Number(event.target.value))) {
+        setUSDCInputValue(event.target.value);
       }
     },
-    [isDotEntered],
+    [],
   );
 
   return (
@@ -78,10 +67,9 @@ const ExpertPage: FunctionComponent = () => {
           isMintSelected={isMintSelected}
           setIsMintSelected={setIsMintSelected}
           USDCInputValue={USDCInputValue}
-          setUSDCInputValue={setUSDCInputValue}
+          handleUSDCInputValueChange={handleUSDCInputValueChange}
           SOFIInputValue={SOFIInputValue}
           setSOFIInputValue={setSOFIInputValue}
-          handleUSDCInputKeyDown={handleUSDCInputKeyDown}
         />
       }
       footer={<ExpertPageLinksBlock />}
