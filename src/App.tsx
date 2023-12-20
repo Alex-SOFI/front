@@ -60,6 +60,11 @@ const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements([
       <Route
+        key='/'
+        path='/'
+        element={<Navigate to={routes.EXPERT} replace />}
+      />,
+      <Route
         key={routes.EXPERT}
         path={routes.EXPERT}
         element={elementWithSuspense(<ExpertPage />)}
