@@ -18,7 +18,8 @@ const StyledHeader = styled.header`
 `;
 
 interface HeaderProps {
-  onClick: () => void;
+  handleConnectButtonClick: () => void;
+  copyAddress: () => void;
   isLinkOnly: boolean;
   isConnected: boolean;
   isWrongNetwork: boolean;
@@ -26,7 +27,8 @@ interface HeaderProps {
 }
 
 const Header: FunctionComponent<HeaderProps> = ({
-  onClick,
+  handleConnectButtonClick,
+  copyAddress,
   isLinkOnly,
   isConnected,
   isWrongNetwork,
@@ -52,9 +54,7 @@ const Header: FunctionComponent<HeaderProps> = ({
             marginRight='1rem'
           />
           {isConnected && !isWrongNetwork ? (
-            <Box
-              sx={{ maxWidth: '10rem', display: 'flex', alignItems: 'center' }}
-            >
+            <Button onClick={copyAddress} variant='text' maxWidth='10.057rem'>
               <Text
                 sx={{
                   textOverflow: 'ellipsis',
@@ -67,14 +67,15 @@ const Header: FunctionComponent<HeaderProps> = ({
               </Text>
               <ContentCopyIcon
                 sx={{
-                  marginLeft: '1rem',
                   marginRight: '0.5rem',
                   fontSize: '30px',
                 }}
               />
-            </Box>
+            </Button>
           ) : (
-            <Button onClick={onClick /* disconnect */}>Connect Wallet</Button>
+            <Button onClick={handleConnectButtonClick /* disconnect */}>
+              Connect Wallet
+            </Button>
           )}
         </Box>
       )}

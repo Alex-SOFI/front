@@ -1,10 +1,11 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useConnect } from 'wagmi';
 
 import Header from '../components/Header';
 import { selectIsWrongNetwork, selectWalletInfo } from '../ducks/wallet';
+import { copyToClipboard, noop } from '../tools';
 
 interface HeaderContainerProps {
   isLinkOnly?: boolean;
@@ -17,9 +18,15 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
   const { address, isConnected } = useSelector(selectWalletInfo);
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
+  const copyAddress = useCallback(
+    () => (address ? copyToClipboard(address) : noop),
+    [address],
+  );
+
   return (
     <Header
-      onClick={() => connect({ connector: connectors[0] })}
+      handleConnectButtonClick={() => connect({ connector: connectors[0] })}
+      copyAddress={copyAddress}
       isLinkOnly={isLinkOnly || false}
       isConnected={isConnected}
       isWrongNetwork={isWrongNetwork}

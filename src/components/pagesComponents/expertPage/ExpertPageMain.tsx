@@ -152,15 +152,17 @@ const ExpertPageMain: FunctionComponent = () => {
       <Text variant='body2' color={theme.colors.grayMedium} mb='2rem'>
         Fees | 0.00%
       </Text>
-      {isWrongNetwork && ( // temporary condition
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: '0.25fr 3.25fr',
-            width: '100%',
-            marginBottom: '2rem',
-          }}
-        >
+
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: '0.25fr 3.25fr',
+          width: '100%',
+          lineHeight: '1.2em',
+          minHeight: '4em',
+        }}
+      >
+        {isWrongNetwork && (
           <Text
             sx={{ gridColumn: 2 }}
             variant='body2'
@@ -169,8 +171,9 @@ const ExpertPageMain: FunctionComponent = () => {
           >
             {statusText?.text}
           </Text>
-        </Box>
-      )}
+        )}
+      </Box>
+
       {isConnected && !isWrongNetwork ? (
         <Button
           onClick={noop}
