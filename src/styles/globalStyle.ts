@@ -51,4 +51,13 @@ export const muiTheme = createTheme({
       main: theme.colors.primary,
     },
   },
+  breakpoints: {
+    values: {
+      xs: 300,
+      sm: 640,
+      md: 900,
+      lg: 1200,
+      xl: 1536,
+    },
+  },
 });

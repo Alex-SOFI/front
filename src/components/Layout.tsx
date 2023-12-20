@@ -3,7 +3,6 @@ import { FunctionComponent, ReactNode } from 'react';
 import styled from '@emotion/styled';
 
 import HeaderContainer from '../containers/HeaderContainer';
-import { muiTheme } from '../styles/globalStyle';
 import { theme } from '../styles/theme';
 
 const Section = styled.section`
@@ -15,7 +14,6 @@ const Section = styled.section`
     display: flex;
     flex-direction: column;
   }
-  margin: ${muiTheme.spacing(1)};
 `;
 
 const Main = styled.main`

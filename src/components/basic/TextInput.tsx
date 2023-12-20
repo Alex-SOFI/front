@@ -9,6 +9,7 @@ interface TextInputProps {
   setValue: Dispatch<SetStateAction<string>>;
   placeholder: string;
   disabled?: boolean;
+  readOnly?: boolean;
 }
 
 const TextInput: FunctionComponent<TextInputProps> = ({
@@ -18,6 +19,7 @@ const TextInput: FunctionComponent<TextInputProps> = ({
   setValue,
   placeholder,
   disabled,
+  readOnly,
 }) => {
   return (
     <TextField
@@ -29,6 +31,8 @@ const TextInput: FunctionComponent<TextInputProps> = ({
         setValue(e.target.value);
       }}
       disabled={disabled || false}
+      inputProps={{ readOnly }}
+      fullWidth
     />
   );
 };

@@ -2,22 +2,13 @@ export const theme = {
   colors: {
     white: '#FFFFFF',
     black: '#000000',
-    // gray
-    dark: '#2B2B2B',
     gray: '#CCCCCC',
     grayMedium: '#999999',
-    grayLight: '#DCDCDC',
-    grayLighter: '#EAEAEA',
-    grayLighter2: '#F9F9F9',
-    grayCloud: '#F8F8F8',
-    graySecodary: '#9B9FAB',
-    grayTertiary: '#F5F5F5',
-    grayBorder: '#EFEFEF',
-    grayBorder2: '#CBCBCD',
-    graySilver: '#B8B8B8',
-    overlayBg: 'rgba(0, 0, 0, 0.5)',
-
-    primary: '#6558f5',
+    greyDark: '#2B2B2B',
+    primary: '#6558F5',
+    error: '#D3465C',
+    info: '#2C88D9',
+    success: '#207868',
   },
 
   fonts: {

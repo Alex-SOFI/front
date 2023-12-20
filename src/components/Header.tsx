@@ -1,22 +1,41 @@
 import { FunctionComponent } from 'react';
 
 import styled from '@emotion/styled';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import Box from '@mui/material/Box';
 
-import { Button } from '../components/basic';
+/* import { useDisconnect } from 'wagmi'; */
+import { Button, Picture, Text } from '../components/basic';
+import { PUBLIC_URL } from '../config';
+import { muiTheme } from '../styles/globalStyle';
 import { Link } from './basic';
 
 const StyledHeader = styled.header`
   display: flex;
   justify-content: space-between;
   margin-bottom: 5rem;
+  padding: ${muiTheme.spacing(1)};
 `;
 
 interface HeaderProps {
-  onClick: () => void;
+  handleConnectButtonClick: () => void;
+  copyAddress: () => void;
   isLinkOnly: boolean;
+  isConnected: boolean;
+  isWrongNetwork: boolean;
+  address?: string;
 }
 
-const Header: FunctionComponent<HeaderProps> = ({ onClick, isLinkOnly }) => {
+const Header: FunctionComponent<HeaderProps> = ({
+  handleConnectButtonClick,
+  copyAddress,
+  isLinkOnly,
+  isConnected,
+  isWrongNetwork,
+  address,
+}) => {
+  /* const { disconnect } = useDisconnect(); */
+
   return (
     <StyledHeader>
       <Link
@@ -25,7 +44,41 @@ const Header: FunctionComponent<HeaderProps> = ({ onClick, isLinkOnly }) => {
       >
         sophie.fi
       </Link>
-      {!isLinkOnly && <Button onClick={onClick}>Connect Wallet</Button>}
+      {!isLinkOnly && (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Picture
+            src={`${PUBLIC_URL}/icons/logo_polygon.svg`}
+            alt='Polygon logo'
+            width={40}
+            height={40}
+            marginRight='1rem'
+          />
+          {isConnected && !isWrongNetwork ? (
+            <Button onClick={copyAddress} variant='text' maxWidth='10.057rem'>
+              <Text
+                sx={{
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                }}
+                variant='h1'
+              >
+                {address}
+              </Text>
+              <ContentCopyIcon
+                sx={{
+                  marginRight: '0.5rem',
+                  fontSize: '30px',
+                }}
+              />
+            </Button>
+          ) : (
+            <Button onClick={handleConnectButtonClick /* disconnect */}>
+              Connect Wallet
+            </Button>
+          )}
+        </Box>
+      )}
     </StyledHeader>
   );
 };
