@@ -1,4 +1,10 @@
-import { FunctionComponent, useState } from 'react';
+import {
+  ChangeEvent,
+  Dispatch,
+  FunctionComponent,
+  KeyboardEvent,
+  SetStateAction,
+} from 'react';
 
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
@@ -35,6 +41,14 @@ interface ExpertPageMainProps {
     text: string;
   } | null;
   isWrongNetwork: boolean;
+
+  isMintSelected: boolean;
+  setIsMintSelected: Dispatch<SetStateAction<boolean>>;
+  USDCInputValue: string;
+  setUSDCInputValue: Dispatch<SetStateAction<string>>;
+  SOFIInputValue: string;
+  setSOFIInputValue: Dispatch<SetStateAction<string>>;
+  handleUSDCInputKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void;
 }
 
 const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
@@ -43,11 +57,14 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   balance,
   statusText,
   isWrongNetwork,
+  isMintSelected,
+  setIsMintSelected,
+  USDCInputValue,
+  setUSDCInputValue,
+  SOFIInputValue,
+  setSOFIInputValue,
+  handleUSDCInputKeyDown,
 }) => {
-  const [isMintSelected, setIsMintSelected] = useState<boolean>(true);
-  const [USDCInputValue, setUSDCInputValue] = useState<string>('');
-  const [SOFIInputValue, setSOFIInputValue] = useState<string>('');
-
   return (
     <Box
       sx={{
@@ -101,7 +118,8 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         <TextInput
           placeholder='0'
           value={USDCInputValue}
-          setValue={setUSDCInputValue}
+          onChange={(e) => setUSDCInputValue(e.target.value)}
+          onKeyDown={handleUSDCInputKeyDown}
           disabled={!isConnected || isWrongNetwork} // temporary
         />
       </InputGridBox>
@@ -140,7 +158,9 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         <TextInput
           placeholder='0'
           value={SOFIInputValue}
-          setValue={setSOFIInputValue}
+          onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+            setSOFIInputValue(e.target.value)
+          }
           disabled={!isConnected || isWrongNetwork} // temporary
         />
       </InputGridBox>

@@ -1,4 +1,10 @@
-import { FunctionComponent, useCallback, useMemo } from 'react';
+import {
+  FunctionComponent,
+  KeyboardEvent,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 
 import { useConnect } from 'wagmi';
@@ -12,6 +18,10 @@ import { selectIsWrongNetwork, selectWalletInfo } from '../ducks/wallet';
 import { theme } from '../styles/theme';
 
 const ExpertPage: FunctionComponent = () => {
+  const [isMintSelected, setIsMintSelected] = useState<boolean>(true);
+  const [USDCInputValue, setUSDCInputValue] = useState<string>('');
+  const [SOFIInputValue, setSOFIInputValue] = useState<string>('');
+
   const { connect, connectors } = useConnect();
 
   const { isConnected, balance } = useSelector(selectWalletInfo);
@@ -36,6 +46,26 @@ const ExpertPage: FunctionComponent = () => {
     [connect, connectors],
   );
 
+  const [isDotEntered, setIsDotEntered] = useState(false);
+  const handleUSDCInputKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === '.' && !isDotEntered) {
+        setIsDotEntered(true);
+      }
+      if (event.key === '.' && isDotEntered) {
+        event.preventDefault();
+      }
+      if (
+        isNaN(Number(event.key)) &&
+        event.key !== 'Backspace' &&
+        event.key !== '.'
+      ) {
+        event.preventDefault();
+      }
+    },
+    [isDotEntered],
+  );
+
   return (
     <Layout
       main={
@@ -45,6 +75,13 @@ const ExpertPage: FunctionComponent = () => {
           isWrongNetwork={isWrongNetwork}
           statusText={statusText}
           handleConnectButtonClick={handleConnectButtonClick}
+          isMintSelected={isMintSelected}
+          setIsMintSelected={setIsMintSelected}
+          USDCInputValue={USDCInputValue}
+          setUSDCInputValue={setUSDCInputValue}
+          SOFIInputValue={SOFIInputValue}
+          setSOFIInputValue={setSOFIInputValue}
+          handleUSDCInputKeyDown={handleUSDCInputKeyDown}
         />
       }
       footer={<ExpertPageLinksBlock />}
