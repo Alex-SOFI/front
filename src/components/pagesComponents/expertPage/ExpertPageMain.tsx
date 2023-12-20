@@ -1,12 +1,9 @@
-import { FunctionComponent, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { FunctionComponent, useState } from 'react';
 
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
-import { useConnect } from 'wagmi';
 
 import { PUBLIC_URL } from '../../../config';
-import { selectIsWrongNetwork, selectWalletInfo } from '../../../ducks/wallet';
 import { theme } from '../../../styles/theme';
 import { noop } from '../../../tools';
 import { Button, ButtonWithIcon, Picture, Text, TextInput } from '../../basic';
@@ -29,29 +26,27 @@ const InputGridBox = styled(Box)<InputGridBoxProps>`
   }
 `;
 
-const ExpertPageMain: FunctionComponent = () => {
+interface ExpertPageMainProps {
+  handleConnectButtonClick: () => void;
+  isConnected: boolean;
+  balance: string | number | undefined;
+  statusText: {
+    color: string;
+    text: string;
+  } | null;
+  isWrongNetwork: boolean;
+}
+
+const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
+  handleConnectButtonClick,
+  isConnected,
+  balance,
+  statusText,
+  isWrongNetwork,
+}) => {
   const [isMintSelected, setIsMintSelected] = useState<boolean>(true);
   const [USDCInputValue, setUSDCInputValue] = useState<string>('');
   const [SOFIInputValue, setSOFIInputValue] = useState<string>('');
-
-  const { connect, connectors } = useConnect();
-
-  const { isConnected, balance } = useSelector(selectWalletInfo);
-
-  const isWrongNetwork = useSelector(selectIsWrongNetwork);
-
-  const statusText = useMemo(() => {
-    switch (true) {
-      case isWrongNetwork:
-        return {
-          color: theme.colors.error,
-          text: 'Unsupported network detected, switch to Polygon to continue.',
-        };
-
-      default:
-        return null;
-    }
-  }, [isWrongNetwork]);
 
   return (
     <Box
@@ -175,18 +170,11 @@ const ExpertPageMain: FunctionComponent = () => {
       </Box>
 
       {isConnected && !isWrongNetwork ? (
-        <Button
-          onClick={noop}
-          disabled={!USDCInputValue || !SOFIInputValue} /* temporary */
-        >
-          {/* TODO: add onClick */}
+        <Button onClick={noop} disabled={!USDCInputValue || !SOFIInputValue}>
           {isMintSelected ? 'Mint' : 'Redeem'}
         </Button>
       ) : (
-        <Button onClick={() => connect({ connector: connectors[0] })}>
-          {/* TODO: add onClick */}
-          Connect Wallet
-        </Button>
+        <Button onClick={handleConnectButtonClick}>Connect Wallet</Button>
       )}
     </Box>
   );
