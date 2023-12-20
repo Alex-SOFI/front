@@ -5,6 +5,7 @@ import {
   ExpertPageLinksBlock,
   ExpertPageMain,
 } from '../components/pagesComponents/expertPage';
+import { selectWalletInfo } from '../ducks/wallet';
 
 const ExpertPage: FunctionComponent = () => {
   return <Layout main={<ExpertPageMain />} footer={<ExpertPageLinksBlock />} />;

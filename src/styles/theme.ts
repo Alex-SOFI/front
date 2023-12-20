@@ -2,50 +2,17 @@ export const theme = {
   colors: {
     white: '#FFFFFF',
     black: '#000000',
-    // gray
-    dark: '#2B2B2B',
     gray: '#CCCCCC',
     grayMedium: '#999999',
-    grayLight: '#DCDCDC',
-    grayLighter: '#EAEAEA',
-    grayLighter2: '#F9F9F9',
-    grayCloud: '#F8F8F8',
-    graySecodary: '#9B9FAB',
-    grayTertiary: '#F5F5F5',
-    grayBorder: '#EFEFEF',
-    grayBorder2: '#CBCBCD',
-    graySilver: '#B8B8B8',
-    overlayBg: 'rgba(0, 0, 0, 0.5)',
-
-    primary: '#6558f5',
-  },
-
-  shadows: {
-    primary: '0 8px 16px 0 rgba(0, 0, 0, 0.12)',
-    secondary: '0 2px 7px 0 rgba(0, 0, 0, 0.08)',
+    greyDark: '#2B2B2B',
+    primary: '#6558F5',
+    error: '#D3465C',
+    info: '#2C88D9',
+    success: '#207868',
   },
 
   fonts: {
     main: '"Roboto", sans-serif',
-  },
-
-  fontSizes: {
-    xs: '1.2rem',
-    sm: '1.4rem',
-    md: '1.6rem',
-    h4: '1.8rem',
-    h3: '2rem',
-    h2: '2.4rem',
-    h1: '2.8rem',
-    desktop: '3.2rem',
-    desktopXl: '4rem',
-  },
-
-  fontWeights: {
-    regular: '400',
-    medium: '500',
-    semiBold: '600',
-    bold: '700',
   },
 
   space: {
@@ -71,14 +38,6 @@ export const theme = {
     closeFullButtonSm: '0.8rem 1.6rem',
   },
 
-  lineHeights: {
-    xxs: '1',
-    xs: '1.2',
-    sm: '1.3',
-    md: '1.4',
-    lg: '1.5',
-  },
-
   radii: {
     circle: '50%',
     xxs: '4px',
@@ -99,6 +58,6 @@ export const theme = {
   },
 
   breakpoints: {
-    sm: '25em',
+    sm: '40em',
   },
 };

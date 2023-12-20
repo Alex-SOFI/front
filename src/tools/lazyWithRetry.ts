@@ -1,6 +1,7 @@
-import { ComponentType, lazy } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { FunctionComponent, lazy } from 'react';
 
-type ImportComponent = () => Promise<{ default: ComponentType }>;
+type ImportComponent = () => Promise<{ default: FunctionComponent<any> }>;
 
 const lazyWithRetry = (componentToImport: ImportComponent) =>
   lazy((async () => {

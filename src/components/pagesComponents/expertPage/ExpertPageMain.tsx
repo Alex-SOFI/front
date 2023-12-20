@@ -1,20 +1,57 @@
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 
+import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
+import { useConnect } from 'wagmi';
 
+import { PUBLIC_URL } from '../../../config';
+import { selectIsWrongNetwork, selectWalletInfo } from '../../../ducks/wallet';
 import { theme } from '../../../styles/theme';
 import { noop } from '../../../tools';
-import { Button, Text, TextInput } from '../../basic';
-import ButtonWithIcon from '../../basic/ButtonWithIcon';
+import { Button, ButtonWithIcon, Picture, Text, TextInput } from '../../basic';
+
+interface InputGridBoxProps {
+  mb?: string;
+  justifyItems?: string;
+}
+
+const InputGridBox = styled(Box)<InputGridBoxProps>`
+  display: grid;
+  grid-template-columns: 0.25fr 0.75fr 1.5fr 1fr;
+  width: 100%;
+  ${(props) => props.mb && `margin-bottom: ${props.mb};`}
+  align-items: center;
+  ${(props) => props.justifyItems && `justify-items: ${props.justifyItems};`}
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    grid-template-columns: 0.25fr 0.75fr 2fr 1fr;
+  }
+`;
 
 const ExpertPageMain: FunctionComponent = () => {
   const [isMintSelected, setIsMintSelected] = useState<boolean>(true);
   const [USDCInputValue, setUSDCInputValue] = useState<string>('');
   const [SOFIInputValue, setSOFIInputValue] = useState<string>('');
 
-  // temporary
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const { connect, connectors } = useConnect();
+
+  const { isConnected, balance } = useSelector(selectWalletInfo);
+
+  const isWrongNetwork = useSelector(selectIsWrongNetwork);
+
+  const statusText = useMemo(() => {
+    switch (true) {
+      case isWrongNetwork:
+        return {
+          color: theme.colors.error,
+          text: 'Unsupported network detected, switch to Polygon to continue.',
+        };
+
+      default:
+        return null;
+    }
+  }, [isWrongNetwork]);
 
   return (
     <Box
@@ -52,71 +89,92 @@ const ExpertPageMain: FunctionComponent = () => {
           Redeem
         </Button>
       </Box>
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1.5fr 1fr',
-          width: '100%',
-          marginBottom: '1rem',
-          alignItems: 'center',
-          '@media (max-width: 768px)': {
-            gridTemplateColumns: '1fr 2fr 1fr',
-          },
-        }}
-      >
-        <Text justifySelf='end' pr='2rem' variant='body1'>
-          USDC
-        </Text>
-
+      <InputGridBox>
+        <Box
+          sx={{
+            gridColumn: 2,
+            display: 'flex',
+            marginLeft: '1rem',
+            width: '5.625rem',
+          }}
+        >
+          <Picture src={`${PUBLIC_URL}/icons/logo_usdc.png`} alt='USDC logo' />
+          <Text pl='0.5rem' pr='1rem' variant='body1'>
+            USDC
+          </Text>
+        </Box>
         <TextInput
           placeholder='0'
           value={USDCInputValue}
           setValue={setUSDCInputValue}
-          disabled={!isConnected} // temporary
+          disabled={!isConnected || isWrongNetwork} // temporary
         />
-      </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
-          marginBottom: '1rem',
-        }}
-      >
+      </InputGridBox>
+      <InputGridBox>
+        <Text
+          sx={{ gridColumn: 3, textAlign: 'end' }}
+          variant='body1'
+          color={theme.colors.grayMedium}
+          fontSize='14px'
+        >
+          Max: {balance}
+        </Text>
+      </InputGridBox>
+      <InputGridBox mb='1rem' justifyItems='center'>
+        <Box sx={{ gridColumn: 2, width: '5.625rem' }} />
         <ButtonWithIcon
           onClick={() => setIsMintSelected((prevState) => !prevState)}
           isArrowDownward={isMintSelected}
         />
-        <Text variant='body1'>Max: 0</Text>
-      </Box>
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1.5fr 1fr',
-          width: '100%',
-          marginBottom: '1rem',
-          alignItems: 'center',
-          '@media (max-width: 768px)': {
-            gridTemplateColumns: '1fr 2fr 1fr',
-          },
-        }}
-      >
-        <Text justifySelf='end' pr='2rem' variant='body1'>
-          SOFI
-        </Text>
+      </InputGridBox>
+      <InputGridBox mb='1rem'>
+        <Box
+          sx={{
+            gridColumn: 2,
+            display: 'flex',
+            marginLeft: '1rem',
+            width: '5.625rem',
+          }}
+        >
+          <Picture src={`${PUBLIC_URL}/icons/logo_sofi.webp`} alt='SOFI logo' />
+          <Text pl='0.5rem' pr='1rem' variant='body1'>
+            SOFI
+          </Text>
+        </Box>
 
         <TextInput
           placeholder='0'
           value={SOFIInputValue}
           setValue={setSOFIInputValue}
-          disabled={!isConnected} // temporary
+          disabled={!isConnected || isWrongNetwork} // temporary
         />
-      </Box>
+      </InputGridBox>
       <Text variant='body2' color={theme.colors.grayMedium} mb='2rem'>
-        Fees Ï 0.00%
+        Fees | 0.00%
       </Text>
-      {isConnected ? (
+
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: '0.25fr 3.25fr',
+          width: '100%',
+          lineHeight: '1.2em',
+          minHeight: '4em',
+        }}
+      >
+        {isWrongNetwork && (
+          <Text
+            sx={{ gridColumn: 2 }}
+            variant='body2'
+            color={statusText?.color}
+            ml='1rem'
+          >
+            {statusText?.text}
+          </Text>
+        )}
+      </Box>
+
+      {isConnected && !isWrongNetwork ? (
         <Button
           onClick={noop}
           disabled={!USDCInputValue || !SOFIInputValue} /* temporary */
@@ -125,7 +183,7 @@ const ExpertPageMain: FunctionComponent = () => {
           {isMintSelected ? 'Mint' : 'Redeem'}
         </Button>
       ) : (
-        <Button onClick={noop}>
+        <Button onClick={() => connect({ connector: connectors[0] })}>
           {/* TODO: add onClick */}
           Connect Wallet
         </Button>

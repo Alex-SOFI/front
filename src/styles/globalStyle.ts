@@ -23,7 +23,6 @@ export const globalStyle = css`
 
   body {
     font-family: ${theme.fonts.main};
-    font-size: ${theme.fontSizes.md};
     font-weight: 400;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
@@ -50,6 +49,15 @@ export const muiTheme = createTheme({
   palette: {
     primary: {
       main: theme.colors.primary,
+    },
+  },
+  breakpoints: {
+    values: {
+      xs: 300,
+      sm: 640,
+      md: 900,
+      lg: 1200,
+      xl: 1536,
     },
   },
 });
