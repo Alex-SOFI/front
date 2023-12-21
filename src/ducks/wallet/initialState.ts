@@ -6,4 +6,5 @@ export const initialState: WalletInfoState = {
   address: undefined,
   isConnected: false,
   balance: 0,
+  decimals: 0,
 };

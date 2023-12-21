@@ -7,15 +7,17 @@ import {
 } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useConnect } from 'wagmi';
+import { useConnect, useSwitchNetwork } from 'wagmi';
 
 import { Layout } from '../components';
 import {
   ExpertPageLinksBlock,
   ExpertPageMain,
 } from '../components/pagesComponents/expertPage';
+import chainIds from '../constants/chainIds';
 import { selectIsWrongNetwork, selectWalletInfo } from '../ducks/wallet';
 import { theme } from '../styles/theme';
+import { noop } from '../tools';
 
 const ExpertPage: FunctionComponent = () => {
   const [isMintSelected, setIsMintSelected] = useState<boolean>(true);
@@ -55,6 +57,11 @@ const ExpertPage: FunctionComponent = () => {
     [],
   );
 
+  const { switchNetwork } = useSwitchNetwork({
+    throwForSwitchChainNotSupported: true,
+    chainId: chainIds.TESTNET,
+  });
+
   return (
     <Layout
       main={
@@ -70,6 +77,7 @@ const ExpertPage: FunctionComponent = () => {
           handleUSDCInputValueChange={handleUSDCInputValueChange}
           SOFIInputValue={SOFIInputValue}
           setSOFIInputValue={setSOFIInputValue}
+          handleSwitchButtonClick={switchNetwork || noop}
         />
       }
       footer={<ExpertPageLinksBlock />}

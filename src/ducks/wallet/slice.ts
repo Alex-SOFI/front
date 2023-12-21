@@ -16,6 +16,7 @@ export const walletSlice = createSlice({
       state.isConnected = payload.isConnected;
       state.chainId = payload.chainId;
       state.balance = payload.balance;
+      state.decimals = payload.decimals;
     },
   },
 });

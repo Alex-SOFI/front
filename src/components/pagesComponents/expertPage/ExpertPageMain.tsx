@@ -40,13 +40,13 @@ interface ExpertPageMainProps {
     text: string;
   } | null;
   isWrongNetwork: boolean;
-
   isMintSelected: boolean;
   setIsMintSelected: Dispatch<SetStateAction<boolean>>;
   USDCInputValue: string;
   handleUSDCInputValueChange: ChangeEventHandler<HTMLInputElement>;
   SOFIInputValue: string;
   setSOFIInputValue: Dispatch<SetStateAction<string>>;
+  handleSwitchButtonClick: (chainId_?: number | undefined) => void;
 }
 
 const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
@@ -61,6 +61,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   handleUSDCInputValueChange,
   SOFIInputValue,
   setSOFIInputValue,
+  handleSwitchButtonClick,
 }) => {
   return (
     <Box
@@ -183,10 +184,16 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         )}
       </Box>
 
-      {isConnected && !isWrongNetwork ? (
-        <Button onClick={noop} disabled={!USDCInputValue || !SOFIInputValue}>
-          {isMintSelected ? 'Mint' : 'Redeem'}
-        </Button>
+      {isConnected ? (
+        isWrongNetwork ? (
+          <Button onClick={() => handleSwitchButtonClick()}>
+            Switch Network
+          </Button>
+        ) : (
+          <Button onClick={noop} disabled={!USDCInputValue || !SOFIInputValue}>
+            {isMintSelected ? 'Mint' : 'Redeem'}
+          </Button>
+        )
       ) : (
         <Button onClick={handleConnectButtonClick}>Connect Wallet</Button>
       )}
