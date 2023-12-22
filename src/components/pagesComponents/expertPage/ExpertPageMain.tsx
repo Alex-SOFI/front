@@ -44,8 +44,8 @@ interface ExpertPageMainProps {
   setIsMintSelected: Dispatch<SetStateAction<boolean>>;
   USDCInputValue: string;
   handleUSDCInputValueChange: ChangeEventHandler<HTMLInputElement>;
-  SOFIInputValue: string;
-  setSOFIInputValue: Dispatch<SetStateAction<string>>;
+  SOFIInputValue: string | number;
+  setSOFIInputValue: Dispatch<SetStateAction<string | number>>;
   handleSwitchButtonClick: (chainId_?: number | undefined) => void;
 }
 
@@ -156,7 +156,8 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           placeholder='0'
           value={SOFIInputValue}
           onChange={(e) => setSOFIInputValue(e.target.value)}
-          disabled={!isConnected || isWrongNetwork} // temporary
+          disabled={!isConnected || isWrongNetwork}
+          readOnly
         />
       </InputGridBox>
       <Text variant='body2' color={theme.colors.grayMedium} mb='2rem'>

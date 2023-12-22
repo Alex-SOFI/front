@@ -26,15 +26,6 @@ const App = () => {
   });
   const dispatch = useDispatch();
 
-  /* const contractRead = useContractRead({
-    address: '0xd370ea571a4d5a40eb06e89eb1e420343b9cc95d',
-    abi,
-    functionName: 'estimateMint',
-    args: [BigInt(2)],
-  });
-
-  console.log(contractRead); */
-
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
   useEffect(() => {

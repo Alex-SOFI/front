@@ -2,18 +2,22 @@ import {
   ChangeEvent,
   FunctionComponent,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useConnect, useSwitchNetwork } from 'wagmi';
+import { readContract } from 'wagmi/actions';
 
 import { Layout } from '../components';
 import {
   ExpertPageLinksBlock,
   ExpertPageMain,
 } from '../components/pagesComponents/expertPage';
+import abi from '../constants/abi';
+import addresses from '../constants/addresses';
 import chainIds from '../constants/chainIds';
 import { selectIsWrongNetwork, selectWalletInfo } from '../ducks/wallet';
 import { theme } from '../styles/theme';
@@ -22,11 +26,38 @@ import { noop } from '../tools';
 const ExpertPage: FunctionComponent = () => {
   const [isMintSelected, setIsMintSelected] = useState<boolean>(true);
   const [USDCInputValue, setUSDCInputValue] = useState<string>('');
-  const [SOFIInputValue, setSOFIInputValue] = useState<string>('');
+  const [SOFIInputValue, setSOFIInputValue] = useState<string | number>('');
 
   const { connect, connectors } = useConnect();
+  const { isConnected, balance, decimals } = useSelector(selectWalletInfo);
 
-  const { isConnected, balance } = useSelector(selectWalletInfo);
+  const contractRead = useCallback(
+    async (value: string) => {
+      const data = await readContract({
+        address: addresses.TOKEN_MANAGER,
+        abi,
+        functionName: 'estimateMint',
+        args: [BigInt(Number(value) * Math.pow(10, decimals))],
+      });
+      return data as bigint;
+    },
+    [decimals],
+  );
+
+  useEffect(() => {
+    const timeOutId = setTimeout(async () => {
+      if (USDCInputValue) {
+        const SOFIValue = await contractRead(
+          USDCInputValue === '.' ? '0' : USDCInputValue,
+        );
+
+        setSOFIInputValue(Number(SOFIValue) / Math.pow(10, decimals));
+      } else {
+        setSOFIInputValue('');
+      }
+    }, 200);
+    return () => clearTimeout(timeOutId);
+  }, [USDCInputValue, contractRead, decimals]);
 
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
@@ -49,8 +80,11 @@ const ExpertPage: FunctionComponent = () => {
   );
 
   const handleUSDCInputValueChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      if (!isNaN(Number(event.target.value))) {
+    async (event: ChangeEvent<HTMLInputElement>) => {
+      if (
+        (event.target.value.length === 1 && event.target.value === '.') ||
+        !isNaN(Number(event.target.value))
+      ) {
         setUSDCInputValue(event.target.value);
       }
     },

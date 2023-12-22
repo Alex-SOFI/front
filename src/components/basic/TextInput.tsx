@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField';
 interface TextInputProps {
   paddingLeft?: string | number;
   marginRight?: string | number;
-  value: string;
+  value: string | number;
   onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   placeholder: string;
   disabled?: boolean;
