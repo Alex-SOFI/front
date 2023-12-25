@@ -17,7 +17,6 @@ import { storeWalletInfo } from './ducks/wallet/slice';
 import { lazyWithRetry } from './tools';
 
 const ExpertPage = lazyWithRetry(() => import('./pages/ExpertPage'));
-
 const App = () => {
   const { address, isConnected } = useAccount();
   const { error, isLoading } = useConnect();
@@ -37,11 +36,13 @@ const App = () => {
         error,
         chainId: chain?.id,
         balance: isWrongNetwork ? 0 : data?.formatted || 0,
+        decimals: isWrongNetwork ? 0 : data?.decimals || 0,
       }),
     );
   }, [
     address,
     chain?.id,
+    data?.decimals,
     data?.formatted,
     dispatch,
     error,

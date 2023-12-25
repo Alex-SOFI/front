@@ -22,8 +22,9 @@ interface HeaderProps {
   copyAddress: () => void;
   isLinkOnly: boolean;
   isConnected: boolean;
-  isWrongNetwork: boolean;
   address?: string;
+  handleSwitchButtonClick: (chainId_?: number | undefined) => void;
+  isWrongNetwork: boolean;
 }
 
 const Header: FunctionComponent<HeaderProps> = ({
@@ -31,8 +32,9 @@ const Header: FunctionComponent<HeaderProps> = ({
   copyAddress,
   isLinkOnly,
   isConnected,
-  isWrongNetwork,
   address,
+  handleSwitchButtonClick,
+  isWrongNetwork,
 }) => {
   /* const { disconnect } = useDisconnect(); */
 
@@ -53,25 +55,31 @@ const Header: FunctionComponent<HeaderProps> = ({
             height={40}
             marginRight='1rem'
           />
-          {isConnected && !isWrongNetwork ? (
-            <Button onClick={copyAddress} variant='text' maxWidth='10.057rem'>
-              <Text
-                sx={{
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                }}
-                variant='h1'
-              >
-                {address}
-              </Text>
-              <ContentCopyIcon
-                sx={{
-                  marginRight: '0.5rem',
-                  fontSize: '30px',
-                }}
-              />
-            </Button>
+          {isConnected ? (
+            isWrongNetwork ? (
+              <Button onClick={() => handleSwitchButtonClick()}>
+                Switch Network
+              </Button>
+            ) : (
+              <Button onClick={copyAddress} variant='text' maxWidth='10.057rem'>
+                <Text
+                  sx={{
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                  }}
+                  variant='h1'
+                >
+                  {address}
+                </Text>
+                <ContentCopyIcon
+                  sx={{
+                    marginRight: '0.5rem',
+                    fontSize: '30px',
+                  }}
+                />
+              </Button>
+            )
           ) : (
             <Button onClick={handleConnectButtonClick /* disconnect */}>
               Connect Wallet

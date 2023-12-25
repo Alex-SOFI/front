@@ -1,12 +1,12 @@
-import { Dispatch, FunctionComponent, SetStateAction } from 'react';
+import { ChangeEventHandler, FunctionComponent } from 'react';
 
 import TextField from '@mui/material/TextField';
 
 interface TextInputProps {
   paddingLeft?: string | number;
   marginRight?: string | number;
-  value: string;
-  setValue: Dispatch<SetStateAction<string>>;
+  value: string | number;
+  onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   placeholder: string;
   disabled?: boolean;
   readOnly?: boolean;
@@ -16,7 +16,7 @@ const TextInput: FunctionComponent<TextInputProps> = ({
   paddingLeft,
   marginRight,
   value,
-  setValue,
+  onChange,
   placeholder,
   disabled,
   readOnly,
@@ -27,9 +27,7 @@ const TextInput: FunctionComponent<TextInputProps> = ({
       sx={{ paddingLeft, marginRight }}
       placeholder={placeholder}
       value={value}
-      onChange={(e) => {
-        setValue(e.target.value);
-      }}
+      onChange={onChange}
       disabled={disabled || false}
       inputProps={{ readOnly }}
       fullWidth

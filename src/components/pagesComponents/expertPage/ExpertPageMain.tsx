@@ -1,4 +1,9 @@
-import { FunctionComponent, useState } from 'react';
+import {
+  ChangeEventHandler,
+  Dispatch,
+  FunctionComponent,
+  SetStateAction,
+} from 'react';
 
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
@@ -30,24 +35,35 @@ interface ExpertPageMainProps {
   handleConnectButtonClick: () => void;
   isConnected: boolean;
   balance: string | number | undefined;
-  statusText: {
+  status: {
     color: string;
     text: string;
+    error: boolean;
   } | null;
   isWrongNetwork: boolean;
+  isMintSelected: boolean;
+  setIsMintSelected: Dispatch<SetStateAction<boolean>>;
+  USDCInputValue: string;
+  handleUSDCInputValueChange: ChangeEventHandler<HTMLInputElement>;
+  SOFIInputValue: string | number;
+  setSOFIInputValue: Dispatch<SetStateAction<string | number>>;
+  handleSwitchButtonClick: (chainId_?: number | undefined) => void;
 }
 
 const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   handleConnectButtonClick,
   isConnected,
   balance,
-  statusText,
+  status,
   isWrongNetwork,
+  isMintSelected,
+  setIsMintSelected,
+  USDCInputValue,
+  handleUSDCInputValueChange,
+  SOFIInputValue,
+  setSOFIInputValue,
+  handleSwitchButtonClick,
 }) => {
-  const [isMintSelected, setIsMintSelected] = useState<boolean>(true);
-  const [USDCInputValue, setUSDCInputValue] = useState<string>('');
-  const [SOFIInputValue, setSOFIInputValue] = useState<string>('');
-
   return (
     <Box
       sx={{
@@ -101,7 +117,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         <TextInput
           placeholder='0'
           value={USDCInputValue}
-          setValue={setUSDCInputValue}
+          onChange={handleUSDCInputValueChange}
           disabled={!isConnected || isWrongNetwork} // temporary
         />
       </InputGridBox>
@@ -140,8 +156,9 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         <TextInput
           placeholder='0'
           value={SOFIInputValue}
-          setValue={setSOFIInputValue}
-          disabled={!isConnected || isWrongNetwork} // temporary
+          onChange={(e) => setSOFIInputValue(e.target.value)}
+          disabled={!isConnected || isWrongNetwork}
+          readOnly
         />
       </InputGridBox>
       <Text variant='body2' color={theme.colors.grayMedium} mb='2rem'>
@@ -157,22 +174,31 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           minHeight: '4em',
         }}
       >
-        {isWrongNetwork && (
+        {status && (
           <Text
             sx={{ gridColumn: 2 }}
             variant='body2'
-            color={statusText?.color}
+            color={status?.color}
             ml='1rem'
           >
-            {statusText?.text}
+            {status?.text}
           </Text>
         )}
       </Box>
 
-      {isConnected && !isWrongNetwork ? (
-        <Button onClick={noop} disabled={!USDCInputValue || !SOFIInputValue}>
-          {isMintSelected ? 'Mint' : 'Redeem'}
-        </Button>
+      {isConnected ? (
+        isWrongNetwork ? (
+          <Button onClick={() => handleSwitchButtonClick()}>
+            Switch Network
+          </Button>
+        ) : (
+          <Button
+            onClick={noop}
+            disabled={status?.error || !USDCInputValue || !SOFIInputValue}
+          >
+            {isMintSelected ? 'Mint' : 'Redeem'}
+          </Button>
+        )
       ) : (
         <Button onClick={handleConnectButtonClick}>Connect Wallet</Button>
       )}
