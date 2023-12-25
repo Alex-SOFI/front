@@ -35,9 +35,10 @@ interface ExpertPageMainProps {
   handleConnectButtonClick: () => void;
   isConnected: boolean;
   balance: string | number | undefined;
-  statusText: {
+  status: {
     color: string;
     text: string;
+    error: boolean;
   } | null;
   isWrongNetwork: boolean;
   isMintSelected: boolean;
@@ -53,7 +54,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   handleConnectButtonClick,
   isConnected,
   balance,
-  statusText,
+  status,
   isWrongNetwork,
   isMintSelected,
   setIsMintSelected,
@@ -173,14 +174,14 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           minHeight: '4em',
         }}
       >
-        {isWrongNetwork && (
+        {status && (
           <Text
             sx={{ gridColumn: 2 }}
             variant='body2'
-            color={statusText?.color}
+            color={status?.color}
             ml='1rem'
           >
-            {statusText?.text}
+            {status?.text}
           </Text>
         )}
       </Box>
@@ -191,7 +192,10 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
             Switch Network
           </Button>
         ) : (
-          <Button onClick={noop} disabled={!USDCInputValue || !SOFIInputValue}>
+          <Button
+            onClick={noop}
+            disabled={status?.error || !USDCInputValue || !SOFIInputValue}
+          >
             {isMintSelected ? 'Mint' : 'Redeem'}
           </Button>
         )

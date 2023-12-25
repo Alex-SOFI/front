@@ -19,6 +19,7 @@ import {
 import abi from '../constants/abi';
 import addresses from '../constants/addresses';
 import chainIds from '../constants/chainIds';
+import errorTexts from '../constants/errorTexts';
 import { selectIsWrongNetwork, selectWalletInfo } from '../ducks/wallet';
 import { theme } from '../styles/theme';
 import { noop } from '../tools';
@@ -28,10 +29,12 @@ const ExpertPage: FunctionComponent = () => {
   const [USDCInputValue, setUSDCInputValue] = useState<string>('');
   const [SOFIInputValue, setSOFIInputValue] = useState<string | number>('');
 
+  const [isMaxValueError, setIsMaxValueError] = useState<boolean>(false);
+
   const { connect, connectors } = useConnect();
   const { isConnected, balance, decimals } = useSelector(selectWalletInfo);
 
-  const contractRead = useCallback(
+  const estimateMint = useCallback(
     async (value: string) => {
       const data = await readContract({
         address: addresses.TOKEN_MANAGER,
@@ -44,12 +47,23 @@ const ExpertPage: FunctionComponent = () => {
     [decimals],
   );
 
+  const USDCValue = useMemo(
+    () => (USDCInputValue === '.' ? '0' : USDCInputValue),
+    [USDCInputValue],
+  );
+
+  useEffect(() => {
+    if (Number(USDCValue) > Number(balance)) {
+      setIsMaxValueError(true);
+    } else {
+      setIsMaxValueError(false);
+    }
+  }, [USDCValue, balance]);
+
   useEffect(() => {
     const timeOutId = setTimeout(async () => {
-      if (USDCInputValue) {
-        const SOFIValue = await contractRead(
-          USDCInputValue === '.' ? '0' : USDCInputValue,
-        );
+      if (!isMaxValueError && USDCValue) {
+        const SOFIValue = await estimateMint(USDCValue);
 
         setSOFIInputValue(Number(SOFIValue) / Math.pow(10, decimals));
       } else {
@@ -57,22 +71,30 @@ const ExpertPage: FunctionComponent = () => {
       }
     }, 200);
     return () => clearTimeout(timeOutId);
-  }, [USDCInputValue, contractRead, decimals]);
+  }, [USDCValue, estimateMint, decimals, balance, isMaxValueError]);
 
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
-  const statusText = useMemo(() => {
+  const status = useMemo(() => {
     switch (true) {
       case isWrongNetwork:
         return {
           color: theme.colors.error,
-          text: 'Unsupported network detected, switch to Polygon to continue.',
+          text: errorTexts.UNSUPPORTED_NETWORK,
+          error: true,
+        };
+
+      case isMaxValueError:
+        return {
+          color: theme.colors.error,
+          text: errorTexts.MAX_VALUE,
+          error: true,
         };
 
       default:
         return null;
     }
-  }, [isWrongNetwork]);
+  }, [isMaxValueError, isWrongNetwork]);
 
   const handleConnectButtonClick = useCallback(
     () => connect({ connector: connectors[0] }),
@@ -103,7 +125,7 @@ const ExpertPage: FunctionComponent = () => {
           isConnected={isConnected}
           balance={balance}
           isWrongNetwork={isWrongNetwork}
-          statusText={statusText}
+          status={status}
           handleConnectButtonClick={handleConnectButtonClick}
           isMintSelected={isMintSelected}
           setIsMintSelected={setIsMintSelected}
