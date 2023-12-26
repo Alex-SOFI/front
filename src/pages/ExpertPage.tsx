@@ -16,7 +16,7 @@ import {
   ExpertPageLinksBlock,
   ExpertPageMain,
 } from '../components/pagesComponents/expertPage';
-import abi from '../constants/abi';
+import { SOFIabi } from '../constants/abis';
 import addresses from '../constants/addresses';
 import chainIds from '../constants/chainIds';
 import errorTexts from '../constants/errorTexts';
@@ -38,7 +38,7 @@ const ExpertPage: FunctionComponent = () => {
     async (value: string) => {
       const data = await readContract({
         address: addresses.TOKEN_MANAGER,
-        abi,
+        abi: SOFIabi,
         functionName: 'estimateMint',
         args: [BigInt(Number(value) * Math.pow(10, decimals))],
       });

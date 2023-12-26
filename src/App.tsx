@@ -8,9 +8,17 @@ import {
   createRoutesFromElements,
 } from 'react-router-dom';
 
-import { useAccount, useBalance, useConnect, useNetwork } from 'wagmi';
+import {
+  useAccount,
+  useBalance,
+  useConnect,
+  useContractEvent,
+  useNetwork,
+} from 'wagmi';
 
 import { LoadingSpinner } from './components/basic';
+import { DERC20Abi } from './constants/abis';
+import addresses from './constants/addresses';
 import routes from './constants/routes';
 import { selectIsWrongNetwork } from './ducks/wallet';
 import { storeWalletInfo } from './ducks/wallet/slice';
@@ -22,11 +30,26 @@ const App = () => {
   const { error, isLoading } = useConnect();
   const { chain } = useNetwork();
   const { data } = useBalance({
-    address,
+    address: addresses.DERC20_TOKEN,
   });
+
   const dispatch = useDispatch();
 
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
+
+  const unwatch = useContractEvent({
+    address: addresses.DERC20_TOKEN,
+    abi: DERC20Abi,
+    eventName: 'Approval',
+    listener(log) {
+      // eslint-disable-next-line no-console
+      console.log(log);
+    },
+  });
+
+  useEffect(() => {
+    return () => unwatch?.();
+  }, [unwatch]);
 
   useEffect(() => {
     dispatch(
