@@ -3,10 +3,13 @@ import { useSelector } from 'react-redux';
 
 import { useConnect, useSwitchNetwork } from 'wagmi';
 
-import Header from '../components/Header';
-import chainIds from '../constants/chainIds';
-import { selectIsWrongNetwork, selectWalletInfo } from '../ducks/wallet';
-import { copyToClipboard, noop } from '../tools';
+import chainIds from 'constants/chainIds';
+
+import { selectIsWrongNetwork, selectWalletInfo } from 'ducks/wallet';
+
+import { copyToClipboard, noop } from 'tools';
+
+import Header from 'components/Header';
 
 interface HeaderContainerProps {
   isLinkOnly?: boolean;

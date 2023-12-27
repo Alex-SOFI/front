@@ -9,7 +9,7 @@ interface LinkProps extends PropsWithChildren {
   ariaLabel?: string;
 }
 
-const Link1: FunctionComponent<LinkProps> = ({
+const Link: FunctionComponent<LinkProps> = ({
   variant,
   href,
   margin,
@@ -32,4 +32,4 @@ const Link1: FunctionComponent<LinkProps> = ({
   );
 };
 
-export default Link1;
+export default Link;

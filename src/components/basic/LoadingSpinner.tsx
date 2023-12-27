@@ -2,7 +2,7 @@ import { FunctionComponent, PropsWithChildren } from 'react';
 
 import styled from '@emotion/styled';
 
-import { theme } from '../../styles/theme';
+import { theme } from 'styles/theme';
 
 const SpinnerWrapperStyled = styled.span`
   display: flex;

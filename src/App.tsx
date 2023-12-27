@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom';
 
 import {
+  erc20ABI,
   useAccount,
   useBalance,
   useConnect,
@@ -16,21 +17,24 @@ import {
   useNetwork,
 } from 'wagmi';
 
-import { LoadingSpinner } from './components/basic';
-import { DERC20Abi } from './constants/abis';
-import addresses from './constants/addresses';
-import routes from './constants/routes';
-import { selectIsWrongNetwork } from './ducks/wallet';
-import { storeWalletInfo } from './ducks/wallet/slice';
-import { lazyWithRetry } from './tools';
+import addresses from 'constants/addresses';
+import routes from 'constants/routes';
 
-const ExpertPage = lazyWithRetry(() => import('./pages/ExpertPage'));
+import { selectIsWrongNetwork } from 'ducks/wallet';
+import { storeWalletInfo } from 'ducks/wallet/slice';
+
+import { lazyWithRetry } from 'tools';
+
+import { LoadingSpinner } from 'components/basic';
+
+const ExpertPage = lazyWithRetry(() => import('pages/ExpertPage'));
 const App = () => {
   const { address, isConnected } = useAccount();
   const { error, isLoading } = useConnect();
   const { chain } = useNetwork();
   const { data } = useBalance({
-    address: addresses.DERC20_TOKEN,
+    address,
+    token: addresses.DERC20_TOKEN,
   });
 
   const dispatch = useDispatch();
@@ -39,7 +43,7 @@ const App = () => {
 
   const unwatch = useContractEvent({
     address: addresses.DERC20_TOKEN,
-    abi: DERC20Abi,
+    abi: erc20ABI,
     eventName: 'Approval',
     listener(log) {
       // eslint-disable-next-line no-console

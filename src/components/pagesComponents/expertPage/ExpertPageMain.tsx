@@ -3,15 +3,24 @@ import {
   Dispatch,
   FunctionComponent,
   SetStateAction,
+  useMemo,
 } from 'react';
 
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
+import { PUBLIC_URL } from 'config';
 
-import { PUBLIC_URL } from '../../../config';
-import { theme } from '../../../styles/theme';
-import { noop } from '../../../tools';
-import { Button, ButtonWithIcon, Picture, Text, TextInput } from '../../basic';
+import { noop } from 'tools';
+
+import {
+  Button,
+  ButtonWithIcon,
+  Picture,
+  Text,
+  TextInput,
+} from 'components/basic';
+
+import { theme } from 'styles/theme';
 
 interface InputGridBoxProps {
   mb?: string;
@@ -41,6 +50,7 @@ interface ExpertPageMainProps {
     error: boolean;
   } | null;
   isWrongNetwork: boolean;
+  isMaxValueError: boolean;
   isMintSelected: boolean;
   setIsMintSelected: Dispatch<SetStateAction<boolean>>;
   USDCInputValue: string;
@@ -48,6 +58,9 @@ interface ExpertPageMainProps {
   SOFIInputValue: string | number;
   setSOFIInputValue: Dispatch<SetStateAction<string | number>>;
   handleSwitchButtonClick: (chainId_?: number | undefined) => void;
+  approveToken: () => void;
+  isApproveSuccess: boolean;
+  isApproveLoading: boolean;
 }
 
 const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
@@ -56,6 +69,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   balance,
   status,
   isWrongNetwork,
+  isMaxValueError,
   isMintSelected,
   setIsMintSelected,
   USDCInputValue,
@@ -63,7 +77,76 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   SOFIInputValue,
   setSOFIInputValue,
   handleSwitchButtonClick,
+  approveToken,
+  isApproveSuccess,
+  isApproveLoading,
 }) => {
+  const renderButton = useMemo(() => {
+    /* {isConnected ? (
+      isWrongNetwork ? (
+        
+      ) : (
+        <Button
+          onClick={noop}
+          disabled={status?.error || !USDCInputValue || !SOFIInputValue}
+        >
+          {isMintSelected ? 'Mint' : 'Redeem'}
+        </Button>
+      )
+    ) : (
+      
+    )} */
+    if (isConnected) {
+      if (isWrongNetwork) {
+        return (
+          <Button onClick={() => handleSwitchButtonClick()}>
+            Switch Network
+          </Button>
+        );
+      } else {
+        if (USDCInputValue && !isApproveSuccess) {
+          return (
+            <Button
+              onClick={approveToken}
+              disabled={
+                isMaxValueError ||
+                isApproveLoading ||
+                !USDCInputValue ||
+                !SOFIInputValue
+              }
+            >
+              Approve {isMintSelected ? 'USDC' : 'SOFI'}
+            </Button>
+          );
+        } else {
+          return (
+            <Button
+              onClick={noop}
+              disabled={status?.error || !USDCInputValue || !SOFIInputValue}
+            >
+              {isMintSelected ? 'Mint' : 'Redeem'}
+            </Button>
+          );
+        }
+      }
+    } else {
+      return <Button onClick={handleConnectButtonClick}>Connect Wallet</Button>;
+    }
+  }, [
+    SOFIInputValue,
+    USDCInputValue,
+    approveToken,
+    handleConnectButtonClick,
+    handleSwitchButtonClick,
+    isApproveLoading,
+    isApproveSuccess,
+    isConnected,
+    isMaxValueError,
+    isMintSelected,
+    isWrongNetwork,
+    status?.error,
+  ]);
+
   return (
     <Box
       sx={{
@@ -186,7 +269,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         )}
       </Box>
 
-      {isConnected ? (
+      {/* {isConnected ? (
         isWrongNetwork ? (
           <Button onClick={() => handleSwitchButtonClick()}>
             Switch Network
@@ -201,7 +284,8 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         )
       ) : (
         <Button onClick={handleConnectButtonClick}>Connect Wallet</Button>
-      )}
+      )} */}
+      {renderButton}
     </Box>
   );
 };

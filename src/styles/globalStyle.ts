@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
-import { createTheme } from '@mui/material/styles';
 import emotionNormalize from 'emotion-normalize';
+
+import { createTheme } from '@mui/material/styles';
 
 import { theme } from './theme';
 

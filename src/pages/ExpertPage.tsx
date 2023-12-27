@@ -8,21 +8,31 @@ import {
 } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useConnect, useSwitchNetwork } from 'wagmi';
+import {
+  erc20ABI,
+  useConnect,
+  useContractWrite,
+  useSwitchNetwork,
+} from 'wagmi';
 import { readContract } from 'wagmi/actions';
 
-import { Layout } from '../components';
+import SOFIabi from 'constants/SOFIabi';
+import addresses from 'constants/addresses';
+import chainIds from 'constants/chainIds';
+import errorTexts from 'constants/errorTexts';
+
+import { selectIsWrongNetwork, selectWalletInfo } from 'ducks/wallet';
+
+import { noop } from 'tools';
+
 import {
   ExpertPageLinksBlock,
   ExpertPageMain,
-} from '../components/pagesComponents/expertPage';
-import { SOFIabi } from '../constants/abis';
-import addresses from '../constants/addresses';
-import chainIds from '../constants/chainIds';
-import errorTexts from '../constants/errorTexts';
-import { selectIsWrongNetwork, selectWalletInfo } from '../ducks/wallet';
-import { theme } from '../styles/theme';
-import { noop } from '../tools';
+} from 'components/pagesComponents/expertPage';
+
+import { Layout } from 'components';
+
+import { theme } from 'styles/theme';
 
 const ExpertPage: FunctionComponent = () => {
   const [isMintSelected, setIsMintSelected] = useState<boolean>(true);
@@ -32,20 +42,8 @@ const ExpertPage: FunctionComponent = () => {
   const [isMaxValueError, setIsMaxValueError] = useState<boolean>(false);
 
   const { connect, connectors } = useConnect();
-  const { isConnected, balance, decimals } = useSelector(selectWalletInfo);
-
-  const estimateMint = useCallback(
-    async (value: string) => {
-      const data = await readContract({
-        address: addresses.TOKEN_MANAGER,
-        abi: SOFIabi,
-        functionName: 'estimateMint',
-        args: [BigInt(Number(value) * Math.pow(10, decimals))],
-      });
-      return data as bigint;
-    },
-    [decimals],
-  );
+  const { address, isConnected, balance, decimals } =
+    useSelector(selectWalletInfo);
 
   const USDCValue = useMemo(
     () => (USDCInputValue === '.' ? '0' : USDCInputValue),
@@ -59,6 +57,19 @@ const ExpertPage: FunctionComponent = () => {
       setIsMaxValueError(false);
     }
   }, [USDCValue, balance]);
+
+  const estimateMint = useCallback(
+    async (value: string) => {
+      const data = await readContract({
+        address: addresses.TOKEN_MANAGER,
+        abi: SOFIabi,
+        functionName: 'estimateMint',
+        args: [BigInt(Number(value) * Math.pow(10, decimals))],
+      });
+      return data as bigint;
+    },
+    [decimals],
+  );
 
   useEffect(() => {
     const timeOutId = setTimeout(async () => {
@@ -74,6 +85,25 @@ const ExpertPage: FunctionComponent = () => {
   }, [USDCValue, estimateMint, decimals, balance, isMaxValueError]);
 
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
+
+  const {
+    isLoading: isApproveLoading,
+    isSuccess: isApproveSuccess,
+    write,
+    error,
+  } = useContractWrite({
+    address: addresses.DERC20_TOKEN,
+    abi: erc20ABI,
+    functionName: 'approve',
+  });
+
+  const approveToken = useCallback(() => {
+    if (address) {
+      write({
+        args: [address, BigInt(Number(USDCValue) * Math.pow(10, decimals))],
+      });
+    }
+  }, [USDCValue, address, decimals, write]);
 
   const status = useMemo(() => {
     switch (true) {
@@ -91,10 +121,17 @@ const ExpertPage: FunctionComponent = () => {
           error: true,
         };
 
+      case error && error?.message.search('User rejected the request.') !== -1:
+        return {
+          color: theme.colors.error,
+          text: errorTexts.REQUEST_REJECTED,
+          error: true,
+        };
+
       default:
         return null;
     }
-  }, [isMaxValueError, isWrongNetwork]);
+  }, [error, isMaxValueError, isWrongNetwork]);
 
   const handleConnectButtonClick = useCallback(
     () => connect({ connector: connectors[0] }),
@@ -125,6 +162,7 @@ const ExpertPage: FunctionComponent = () => {
           isConnected={isConnected}
           balance={balance}
           isWrongNetwork={isWrongNetwork}
+          isMaxValueError={isMaxValueError}
           status={status}
           handleConnectButtonClick={handleConnectButtonClick}
           isMintSelected={isMintSelected}
@@ -134,6 +172,9 @@ const ExpertPage: FunctionComponent = () => {
           SOFIInputValue={SOFIInputValue}
           setSOFIInputValue={setSOFIInputValue}
           handleSwitchButtonClick={switchNetwork || noop}
+          approveToken={approveToken}
+          isApproveSuccess={isApproveSuccess}
+          isApproveLoading={isApproveLoading}
         />
       }
       footer={<ExpertPageLinksBlock />}

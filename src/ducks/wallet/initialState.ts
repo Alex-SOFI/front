@@ -1,4 +1,4 @@
-import { WalletInfoState } from '../../interfaces';
+import { WalletInfoState } from 'interfaces';
 
 export const initialState: WalletInfoState = {
   chainId: undefined,
