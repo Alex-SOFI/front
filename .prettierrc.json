@@ -7,7 +7,20 @@
   "jsxSingleQuote": true,
   "bracketSpacing": true,
   "plugins": ["@trivago/prettier-plugin-sort-imports"],
-  "importOrder": ["^react", "<THIRD_PARTY_MODULES>", "^[./]"],
+  "importOrder": [
+    "^react",
+    "<THIRD_PARTY_MODULES>",
+    "(configs/|configs)",
+    "(interfaces/|interfaces)",
+    "^constants/(.*)$",
+    "^ducks/(.*)$",
+    "(tools/|tools)",
+    "(pages/|pages)",
+    "(containers/|containers)",
+    "(components/|components)",
+    "(styles/|styles)",
+    "^[./]"
+  ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true
 }
