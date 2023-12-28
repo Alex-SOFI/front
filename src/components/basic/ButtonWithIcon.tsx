@@ -1,17 +1,18 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, PropsWithChildren } from 'react';
 
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import IconButton from '@mui/material/IconButton';
 
-interface IconButtonProps {
+interface IconButtonProps extends PropsWithChildren {
   onClick: () => void;
-  isArrowDownward: boolean;
+  maxHeight?: string;
+  color?: string;
 }
 
 const ButtonWithIcon: FunctionComponent<IconButtonProps> = ({
   onClick,
-  isArrowDownward,
+  maxHeight,
+  color,
+  children,
 }) => {
   return (
     <IconButton
@@ -19,12 +20,12 @@ const ButtonWithIcon: FunctionComponent<IconButtonProps> = ({
       sx={{ boxShadow: 0 }}
       onClick={onClick}
       size='large'
+      style={{
+        ...(color ? { color } : {}),
+        ...(maxHeight ? { maxHeight, width: maxHeight } : {}),
+      }}
     >
-      {isArrowDownward ? (
-        <ArrowDownwardIcon aria-label='mint' fontSize='large' />
-      ) : (
-        <ArrowUpwardIcon aria-label='redeem' fontSize='large' />
-      )}
+      {children}
     </IconButton>
   );
 };

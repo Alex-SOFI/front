@@ -2,11 +2,12 @@ import { FunctionComponent } from 'react';
 
 import styled from '@emotion/styled';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import LogoutIcon from '@mui/icons-material/Logout';
 import Box from '@mui/material/Box';
 import { PUBLIC_URL } from 'config';
+import { useDisconnect } from 'wagmi';
 
-/* import { useDisconnect } from 'wagmi'; */
-import { Button, Link, Picture, Text } from 'components/basic';
+import { Button, ButtonWithIcon, Link, Picture, Text } from 'components/basic';
 
 import { muiTheme } from 'styles/globalStyle';
 
@@ -36,7 +37,7 @@ const Header: FunctionComponent<HeaderProps> = ({
   handleSwitchButtonClick,
   isWrongNetwork,
 }) => {
-  /* const { disconnect } = useDisconnect(); */
+  const { disconnect } = useDisconnect();
 
   return (
     <StyledHeader>
@@ -57,31 +58,42 @@ const Header: FunctionComponent<HeaderProps> = ({
           />
           {isConnected ? (
             isWrongNetwork ? (
-              <Button
-                onClick={() => handleSwitchButtonClick()}
-                minWidth='11rem'
-              >
-                Switch Network
-              </Button>
-            ) : (
-              <Button onClick={copyAddress} variant='text' maxWidth='11rem'>
-                <Text
-                  sx={{
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                  }}
-                  variant='h1'
+              <>
+                <Button
+                  onClick={() => handleSwitchButtonClick()}
+                  minWidth='11rem'
                 >
-                  {address}
-                </Text>
-                <ContentCopyIcon
-                  sx={{
-                    marginRight: '0.5rem',
-                    fontSize: '30px',
-                  }}
-                />
-              </Button>
+                  Switch Network
+                </Button>
+              </>
+            ) : (
+              <Box display='flex' maxWidth='11rem'>
+                <Button onClick={copyAddress} variant='text' maxWidth='11rem'>
+                  <Text
+                    sx={{
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                    }}
+                    variant='h1'
+                  >
+                    {address}
+                  </Text>
+                  <ContentCopyIcon
+                    sx={{
+                      marginRight: '0.5rem',
+                      fontSize: '30px',
+                    }}
+                  />
+                </Button>
+                <ButtonWithIcon
+                  onClick={disconnect}
+                  maxHeight='2.719rem'
+                  color='black'
+                >
+                  <LogoutIcon aria-label='disconnect' fontSize='large' />
+                </ButtonWithIcon>
+              </Box>
             )
           ) : (
             <Button

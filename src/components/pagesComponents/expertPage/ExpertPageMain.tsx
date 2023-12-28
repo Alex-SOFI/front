@@ -7,6 +7,8 @@ import {
 } from 'react';
 
 import styled from '@emotion/styled';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import Box from '@mui/material/Box';
 import { PUBLIC_URL } from 'config';
 
@@ -208,8 +210,13 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         <Box sx={{ gridColumn: 2, width: '6rem' }} />
         <ButtonWithIcon
           onClick={() => setIsMintSelected((prevState) => !prevState)}
-          isArrowDownward={isMintSelected}
-        />
+        >
+          {isMintSelected ? (
+            <ArrowDownwardIcon aria-label='mint' fontSize='large' />
+          ) : (
+            <ArrowUpwardIcon aria-label='redeem' fontSize='large' />
+          )}
+        </ButtonWithIcon>
       </InputGridBox>
       <InputGridBox mb='1rem'>
         <Box

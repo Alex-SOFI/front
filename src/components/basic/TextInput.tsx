@@ -10,6 +10,14 @@ interface TextInputProps {
   placeholder: string;
   disabled?: boolean;
   readOnly?: boolean;
+  textAlign?:
+    | 'start'
+    | 'end'
+    | 'left'
+    | 'right'
+    | 'center'
+    | 'justify'
+    | 'match-parent';
 }
 
 const TextInput: FunctionComponent<TextInputProps> = ({
@@ -20,6 +28,7 @@ const TextInput: FunctionComponent<TextInputProps> = ({
   placeholder,
   disabled,
   readOnly,
+  textAlign,
 }) => {
   return (
     <TextField
@@ -29,7 +38,7 @@ const TextInput: FunctionComponent<TextInputProps> = ({
       value={value}
       onChange={onChange}
       disabled={disabled || false}
-      inputProps={{ readOnly }}
+      inputProps={{ readOnly, style: { textAlign: textAlign || 'right' } }}
       fullWidth
       autoComplete='off'
     />
