@@ -42,7 +42,7 @@ const ExpertPage: FunctionComponent = () => {
   const [isMaxValueError, setIsMaxValueError] = useState<boolean>(false);
 
   const { connect, connectors } = useConnect();
-  const { address, isConnected, balance, decimals } =
+  const { address, isConnected, balance, decimals, chainId } =
     useSelector(selectWalletInfo);
 
   const USDCValue = useMemo(
@@ -89,12 +89,18 @@ const ExpertPage: FunctionComponent = () => {
 
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
+  const tokenAddress = useMemo(
+    () =>
+      chainId === chainIds.TESTNET ? addresses.USDC_MUMBAI : addresses.USDC,
+    [chainId],
+  );
+
   const {
     isLoading: isApproveLoading,
     isSuccess: isApproveSuccess,
     write,
   } = useContractWrite({
-    address: addresses.DERC20_TOKEN,
+    address: tokenAddress,
     abi: erc20ABI,
     functionName: 'approve',
   });

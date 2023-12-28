@@ -3,6 +3,7 @@ import React, {
   Suspense,
   useCallback,
   useEffect,
+  useMemo,
   /* useState, */
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,6 +26,7 @@ import {
 } from 'wagmi';
 
 import addresses from 'constants/addresses';
+import chainIds from 'constants/chainIds';
 import routes from 'constants/routes';
 
 import { selectIsWrongNetwork } from 'ducks/wallet';
@@ -39,9 +41,15 @@ const App = () => {
   const { address, isConnected } = useAccount();
   const { error, isLoading } = useConnect();
   const { chain } = useNetwork();
+
+  const tokenAddress = useMemo(
+    () =>
+      chain?.id === chainIds.TESTNET ? addresses.USDC_MUMBAI : addresses.USDC,
+    [chain?.id],
+  );
   const { data } = useBalance({
     address,
-    token: addresses.DERC20_TOKEN,
+    token: tokenAddress,
   });
 
   const dispatch = useDispatch();
@@ -52,7 +60,7 @@ const App = () => {
   const [spender, setSpender] = useState<`0x${string}`>('' as `0x${string}`); */
 
   const unwatch = useContractEvent({
-    address: addresses.DERC20_TOKEN,
+    address: tokenAddress,
     abi: erc20ABI,
     eventName: 'Approval',
     listener(log) {
@@ -64,7 +72,7 @@ const App = () => {
   });
 
   /* const allowance = useContractRead({
-    address: addresses.DERC20_TOKEN,
+    address: addresses.USDC,
     abi: erc20ABI,
     functionName: 'allowance',
     args: [owner, spender],
