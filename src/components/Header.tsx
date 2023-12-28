@@ -3,12 +3,12 @@ import { FunctionComponent } from 'react';
 import styled from '@emotion/styled';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import Box from '@mui/material/Box';
+import { PUBLIC_URL } from 'config';
 
 /* import { useDisconnect } from 'wagmi'; */
-import { Button, Picture, Text } from '../components/basic';
-import { PUBLIC_URL } from '../config';
-import { muiTheme } from '../styles/globalStyle';
-import { Link } from './basic';
+import { Button, Link, Picture, Text } from 'components/basic';
+
+import { muiTheme } from 'styles/globalStyle';
 
 const StyledHeader = styled.header`
   display: flex;
@@ -57,11 +57,14 @@ const Header: FunctionComponent<HeaderProps> = ({
           />
           {isConnected ? (
             isWrongNetwork ? (
-              <Button onClick={() => handleSwitchButtonClick()}>
+              <Button
+                onClick={() => handleSwitchButtonClick()}
+                minWidth='11rem'
+              >
                 Switch Network
               </Button>
             ) : (
-              <Button onClick={copyAddress} variant='text' maxWidth='10.057rem'>
+              <Button onClick={copyAddress} variant='text' maxWidth='11rem'>
                 <Text
                   sx={{
                     textOverflow: 'ellipsis',
@@ -81,7 +84,10 @@ const Header: FunctionComponent<HeaderProps> = ({
               </Button>
             )
           ) : (
-            <Button onClick={handleConnectButtonClick /* disconnect */}>
+            <Button
+              onClick={handleConnectButtonClick /* disconnect */}
+              minWidth='11rem'
+            >
               Connect Wallet
             </Button>
           )}

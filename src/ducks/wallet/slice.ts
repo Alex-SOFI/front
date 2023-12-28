@@ -1,8 +1,9 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 
+import { WalletInfoState } from 'interfaces';
+
 import { initialState } from '.';
-import { WalletInfoState } from '../../interfaces';
 
 const name = 'wallet';
 

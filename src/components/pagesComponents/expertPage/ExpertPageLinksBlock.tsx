@@ -2,8 +2,9 @@ import { FunctionComponent } from 'react';
 
 import Box from '@mui/material/Box';
 
-import { theme } from '../../../styles/theme';
-import { Link } from '../../basic';
+import { Link } from 'components/basic';
+
+import { theme } from 'styles/theme';
 
 const ExpertPageLinksBlock: FunctionComponent = () => {
   /* TODO: Add hrefs */

@@ -1,5 +1,6 @@
-import chainIds from '../../constants/chainIds';
-import { ReduxState } from '../../interfaces';
+import { ReduxState } from 'interfaces';
+
+import chainIds from 'constants/chainIds';
 
 export const selectWalletInfo = (state: ReduxState) => state.wallet;
 export const selectIsWrongNetwork = (state: ReduxState) => {

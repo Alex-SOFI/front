@@ -3,13 +3,15 @@ import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 
 import { Global } from '@emotion/react';
-import { ThemeProvider } from '@mui/material/styles';
 import { WagmiConfig } from 'wagmi';
 
+import wagmiConfig from 'configs/wagmiConfig';
+
+import { ThemeProvider } from '@mui/material/styles';
+import { globalStyle, muiTheme } from 'styles/globalStyle';
+
 import App from './App';
-import wagmiConfig from './configs/wagmiConfig';
 import { store } from './store';
-import { globalStyle, muiTheme } from './styles/globalStyle';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,

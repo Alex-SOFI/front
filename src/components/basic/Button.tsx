@@ -11,6 +11,7 @@ interface ButtonProps extends PropsWithChildren {
   disabled?: boolean;
   marginLeft?: string;
   maxWidth?: string;
+  minWidth?: string;
 }
 
 const Button: FunctionComponent<ButtonProps> = ({
@@ -20,6 +21,7 @@ const Button: FunctionComponent<ButtonProps> = ({
   isPrimaryColor,
   disabled,
   maxWidth,
+  minWidth,
   children,
 }) => {
   return (
@@ -34,6 +36,7 @@ const Button: FunctionComponent<ButtonProps> = ({
           ? { fontWeight: isPrimaryColor ? 500 : 400, padding: '0px' }
           : {}),
         ...(maxWidth ? { maxWidth } : {}),
+        ...(minWidth ? { minWidth } : {}),
       }}
       onClick={onClick}
       disabled={disabled || false}

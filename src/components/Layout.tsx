@@ -2,8 +2,9 @@ import { FunctionComponent, ReactNode } from 'react';
 
 import styled from '@emotion/styled';
 
-import HeaderContainer from '../containers/HeaderContainer';
-import { theme } from '../styles/theme';
+import HeaderContainer from 'containers/HeaderContainer';
+
+import { theme } from 'styles/theme';
 
 const Section = styled.section`
   min-height: 100vh;
