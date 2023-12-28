@@ -82,20 +82,6 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   isApproveLoading,
 }) => {
   const renderButton = useMemo(() => {
-    /* {isConnected ? (
-      isWrongNetwork ? (
-        
-      ) : (
-        <Button
-          onClick={noop}
-          disabled={status?.error || !USDCInputValue || !SOFIInputValue}
-        >
-          {isMintSelected ? 'Mint' : 'Redeem'}
-        </Button>
-      )
-    ) : (
-      
-    )} */
     if (isConnected) {
       if (isWrongNetwork) {
         return (
@@ -104,7 +90,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           </Button>
         );
       } else {
-        if (USDCInputValue && !isApproveSuccess) {
+        if (USDCInputValue && SOFIInputValue && !isApproveSuccess) {
           return (
             <Button
               onClick={approveToken}
@@ -124,7 +110,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
               onClick={noop}
               disabled={status?.error || !USDCInputValue || !SOFIInputValue}
             >
-              {isMintSelected ? 'Mint' : 'Redeem'}
+              {isMintSelected ? 'Mint SOFI' : 'Redeem SOFI'}
             </Button>
           );
         }
@@ -201,7 +187,11 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           placeholder='0'
           value={USDCInputValue}
           onChange={handleUSDCInputValueChange}
-          disabled={!isConnected || isWrongNetwork}
+          disabled={
+            !isConnected ||
+            isWrongNetwork ||
+            (isMintSelected && isApproveSuccess)
+          }
         />
       </InputGridBox>
       <InputGridBox>
@@ -268,23 +258,6 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           </Text>
         )}
       </Box>
-
-      {/* {isConnected ? (
-        isWrongNetwork ? (
-          <Button onClick={() => handleSwitchButtonClick()}>
-            Switch Network
-          </Button>
-        ) : (
-          <Button
-            onClick={noop}
-            disabled={status?.error || !USDCInputValue || !SOFIInputValue}
-          >
-            {isMintSelected ? 'Mint' : 'Redeem'}
-          </Button>
-        )
-      ) : (
-        <Button onClick={handleConnectButtonClick}>Connect Wallet</Button>
-      )} */}
       {renderButton}
     </Box>
   );

@@ -16,14 +16,14 @@ import {
 } from 'wagmi';
 import { readContract } from 'wagmi/actions';
 
-import SOFIabi from 'constants/SOFIabi';
 import addresses from 'constants/addresses';
 import chainIds from 'constants/chainIds';
 import errorTexts from 'constants/errorTexts';
+import SOFIabi from 'constants/sofiAbi';
 
 import { selectIsWrongNetwork, selectWalletInfo } from 'ducks/wallet';
 
-import { noop } from 'tools';
+import { noop, pow } from 'tools';
 
 import {
   ExpertPageLinksBlock,
@@ -60,11 +60,12 @@ const ExpertPage: FunctionComponent = () => {
 
   const estimateMint = useCallback(
     async (value: string) => {
+      /* console.log(pow(value, decimals), BigInt(pow(value, decimals))); */
       const data = await readContract({
         address: addresses.TOKEN_MANAGER,
         abi: SOFIabi,
         functionName: 'estimateMint',
-        args: [BigInt(Number(value) * Math.pow(10, decimals))],
+        args: [pow(value, decimals)],
       });
       return data as bigint;
     },
@@ -76,7 +77,9 @@ const ExpertPage: FunctionComponent = () => {
       if (!isMaxValueError && USDCValue) {
         const SOFIValue = await estimateMint(USDCValue);
 
-        setSOFIInputValue(Number(SOFIValue) / Math.pow(10, decimals));
+        setSOFIInputValue(
+          Number(SOFIValue) / 10 ** (decimals / 2) / 10 ** (decimals / 2),
+        );
       } else {
         setSOFIInputValue('');
       }
@@ -90,7 +93,6 @@ const ExpertPage: FunctionComponent = () => {
     isLoading: isApproveLoading,
     isSuccess: isApproveSuccess,
     write,
-    error,
   } = useContractWrite({
     address: addresses.DERC20_TOKEN,
     abi: erc20ABI,
@@ -100,7 +102,7 @@ const ExpertPage: FunctionComponent = () => {
   const approveToken = useCallback(() => {
     if (address) {
       write({
-        args: [address, BigInt(Number(USDCValue) * Math.pow(10, decimals))],
+        args: [address, BigInt(pow(USDCValue, decimals))],
       });
     }
   }, [USDCValue, address, decimals, write]);
@@ -121,17 +123,10 @@ const ExpertPage: FunctionComponent = () => {
           error: true,
         };
 
-      case error && error?.message.search('User rejected the request.') !== -1:
-        return {
-          color: theme.colors.error,
-          text: errorTexts.REQUEST_REJECTED,
-          error: true,
-        };
-
       default:
         return null;
     }
-  }, [error, isMaxValueError, isWrongNetwork]);
+  }, [isMaxValueError, isWrongNetwork]);
 
   const handleConnectButtonClick = useCallback(
     () => connect({ connector: connectors[0] }),

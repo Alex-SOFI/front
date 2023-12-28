@@ -1,4 +1,10 @@
-import React, { ReactNode, Suspense, useCallback, useEffect } from 'react';
+import React, {
+  ReactNode,
+  Suspense,
+  useCallback,
+  useEffect,
+  /* useState, */
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Navigate,
@@ -14,6 +20,7 @@ import {
   useBalance,
   useConnect,
   useContractEvent,
+  /* useContractRead, */
   useNetwork,
 } from 'wagmi';
 
@@ -41,6 +48,9 @@ const App = () => {
 
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
+  /* const [owner, setOwner] = useState<`0x${string}`>('' as `0x${string}`);
+  const [spender, setSpender] = useState<`0x${string}`>('' as `0x${string}`); */
+
   const unwatch = useContractEvent({
     address: addresses.DERC20_TOKEN,
     abi: erc20ABI,
@@ -48,8 +58,17 @@ const App = () => {
     listener(log) {
       // eslint-disable-next-line no-console
       console.log(log);
+      /* setOwner(log[0]?.args.owner as `0x${string}`);
+      setSpender(log[0]?.args.spender as `0x${string}`); */
     },
   });
+
+  /* const allowance = useContractRead({
+    address: addresses.DERC20_TOKEN,
+    abi: erc20ABI,
+    functionName: 'allowance',
+    args: [owner, spender],
+  }); */
 
   useEffect(() => {
     return () => unwatch?.();
