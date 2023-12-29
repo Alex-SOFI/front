@@ -23,7 +23,7 @@ import SOFIabi from 'constants/sofiAbi';
 
 import { selectIsWrongNetwork, selectWalletInfo } from 'ducks/wallet';
 
-import { noop, pow } from 'tools';
+import { formatBalance, noop, pow } from 'tools';
 
 import {
   ExpertPageLinksBlock,
@@ -60,7 +60,6 @@ const ExpertPage: FunctionComponent = () => {
 
   const estimateMint = useCallback(
     async (value: string) => {
-      /* console.log(pow(value, decimals), BigInt(pow(value, decimals))); */
       const data = await readContract({
         address: addresses.TOKEN_MANAGER,
         abi: SOFIabi,
@@ -77,9 +76,7 @@ const ExpertPage: FunctionComponent = () => {
       if (!isMaxValueError && USDCValue) {
         const SOFIValue = await estimateMint(USDCValue);
 
-        setSOFIInputValue(
-          Number(SOFIValue) / 10 ** (decimals / 2) / 10 ** (decimals / 2),
-        );
+        setSOFIInputValue((SOFIValue / BigInt(10 ** decimals)).toString());
       } else {
         setSOFIInputValue('');
       }
@@ -161,7 +158,7 @@ const ExpertPage: FunctionComponent = () => {
       main={
         <ExpertPageMain
           isConnected={isConnected}
-          balance={balance}
+          balance={formatBalance(balance, 3)}
           isWrongNetwork={isWrongNetwork}
           isMaxValueError={isMaxValueError}
           status={status}
@@ -170,7 +167,7 @@ const ExpertPage: FunctionComponent = () => {
           setIsMintSelected={setIsMintSelected}
           USDCInputValue={USDCInputValue}
           handleUSDCInputValueChange={handleUSDCInputValueChange}
-          SOFIInputValue={SOFIInputValue}
+          SOFIInputValue={SOFIInputValue.toString()}
           setSOFIInputValue={setSOFIInputValue}
           handleSwitchButtonClick={switchNetwork || noop}
           approveToken={approveToken}

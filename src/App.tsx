@@ -89,7 +89,7 @@ const App = () => {
         isConnected,
         error,
         chainId: chain?.id,
-        balance: !isConnected || isWrongNetwork ? 0 : data?.formatted || 0,
+        balance: !isConnected || isWrongNetwork ? '0' : data?.formatted || '0',
         decimals: isWrongNetwork ? 0 : data?.decimals || 0,
       }),
     );
