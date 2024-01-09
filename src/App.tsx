@@ -15,14 +15,12 @@ import {
   createRoutesFromElements,
 } from 'react-router-dom';
 
+import { erc20Abi, formatUnits } from 'viem';
 import {
-  erc20ABI,
   useAccount,
-  useBalance,
   useConnect,
-  useContractEvent,
-  /* useContractRead, */
-  useNetwork,
+  useReadContracts,
+  useWatchContractEvent,
 } from 'wagmi';
 
 import addresses from 'constants/addresses';
@@ -38,18 +36,35 @@ import { LoadingSpinner } from 'components/basic';
 
 const ExpertPage = lazyWithRetry(() => import('pages/ExpertPage'));
 const App = () => {
-  const { address, isConnected } = useAccount();
-  const { error, isLoading } = useConnect();
-  const { chain } = useNetwork();
+  const { address, isConnected, chain } = useAccount();
+  const { error, isPending: isLoading } = useConnect();
 
   const tokenAddress = useMemo(
     () =>
       chain?.id === chainIds.TESTNET ? addresses.USDC_MUMBAI : addresses.USDC,
     [chain?.id],
   );
-  const { data } = useBalance({
-    address,
-    token: tokenAddress,
+
+  const balance = useReadContracts({
+    allowFailure: false,
+    contracts: [
+      {
+        address: tokenAddress,
+        abi: erc20Abi,
+        functionName: 'balanceOf',
+        args: [address || '0x'],
+      },
+      {
+        address: tokenAddress,
+        abi: erc20Abi,
+        functionName: 'decimals',
+      },
+      {
+        address: tokenAddress,
+        abi: erc20Abi,
+        functionName: 'symbol',
+      },
+    ],
   });
 
   const dispatch = useDispatch();
@@ -59,13 +74,13 @@ const App = () => {
   /* const [owner, setOwner] = useState<`0x${string}`>('' as `0x${string}`);
   const [spender, setSpender] = useState<`0x${string}`>('' as `0x${string}`); */
 
-  const unwatch = useContractEvent({
+  const unwatch = useWatchContractEvent({
     address: tokenAddress,
-    abi: erc20ABI,
+    abi: erc20Abi,
     eventName: 'Approval',
-    listener(log) {
+    onLogs(logs) {
       // eslint-disable-next-line no-console
-      console.log(log);
+      console.log(logs);
       /* setOwner(log[0]?.args.owner as `0x${string}`);
       setSpender(log[0]?.args.spender as `0x${string}`); */
     },
@@ -79,7 +94,7 @@ const App = () => {
   }); */
 
   useEffect(() => {
-    return () => unwatch?.();
+    return () => unwatch;
   }, [unwatch]);
 
   useEffect(() => {
@@ -89,15 +104,19 @@ const App = () => {
         isConnected,
         error,
         chainId: chain?.id,
-        balance: !isConnected || isWrongNetwork ? '0' : data?.formatted || '0',
-        decimals: isWrongNetwork ? 0 : data?.decimals || 0,
+        balance:
+          !isConnected || isWrongNetwork
+            ? '0'
+            : balance?.data
+              ? formatUnits(balance?.data?.[0], balance?.data?.[1])
+              : '0',
+        decimals: isWrongNetwork ? 0 : balance?.data?.[1] || 0,
       }),
     );
   }, [
     address,
+    balance?.data,
     chain?.id,
-    data?.decimals,
-    data?.formatted,
     dispatch,
     error,
     isConnected,
