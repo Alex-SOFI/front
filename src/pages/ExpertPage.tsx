@@ -8,13 +8,11 @@ import {
 } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  erc20ABI,
-  useConnect,
-  useContractWrite,
-  useSwitchNetwork,
-} from 'wagmi';
+import { erc20Abi } from 'viem';
+import { useConnect, useSwitchChain, useWriteContract } from 'wagmi';
 import { readContract } from 'wagmi/actions';
+
+import wagmiConfig from 'configs/wagmiConfig';
 
 import addresses from 'constants/addresses';
 import chainIds from 'constants/chainIds';
@@ -23,7 +21,7 @@ import SOFIabi from 'constants/sofiAbi';
 
 import { selectIsWrongNetwork, selectWalletInfo } from 'ducks/wallet';
 
-import { formatBalance, noop, pow } from 'tools';
+import { formatBalance, pow } from 'tools';
 
 import {
   ExpertPageLinksBlock,
@@ -60,7 +58,7 @@ const ExpertPage: FunctionComponent = () => {
 
   const estimateMint = useCallback(
     async (value: string) => {
-      const data = await readContract({
+      const data = await readContract(wagmiConfig, {
         address: addresses.TOKEN_MANAGER,
         abi: SOFIabi,
         functionName: 'estimateMint',
@@ -76,7 +74,21 @@ const ExpertPage: FunctionComponent = () => {
       if (!isMaxValueError && USDCValue) {
         const SOFIValue = await estimateMint(USDCValue);
 
-        setSOFIInputValue((SOFIValue / BigInt(10 ** decimals)).toString());
+        // temporary
+        const [, fractionalPart] = USDCValue.split('.');
+        const fractionalPartLength = fractionalPart?.length || 0;
+
+        const value = (
+          SOFIValue / BigInt(10 ** (decimals - fractionalPartLength))
+        ).toString();
+
+        setSOFIInputValue(
+          fractionalPart
+            ? value.slice(0, value.length - fractionalPartLength) +
+                '.' +
+                value.slice(value.length - fractionalPartLength)
+            : value,
+        );
       } else {
         setSOFIInputValue('');
       }
@@ -93,22 +105,21 @@ const ExpertPage: FunctionComponent = () => {
   );
 
   const {
-    isLoading: isApproveLoading,
+    isPending: isApproveLoading,
     isSuccess: isApproveSuccess,
-    write,
-  } = useContractWrite({
-    address: tokenAddress,
-    abi: erc20ABI,
-    functionName: 'approve',
-  });
+    writeContract,
+  } = useWriteContract();
 
   const approveToken = useCallback(() => {
     if (address) {
-      write({
-        args: [address, BigInt(pow(USDCValue, decimals))],
+      writeContract({
+        address: tokenAddress,
+        abi: erc20Abi,
+        functionName: 'approve',
+        args: [address, pow(USDCValue, decimals)],
       });
     }
-  }, [USDCValue, address, decimals, write]);
+  }, [USDCValue, address, decimals, tokenAddress, writeContract]);
 
   const status = useMemo(() => {
     switch (true) {
@@ -148,10 +159,11 @@ const ExpertPage: FunctionComponent = () => {
     [],
   );
 
-  const { switchNetwork } = useSwitchNetwork({
-    throwForSwitchChainNotSupported: true,
-    chainId: chainIds.TESTNET,
-  });
+  const { switchChain } = useSwitchChain();
+
+  const handleSwitchButtonClick = useCallback(() => {
+    switchChain({ chainId: chainIds.TESTNET });
+  }, [switchChain]);
 
   return (
     <Layout
@@ -169,7 +181,7 @@ const ExpertPage: FunctionComponent = () => {
           handleUSDCInputValueChange={handleUSDCInputValueChange}
           SOFIInputValue={SOFIInputValue.toString()}
           setSOFIInputValue={setSOFIInputValue}
-          handleSwitchButtonClick={switchNetwork || noop}
+          handleSwitchButtonClick={handleSwitchButtonClick}
           approveToken={approveToken}
           isApproveSuccess={isApproveSuccess}
           isApproveLoading={isApproveLoading}
