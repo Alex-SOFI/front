@@ -16,12 +16,7 @@ import {
 } from 'react-router-dom';
 
 import { erc20Abi, formatUnits } from 'viem';
-import {
-  useAccount,
-  useConnect,
-  useReadContracts,
-  useWatchContractEvent,
-} from 'wagmi';
+import { useAccount, useConnect, useReadContracts } from 'wagmi';
 
 import addresses from 'constants/addresses';
 import chainIds from 'constants/chainIds';
@@ -70,32 +65,6 @@ const App = () => {
   const dispatch = useDispatch();
 
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
-
-  /* const [owner, setOwner] = useState<`0x${string}`>('' as `0x${string}`);
-  const [spender, setSpender] = useState<`0x${string}`>('' as `0x${string}`); */
-
-  const unwatch = useWatchContractEvent({
-    address: tokenAddress,
-    abi: erc20Abi,
-    eventName: 'Approval',
-    onLogs(logs) {
-      // eslint-disable-next-line no-console
-      console.log(logs);
-      /* setOwner(log[0]?.args.owner as `0x${string}`);
-      setSpender(log[0]?.args.spender as `0x${string}`); */
-    },
-  });
-
-  /* const allowance = useContractRead({
-    address: addresses.USDC,
-    abi: erc20ABI,
-    functionName: 'allowance',
-    args: [owner, spender],
-  }); */
-
-  useEffect(() => {
-    return () => unwatch;
-  }, [unwatch]);
 
   useEffect(() => {
     dispatch(

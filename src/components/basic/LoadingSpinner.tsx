@@ -5,12 +5,13 @@ import styled from '@emotion/styled';
 import { theme } from 'styles/theme';
 
 const SpinnerWrapperStyled = styled.span`
+  position: ${(props: LoadingSpinnerProps) => props.position || 'absolute'};
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: ${(props: LoadingSpinnerProps) =>
+    props.position === 'relative' ? '' : '100%'};
   height: 100%;
-  position: absolute;
 `;
 
 const SpinnerStyled = styled.svg`
@@ -32,14 +33,16 @@ const SpinnerStyled = styled.svg`
 interface LoadingSpinnerProps extends PropsWithChildren {
   size?: string;
   palette?: string;
+  position?: string;
 }
 
 const LoadingSpinner: FunctionComponent<LoadingSpinnerProps> = ({
   size,
   palette,
+  position,
   ...props
 }) => (
-  <SpinnerWrapperStyled {...props}>
+  <SpinnerWrapperStyled position={position} {...props}>
     <SpinnerStyled viewBox='0 0 32 32' width={size || '50'}>
       <g fill={palette || theme.colors.greyDark}>
         <path

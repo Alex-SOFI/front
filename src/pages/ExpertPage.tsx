@@ -9,15 +9,20 @@ import {
 import { useSelector } from 'react-redux';
 
 import { erc20Abi } from 'viem';
-import { useConnect, useSwitchChain, useWriteContract } from 'wagmi';
+import {
+  useConnect,
+  useSwitchChain,
+  useWatchContractEvent,
+  useWriteContract,
+} from 'wagmi';
 import { readContract } from 'wagmi/actions';
 
 import wagmiConfig from 'configs/wagmiConfig';
 
 import addresses from 'constants/addresses';
 import chainIds from 'constants/chainIds';
-import errorTexts from 'constants/errorTexts';
 import SOFIabi from 'constants/sofiAbi';
+import statusTexts from 'constants/statusTexts';
 
 import { selectIsWrongNetwork, selectWalletInfo } from 'ducks/wallet';
 
@@ -34,8 +39,8 @@ import { theme } from 'styles/theme';
 
 const ExpertPage: FunctionComponent = () => {
   const [isMintSelected, setIsMintSelected] = useState<boolean>(true);
-  const [USDCInputValue, setUSDCInputValue] = useState<string>('');
-  const [SOFIInputValue, setSOFIInputValue] = useState<string | number>('');
+  const [activeInputValue, setActiveInputValue] = useState<string>('');
+  const [calculatedInputValue, setCalculatedInputValue] = useState<string>('');
 
   const [isMaxValueError, setIsMaxValueError] = useState<boolean>(false);
 
@@ -43,18 +48,45 @@ const ExpertPage: FunctionComponent = () => {
   const { address, isConnected, balance, decimals, chainId } =
     useSelector(selectWalletInfo);
 
-  const USDCValue = useMemo(
-    () => (USDCInputValue === '.' ? '0' : USDCInputValue),
-    [USDCInputValue],
+  const { switchChain } = useSwitchChain();
+
+  const isWrongNetwork = useSelector(selectIsWrongNetwork);
+
+  const tokenAddress = useMemo(
+    () =>
+      chainId === chainIds.TESTNET ? addresses.USDC_MUMBAI : addresses.USDC,
+    [chainId],
+  );
+
+  const { isPending, isSuccess, writeContract } = useWriteContract();
+
+  const [isApproveSuccess, setIsApproveSuccess] = useState<boolean>(false);
+  const [isApproveLoading, setIsApproveLoading] = useState<boolean>(false);
+
+  useWatchContractEvent({
+    address: tokenAddress,
+    abi: erc20Abi,
+    eventName: 'Approval',
+    onLogs(logs) {
+      // eslint-disable-next-line no-console
+      console.log(logs);
+      setIsApproveSuccess(true);
+      setIsApproveLoading(false);
+    },
+  });
+
+  const activeValue = useMemo(
+    () => (activeInputValue === '.' ? '0' : activeInputValue),
+    [activeInputValue],
   );
 
   useEffect(() => {
-    if (Number(USDCValue) > Number(balance)) {
+    if (Number(activeValue) > Number(balance)) {
       setIsMaxValueError(true);
     } else {
       setIsMaxValueError(false);
     }
-  }, [USDCValue, balance]);
+  }, [activeValue, balance]);
 
   const estimateMint = useCallback(
     async (value: string) => {
@@ -71,18 +103,18 @@ const ExpertPage: FunctionComponent = () => {
 
   useEffect(() => {
     const timeOutId = setTimeout(async () => {
-      if (!isMaxValueError && USDCValue) {
-        const SOFIValue = await estimateMint(USDCValue);
+      if (!isMaxValueError && activeValue) {
+        const SOFIValue = await estimateMint(activeValue);
 
         // temporary
-        const [, fractionalPart] = USDCValue.split('.');
+        const [, fractionalPart] = activeValue.split('.');
         const fractionalPartLength = fractionalPart?.length || 0;
 
         const value = (
           SOFIValue / BigInt(10 ** (decimals - fractionalPartLength))
         ).toString();
 
-        setSOFIInputValue(
+        setCalculatedInputValue(
           fractionalPart
             ? value.slice(0, value.length - fractionalPartLength) +
                 '.' +
@@ -90,52 +122,72 @@ const ExpertPage: FunctionComponent = () => {
             : value,
         );
       } else {
-        setSOFIInputValue('');
+        setCalculatedInputValue('');
       }
     }, 200);
     return () => clearTimeout(timeOutId);
-  }, [USDCValue, estimateMint, decimals, balance, isMaxValueError]);
-
-  const isWrongNetwork = useSelector(selectIsWrongNetwork);
-
-  const tokenAddress = useMemo(
-    () =>
-      chainId === chainIds.TESTNET ? addresses.USDC_MUMBAI : addresses.USDC,
-    [chainId],
-  );
-
-  const {
-    isPending: isApproveLoading,
-    isSuccess: isApproveSuccess,
-    writeContract,
-  } = useWriteContract();
+  }, [activeValue, estimateMint, decimals, balance, isMaxValueError]);
 
   const approveToken = useCallback(() => {
+    setIsApproveLoading(true);
     if (address) {
       writeContract({
         address: tokenAddress,
         abi: erc20Abi,
         functionName: 'approve',
-        args: [address, pow(USDCValue, decimals)],
+        args: [address, pow(activeValue, decimals)],
       });
     }
-  }, [USDCValue, address, decimals, tokenAddress, writeContract]);
+  }, [activeValue, address, decimals, tokenAddress, writeContract]);
+
+  const mintSOFI = useCallback(() => {
+    if (address && calculatedInputValue) {
+      const a = writeContract({
+        address: addresses.TOKEN_MANAGER,
+        abi: SOFIabi,
+        functionName: 'mint',
+        args: [pow(calculatedInputValue, decimals)],
+      });
+      console.log(a);
+    }
+  }, [calculatedInputValue, address, decimals, writeContract]);
 
   const status = useMemo(() => {
     switch (true) {
       case isWrongNetwork:
         return {
           color: theme.colors.error,
-          text: errorTexts.UNSUPPORTED_NETWORK,
+          text: statusTexts.UNSUPPORTED_NETWORK,
           error: true,
         };
 
       case isMaxValueError:
         return {
           color: theme.colors.error,
-          text: errorTexts.MAX_VALUE,
+          text: statusTexts.MAX_VALUE,
           error: true,
         };
+
+      /* case isMintLoading:
+        return {
+          color: theme.colors.info,
+          text: statusTexts.MINT_LOADING,
+          error: false,
+        };
+
+      case isMintFailed:
+        return {
+          color: theme.colors.error,
+          text: statusTexts.MINT_FAILED,
+          error: true,
+        };
+
+      case isMintSuccessful:
+        return {
+          color: theme.colors.success,
+          text: statusTexts.MINT_SUCCESSFUL,
+          error: false,
+        }; */
 
       default:
         return null;
@@ -147,19 +199,20 @@ const ExpertPage: FunctionComponent = () => {
     [connect, connectors],
   );
 
-  const handleUSDCInputValueChange = useCallback(
+  const handleActiveInputValueChange = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
       if (
         (event.target.value.length === 1 && event.target.value === '.') ||
         !isNaN(Number(event.target.value))
       ) {
-        setUSDCInputValue(event.target.value);
+        const float = event.target.value.split('.')?.[1];
+        if (!float || (float && float?.length <= decimals)) {
+          setActiveInputValue(event.target.value);
+        }
       }
     },
-    [],
+    [decimals],
   );
-
-  const { switchChain } = useSwitchChain();
 
   const handleSwitchButtonClick = useCallback(() => {
     switchChain({ chainId: chainIds.TESTNET });
@@ -177,14 +230,15 @@ const ExpertPage: FunctionComponent = () => {
           handleConnectButtonClick={handleConnectButtonClick}
           isMintSelected={isMintSelected}
           setIsMintSelected={setIsMintSelected}
-          USDCInputValue={USDCInputValue}
-          handleUSDCInputValueChange={handleUSDCInputValueChange}
-          SOFIInputValue={SOFIInputValue.toString()}
-          setSOFIInputValue={setSOFIInputValue}
+          activeInputValue={activeInputValue}
+          handleActiveInputValueChange={handleActiveInputValueChange}
+          calculatedInputValue={calculatedInputValue}
+          setCalculatedInputValue={setCalculatedInputValue}
           handleSwitchButtonClick={handleSwitchButtonClick}
           approveToken={approveToken}
           isApproveSuccess={isApproveSuccess}
           isApproveLoading={isApproveLoading}
+          mintSOFI={mintSOFI}
         />
       }
       footer={<ExpertPageLinksBlock />}
