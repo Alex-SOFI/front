@@ -15,7 +15,8 @@ import {
   createRoutesFromElements,
 } from 'react-router-dom';
 
-import { erc20Abi, formatUnits } from 'viem';
+import { formatUnits } from 'ethers';
+import { erc20Abi } from 'viem';
 import { useAccount, useConnect, useReadContracts } from 'wagmi';
 
 import addresses from 'constants/addresses';
@@ -30,6 +31,7 @@ import { lazyWithRetry } from 'tools';
 import { LoadingSpinner } from 'components/basic';
 
 const ExpertPage = lazyWithRetry(() => import('pages/ExpertPage'));
+
 const App = () => {
   const { address, isConnected, chain } = useAccount();
   const { error, isPending: isLoading } = useConnect();
@@ -40,23 +42,25 @@ const App = () => {
     [chain?.id],
   );
 
+  const usdcContract = useMemo(
+    () => ({ address: tokenAddress, abi: erc20Abi }),
+    [tokenAddress],
+  );
+
   const balance = useReadContracts({
     allowFailure: false,
     contracts: [
       {
-        address: tokenAddress,
-        abi: erc20Abi,
+        ...usdcContract,
         functionName: 'balanceOf',
         args: [address || '0x'],
       },
       {
-        address: tokenAddress,
-        abi: erc20Abi,
+        ...usdcContract,
         functionName: 'decimals',
       },
       {
-        address: tokenAddress,
-        abi: erc20Abi,
+        ...usdcContract,
         functionName: 'symbol',
       },
     ],
@@ -69,7 +73,7 @@ const App = () => {
   useEffect(() => {
     dispatch(
       storeWalletInfo({
-        address,
+        address: address || '0x',
         isConnected,
         error,
         chainId: chain?.id,
@@ -110,7 +114,9 @@ const App = () => {
       <Route
         key={routes.EXPERT}
         path={routes.EXPERT}
-        element={elementWithSuspense(<ExpertPage />)}
+        element={elementWithSuspense(
+          <ExpertPage tokenAddress={tokenAddress} />,
+        )}
       />,
       <Route
         key='*'

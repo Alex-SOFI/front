@@ -22,7 +22,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <StrictMode>
     <Provider store={store}>
-      <WagmiProvider config={wagmiConfig} reconnectOnMount>
+      <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider theme={muiTheme}>
             <Global styles={globalStyle} />

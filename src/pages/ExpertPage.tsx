@@ -8,11 +8,13 @@ import {
 } from 'react';
 import { useSelector } from 'react-redux';
 
-import { erc20Abi } from 'viem';
+import { formatUnits, parseUnits } from 'ethers';
+import { Address, erc20Abi } from 'viem';
 import {
   useConnect,
+  useReadContract,
   useSwitchChain,
-  useWatchContractEvent,
+  useWaitForTransactionReceipt,
   useWriteContract,
 } from 'wagmi';
 import { readContract } from 'wagmi/actions';
@@ -26,7 +28,7 @@ import statusTexts from 'constants/statusTexts';
 
 import { selectIsWrongNetwork, selectWalletInfo } from 'ducks/wallet';
 
-import { formatBalance, pow } from 'tools';
+import { formatBalance } from 'tools';
 
 import {
   ExpertPageLinksBlock,
@@ -37,7 +39,11 @@ import { Layout } from 'components';
 
 import { theme } from 'styles/theme';
 
-const ExpertPage: FunctionComponent = () => {
+interface ExpertPageProps {
+  tokenAddress: Address;
+}
+
+const ExpertPage: FunctionComponent<ExpertPageProps> = ({ tokenAddress }) => {
   const [isMintSelected, setIsMintSelected] = useState<boolean>(true);
   const [activeInputValue, setActiveInputValue] = useState<string>('');
   const [calculatedInputValue, setCalculatedInputValue] = useState<string>('');
@@ -45,40 +51,77 @@ const ExpertPage: FunctionComponent = () => {
   const [isMaxValueError, setIsMaxValueError] = useState<boolean>(false);
 
   const { connect, connectors } = useConnect();
-  const { address, isConnected, balance, decimals, chainId } =
+  const { address, isConnected, balance, decimals } =
     useSelector(selectWalletInfo);
 
   const { switchChain } = useSwitchChain();
 
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
-  const tokenAddress = useMemo(
-    () =>
-      chainId === chainIds.TESTNET ? addresses.USDC_MUMBAI : addresses.USDC,
-    [chainId],
-  );
+  const [hash, setHash] = useState<Address>();
 
-  const { isPending, isSuccess, writeContract } = useWriteContract();
+  const [isApproveButtonVisible, setIsApproveButtonVisible] =
+    useState<boolean>(false);
 
-  const [isApproveSuccess, setIsApproveSuccess] = useState<boolean>(false);
-  const [isApproveLoading, setIsApproveLoading] = useState<boolean>(false);
+  const {
+    /* data: transactionData, */
+    isLoading: isTransactionLoading,
+    isError: isTransactionError,
+    isSuccess: isTransactionSuccess,
+  } = useWaitForTransactionReceipt({
+    hash,
+  });
 
-  useWatchContractEvent({
+  const { data: allowance, refetch } = useReadContract({
     address: tokenAddress,
     abi: erc20Abi,
-    eventName: 'Approval',
-    onLogs(logs) {
-      // eslint-disable-next-line no-console
-      console.log(logs);
-      setIsApproveSuccess(true);
-      setIsApproveLoading(false);
-    },
+    functionName: 'allowance',
+    args: [address, addresses.TOKEN_MANAGER],
   });
+
+  useEffect(() => {
+    if (allowance) {
+      if (Number(activeInputValue) > Number(formatUnits(allowance, decimals))) {
+        setIsApproveButtonVisible(true);
+      } else {
+        setIsApproveButtonVisible(false);
+      }
+    }
+    if (allowance === 0n) {
+      setIsApproveButtonVisible(true);
+    }
+    if (isTransactionSuccess) {
+      refetch();
+      setIsApproveButtonVisible(false);
+    }
+  }, [
+    address,
+    tokenAddress,
+    activeInputValue,
+    decimals,
+    allowance,
+    isTransactionSuccess,
+    refetch,
+  ]);
+
+  const {
+    isPending: isApproveLoading,
+    isSuccess: isApproveSuccess,
+    writeContract: approve,
+    writeContractAsync: mint,
+    data,
+  } = useWriteContract();
 
   const activeValue = useMemo(
     () => (activeInputValue === '.' ? '0' : activeInputValue),
     [activeInputValue],
   );
+
+  useEffect(() => {
+    if (data) {
+      setHash(data);
+    }
+  }, [data]);
 
   useEffect(() => {
     if (Number(activeValue) > Number(balance)) {
@@ -94,7 +137,7 @@ const ExpertPage: FunctionComponent = () => {
         address: addresses.TOKEN_MANAGER,
         abi: SOFIabi,
         functionName: 'estimateMint',
-        args: [pow(value, decimals)],
+        args: [parseUnits(value, decimals)],
       });
       return data as bigint;
     },
@@ -106,21 +149,7 @@ const ExpertPage: FunctionComponent = () => {
       if (!isMaxValueError && activeValue) {
         const SOFIValue = await estimateMint(activeValue);
 
-        // temporary
-        const [, fractionalPart] = activeValue.split('.');
-        const fractionalPartLength = fractionalPart?.length || 0;
-
-        const value = (
-          SOFIValue / BigInt(10 ** (decimals - fractionalPartLength))
-        ).toString();
-
-        setCalculatedInputValue(
-          fractionalPart
-            ? value.slice(0, value.length - fractionalPartLength) +
-                '.' +
-                value.slice(value.length - fractionalPartLength)
-            : value,
-        );
+        setCalculatedInputValue(formatUnits(SOFIValue, decimals));
       } else {
         setCalculatedInputValue('');
       }
@@ -128,29 +157,27 @@ const ExpertPage: FunctionComponent = () => {
     return () => clearTimeout(timeOutId);
   }, [activeValue, estimateMint, decimals, balance, isMaxValueError]);
 
-  const approveToken = useCallback(() => {
-    setIsApproveLoading(true);
+  const approveToken = useCallback(async () => {
     if (address) {
-      writeContract({
+      approve({
         address: tokenAddress,
         abi: erc20Abi,
         functionName: 'approve',
-        args: [address, pow(activeValue, decimals)],
+        args: [addresses.TOKEN_MANAGER, parseUnits(activeValue, decimals)],
       });
     }
-  }, [activeValue, address, decimals, tokenAddress, writeContract]);
+  }, [activeValue, address, decimals, tokenAddress, approve]);
 
-  const mintSOFI = useCallback(() => {
+  const mintSOFI = useCallback(async () => {
     if (address && calculatedInputValue) {
-      const a = writeContract({
+      await mint({
         address: addresses.TOKEN_MANAGER,
         abi: SOFIabi,
         functionName: 'mint',
-        args: [pow(calculatedInputValue, decimals)],
+        args: [parseUnits(calculatedInputValue, decimals)],
       });
-      console.log(a);
     }
-  }, [calculatedInputValue, address, decimals, writeContract]);
+  }, [address, calculatedInputValue, mint, decimals]);
 
   const status = useMemo(() => {
     switch (true) {
@@ -189,10 +216,17 @@ const ExpertPage: FunctionComponent = () => {
           error: false,
         }; */
 
+      case isTransactionError:
+        return {
+          color: theme.colors.error,
+          text: statusTexts.TRANSACTION_ERROR,
+          error: true,
+        };
+
       default:
         return null;
     }
-  }, [isMaxValueError, isWrongNetwork]);
+  }, [isMaxValueError, isWrongNetwork, isTransactionError]);
 
   const handleConnectButtonClick = useCallback(
     () => connect({ connector: connectors[0] }),
@@ -203,7 +237,7 @@ const ExpertPage: FunctionComponent = () => {
     async (event: ChangeEvent<HTMLInputElement>) => {
       if (
         (event.target.value.length === 1 && event.target.value === '.') ||
-        !isNaN(Number(event.target.value))
+        (!isNaN(Number(event.target.value)) && Number(event.target.value) >= 0)
       ) {
         const float = event.target.value.split('.')?.[1];
         if (!float || (float && float?.length <= decimals)) {
@@ -237,8 +271,9 @@ const ExpertPage: FunctionComponent = () => {
           handleSwitchButtonClick={handleSwitchButtonClick}
           approveToken={approveToken}
           isApproveSuccess={isApproveSuccess}
-          isApproveLoading={isApproveLoading}
+          isApproveLoading={isApproveLoading || isTransactionLoading}
           mintSOFI={mintSOFI}
+          isApproveButtonVisible={isApproveButtonVisible}
         />
       }
       footer={<ExpertPageLinksBlock />}

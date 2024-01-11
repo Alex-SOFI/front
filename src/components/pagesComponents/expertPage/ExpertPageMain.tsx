@@ -64,6 +64,7 @@ interface ExpertPageMainProps {
   isApproveSuccess: boolean;
   isApproveLoading: boolean;
   mintSOFI: () => void;
+  isApproveButtonVisible?: boolean;
 }
 
 const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
@@ -84,6 +85,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   isApproveSuccess,
   isApproveLoading,
   mintSOFI,
+  isApproveButtonVisible,
 }) => {
   const renderButton = useMemo(() => {
     if (isConnected) {
@@ -94,7 +96,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           </Button>
         );
       } else {
-        if (activeInputValue && calculatedInputValue && !isApproveSuccess) {
+        if (isApproveButtonVisible) {
           return (
             <Button
               onClick={approveToken}
@@ -139,12 +141,12 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
     isConnected,
     isWrongNetwork,
     handleSwitchButtonClick,
-    activeInputValue,
-    calculatedInputValue,
-    isApproveSuccess,
+    isApproveButtonVisible,
     approveToken,
     isMaxValueError,
     isApproveLoading,
+    activeInputValue,
+    calculatedInputValue,
     isMintSelected,
     mintSOFI,
     status?.error,

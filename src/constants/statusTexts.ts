@@ -5,6 +5,7 @@ const statusTexts = {
   MINT_LOADING: 'Mint in progress',
   MINT_SUCCESSFUL: 'Mint successful',
   MINT_FAILED: 'Mint failed',
+  TRANSACTION_ERROR: 'Transaction error',
 };
 
 export default statusTexts;
