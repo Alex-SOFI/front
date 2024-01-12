@@ -231,6 +231,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
         };
 
       case !isApproveButtonClicked && isTransactionSuccess:
+        setCalculatedInputValue('');
         return {
           color: theme.colors.success,
           text: statusTexts.MINT_SUCCESSFUL,
