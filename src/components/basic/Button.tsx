@@ -12,6 +12,7 @@ interface ButtonProps extends PropsWithChildren {
   marginLeft?: string;
   maxWidth?: string;
   minWidth?: string;
+  ariaLabel?: string;
 }
 
 const Button: FunctionComponent<ButtonProps> = ({
@@ -23,6 +24,7 @@ const Button: FunctionComponent<ButtonProps> = ({
   maxWidth,
   minWidth,
   children,
+  ariaLabel,
 }) => {
   return (
     <BasicButton
@@ -40,6 +42,7 @@ const Button: FunctionComponent<ButtonProps> = ({
       }}
       onClick={onClick}
       disabled={disabled || false}
+      aria-label={ariaLabel}
     >
       {children}
     </BasicButton>

@@ -26,7 +26,7 @@ import routes from 'constants/routes';
 import { selectIsWrongNetwork } from 'ducks/wallet';
 import { storeWalletInfo } from 'ducks/wallet/slice';
 
-import { lazyWithRetry } from 'tools';
+import { lazyWithRetry, noop } from 'tools';
 
 import { LoadingSpinner } from 'components/basic';
 
@@ -115,7 +115,10 @@ const App = () => {
         key={routes.EXPERT}
         path={routes.EXPERT}
         element={elementWithSuspense(
-          <ExpertPage tokenAddress={tokenAddress} />,
+          <ExpertPage
+            tokenAddress={tokenAddress}
+            refetchBalance={balance?.refetch || noop}
+          />,
         )}
       />,
       <Route

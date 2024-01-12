@@ -44,10 +44,10 @@ const LoadingSpinner: FunctionComponent<LoadingSpinnerProps> = ({
 }) => (
   <SpinnerWrapperStyled position={position} {...props}>
     <SpinnerStyled viewBox='0 0 32 32' width={size || '50'}>
-      <g fill={palette || theme.colors.greyDark}>
+      <g fill={palette || theme.colors.grayDark}>
         <path
           d='M16,32A16,16,0,1,1,32,16,16.019,16.019,0,0,1,16,32ZM16,4A12,12,0,1,0,28,16,12.013,12.013,0,0,0,16,4Z'
-          fill={palette || theme.colors.greyDark}
+          fill={palette || theme.colors.grayDark}
           opacity='0.4'
         />
         <path

@@ -8,6 +8,7 @@ import {
 } from 'react';
 import { useSelector } from 'react-redux';
 
+import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import { formatUnits, parseUnits } from 'ethers';
 import { Address, erc20Abi } from 'viem';
 import {
@@ -17,7 +18,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from 'wagmi';
-import { readContract } from 'wagmi/actions';
+import { ReadContractsErrorType, readContract } from 'wagmi/actions';
 
 import wagmiConfig from 'configs/wagmiConfig';
 
@@ -41,9 +42,17 @@ import { theme } from 'styles/theme';
 
 interface ExpertPageProps {
   tokenAddress: Address;
+  refetchBalance: (
+    options?: RefetchOptions | undefined,
+  ) => Promise<
+    QueryObserverResult<[bigint, number, string], ReadContractsErrorType>
+  >;
 }
 
-const ExpertPage: FunctionComponent<ExpertPageProps> = ({ tokenAddress }) => {
+const ExpertPage: FunctionComponent<ExpertPageProps> = ({
+  tokenAddress,
+  refetchBalance,
+}) => {
   const [isMintSelected, setIsMintSelected] = useState<boolean>(true);
   const [activeInputValue, setActiveInputValue] = useState<string>('');
   const [calculatedInputValue, setCalculatedInputValue] = useState<string>('');
@@ -62,6 +71,8 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({ tokenAddress }) => {
 
   const [isApproveButtonVisible, setIsApproveButtonVisible] =
     useState<boolean>(false);
+  const [isApproveButtonClicked, setIsApproveButtonClicked] =
+    useState<boolean>(false);
 
   const {
     /* data: transactionData, */
@@ -72,7 +83,13 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({ tokenAddress }) => {
     hash,
   });
 
-  const { data: allowance, refetch } = useReadContract({
+  useEffect(() => {
+    if (isTransactionSuccess) {
+      refetchBalance();
+    }
+  }, [isTransactionSuccess, refetchBalance]);
+
+  const { data: allowance, refetch: refetchAllowance } = useReadContract({
     address: tokenAddress,
     abi: erc20Abi,
     functionName: 'allowance',
@@ -90,8 +107,8 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({ tokenAddress }) => {
     if (allowance === 0n) {
       setIsApproveButtonVisible(true);
     }
-    if (isTransactionSuccess) {
-      refetch();
+    if (isApproveButtonClicked && isTransactionSuccess) {
+      refetchAllowance();
       setIsApproveButtonVisible(false);
     }
   }, [
@@ -101,14 +118,16 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({ tokenAddress }) => {
     decimals,
     allowance,
     isTransactionSuccess,
-    refetch,
+    refetchAllowance,
+    isApproveButtonClicked,
   ]);
 
   const {
-    isPending: isApproveLoading,
-    isSuccess: isApproveSuccess,
-    writeContract: approve,
-    writeContractAsync: mint,
+    isPending,
+    /* isSuccess, */
+    writeContract,
+    writeContractAsync,
+    isError,
     data,
   } = useWriteContract();
 
@@ -159,25 +178,27 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({ tokenAddress }) => {
 
   const approveToken = useCallback(async () => {
     if (address) {
-      approve({
+      setIsApproveButtonClicked(true);
+      writeContract({
         address: tokenAddress,
         abi: erc20Abi,
         functionName: 'approve',
         args: [addresses.TOKEN_MANAGER, parseUnits(activeValue, decimals)],
       });
     }
-  }, [activeValue, address, decimals, tokenAddress, approve]);
+  }, [activeValue, address, decimals, tokenAddress, writeContract]);
 
   const mintSOFI = useCallback(async () => {
     if (address && calculatedInputValue) {
-      await mint({
+      setIsApproveButtonClicked(false);
+      await writeContractAsync({
         address: addresses.TOKEN_MANAGER,
         abi: SOFIabi,
         functionName: 'mint',
         args: [parseUnits(calculatedInputValue, decimals)],
       });
     }
-  }, [address, calculatedInputValue, mint, decimals]);
+  }, [address, calculatedInputValue, writeContractAsync, decimals]);
 
   const status = useMemo(() => {
     switch (true) {
@@ -195,26 +216,26 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({ tokenAddress }) => {
           error: true,
         };
 
-      /* case isMintLoading:
+      case !isApproveButtonVisible && (isPending || isTransactionLoading):
         return {
           color: theme.colors.info,
           text: statusTexts.MINT_LOADING,
           error: false,
         };
 
-      case isMintFailed:
+      case !isApproveButtonVisible && (isError || isTransactionError):
         return {
           color: theme.colors.error,
           text: statusTexts.MINT_FAILED,
-          error: true,
+          error: false,
         };
 
-      case isMintSuccessful:
+      case !isApproveButtonClicked && isTransactionSuccess:
         return {
           color: theme.colors.success,
           text: statusTexts.MINT_SUCCESSFUL,
           error: false,
-        }; */
+        };
 
       case isTransactionError:
         return {
@@ -226,7 +247,17 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({ tokenAddress }) => {
       default:
         return null;
     }
-  }, [isMaxValueError, isWrongNetwork, isTransactionError]);
+  }, [
+    isWrongNetwork,
+    isMaxValueError,
+    isApproveButtonVisible,
+    isPending,
+    isTransactionLoading,
+    isError,
+    isTransactionError,
+    isApproveButtonClicked,
+    isTransactionSuccess,
+  ]);
 
   const handleConnectButtonClick = useCallback(
     () => connect({ connector: connectors[0] }),
@@ -270,8 +301,8 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({ tokenAddress }) => {
           setCalculatedInputValue={setCalculatedInputValue}
           handleSwitchButtonClick={handleSwitchButtonClick}
           approveToken={approveToken}
-          isApproveSuccess={isApproveSuccess}
-          isApproveLoading={isApproveLoading || isTransactionLoading}
+          isApproveSuccess={isApproveButtonClicked && isTransactionSuccess}
+          isLoading={isPending || isTransactionLoading}
           mintSOFI={mintSOFI}
           isApproveButtonVisible={isApproveButtonVisible}
         />

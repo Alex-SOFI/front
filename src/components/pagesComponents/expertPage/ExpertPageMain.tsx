@@ -62,7 +62,7 @@ interface ExpertPageMainProps {
   handleSwitchButtonClick: (chainId_?: number | undefined) => void;
   approveToken: () => void;
   isApproveSuccess: boolean;
-  isApproveLoading: boolean;
+  isLoading: boolean;
   mintSOFI: () => void;
   isApproveButtonVisible?: boolean;
 }
@@ -83,7 +83,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   handleSwitchButtonClick,
   approveToken,
   isApproveSuccess,
-  isApproveLoading,
+  isLoading,
   mintSOFI,
   isApproveButtonVisible,
 }) => {
@@ -102,7 +102,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
               onClick={approveToken}
               disabled={
                 isMaxValueError ||
-                isApproveLoading ||
+                isLoading ||
                 !activeInputValue ||
                 !calculatedInputValue
               }
@@ -115,9 +115,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
                 <Text color='inherit' fontWeight={500} mr='0.15rem'>
                   Approve {isMintSelected ? 'USDC' : 'SOFI'}
                 </Text>
-                {isApproveLoading && (
-                  <LoadingSpinner position='relative' size='22' />
-                )}
+                {isLoading && <LoadingSpinner position='relative' size='22' />}
               </Box>
             </Button>
           );
@@ -126,10 +124,16 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
             <Button
               onClick={isMintSelected ? mintSOFI : noop}
               disabled={
-                status?.error || !activeInputValue || !calculatedInputValue
+                status?.error ||
+                isLoading ||
+                !activeInputValue ||
+                !calculatedInputValue
               }
             >
-              {isMintSelected ? 'Mint SOFI' : 'Redeem SOFI'}
+              <Text color='inherit' fontWeight={500} mr='0.15rem'>
+                {isMintSelected ? 'Mint SOFI' : 'Redeem SOFI'}
+              </Text>
+              {isLoading && <LoadingSpinner position='relative' size='22' />}
             </Button>
           );
         }
@@ -144,7 +148,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
     isApproveButtonVisible,
     approveToken,
     isMaxValueError,
-    isApproveLoading,
+    isLoading,
     activeInputValue,
     calculatedInputValue,
     isMintSelected,
@@ -229,9 +233,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           value={activeInputValue}
           onChange={handleActiveInputValueChange}
           disabled={
-            !isConnected ||
-            isWrongNetwork ||
-            (isMintSelected && isApproveSuccess)
+            !isConnected || isWrongNetwork || isLoading || isApproveSuccess
           }
         />
       </InputGridBox>
@@ -249,6 +251,9 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         <Box sx={{ gridColumn: 2, width: '6rem' }} />
         <ButtonWithIcon
           onClick={() => setIsMintSelected((prevState) => !prevState)}
+          ariaLabel={
+            isMintSelected ? 'Switch to redeem state' : 'Switch to mint state'
+          }
         >
           <ArrowDownwardIcon aria-label='mint' fontSize='large' />
         </ButtonWithIcon>

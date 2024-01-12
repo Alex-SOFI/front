@@ -13,19 +13,4 @@ export default defineConfig({
       include: ['path', 'util'],
     }),
   ],
-
-  build: {
-    rollupOptions: {
-      // External packages that should not be bundled into your library.
-      external: [
-        'react',
-        'react-dom',
-        'react/jsx-runtime',
-        '@emotion/react',
-        '@emotion/styled',
-        '@mui/material',
-        '@mui/styled-engine-sc',
-      ],
-    },
-  },
 });
