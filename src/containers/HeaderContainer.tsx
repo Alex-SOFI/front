@@ -1,7 +1,7 @@
 import { FunctionComponent, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useConnect, useSwitchNetwork } from 'wagmi';
+import { useConnect, useSwitchChain } from 'wagmi';
 
 import chainIds from 'constants/chainIds';
 
@@ -22,10 +22,11 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
   const { address, isConnected } = useSelector(selectWalletInfo);
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
-  const { switchNetwork } = useSwitchNetwork({
-    throwForSwitchChainNotSupported: true,
-    chainId: chainIds.TESTNET,
-  });
+  const { switchChain } = useSwitchChain();
+
+  const handleSwitchButtonClick = useCallback(() => {
+    switchChain({ chainId: chainIds.TESTNET });
+  }, [switchChain]);
 
   const copyAddress = useCallback(
     () => (address ? copyToClipboard(address) : noop),
@@ -39,7 +40,7 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
       isLinkOnly={isLinkOnly || false}
       isConnected={isConnected}
       address={address}
-      handleSwitchButtonClick={switchNetwork || noop}
+      handleSwitchButtonClick={handleSwitchButtonClick}
       isWrongNetwork={isWrongNetwork}
     />
   );

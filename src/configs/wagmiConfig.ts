@@ -1,26 +1,19 @@
-import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask';
-import { publicProvider } from '@wagmi/core/providers/public';
+import { injected } from '@wagmi/connectors';
 import { polygon, polygonMumbai } from 'viem/chains';
-import { configureChains, createConfig } from 'wagmi';
-
-const { chains, publicClient } = configureChains(
-  [polygon, polygonMumbai],
-  [publicProvider()],
-);
+import { createConfig, http } from 'wagmi';
 
 const wagmiConfig = createConfig({
-  autoConnect: true,
+  chains: [polygon, polygonMumbai],
   connectors: [
-    new MetaMaskConnector({
-      chains,
-      options: {
-        shimDisconnect: true,
-        // eslint-disable-next-line camelcase
-        UNSTABLE_shimOnConnectSelectAccount: true,
-      },
+    injected({
+      target: 'metaMask',
+      shimDisconnect: true,
     }),
   ],
-  publicClient,
+  transports: {
+    [polygon.id]: http(),
+    [polygonMumbai.id]: http(),
+  },
 });
 
 export default wagmiConfig;

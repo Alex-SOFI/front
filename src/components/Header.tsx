@@ -90,6 +90,7 @@ const Header: FunctionComponent<HeaderProps> = ({
                   onClick={disconnect}
                   maxHeight='2.719rem'
                   color='black'
+                  ariaLabel='disconnect'
                 >
                   <LogoutIcon aria-label='disconnect' fontSize='large' />
                 </ButtonWithIcon>

@@ -3,8 +3,9 @@ export const theme = {
     white: '#FFFFFF',
     black: '#000000',
     gray: '#CCCCCC',
-    grayMedium: '#999999',
-    greyDark: '#2B2B2B',
+    /* grayMedium: '#999999', */
+    grayMedium: '#595959',
+    grayDark: '#2B2B2B',
     primary: '#6558F5',
     error: '#D3465C',
     info: '#2C88D9',

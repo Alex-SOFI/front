@@ -6,12 +6,14 @@ interface IconButtonProps extends PropsWithChildren {
   onClick: () => void;
   maxHeight?: string;
   color?: string;
+  ariaLabel: string;
 }
 
 const ButtonWithIcon: FunctionComponent<IconButtonProps> = ({
   onClick,
   maxHeight,
   color,
+  ariaLabel,
   children,
 }) => {
   return (
@@ -20,6 +22,7 @@ const ButtonWithIcon: FunctionComponent<IconButtonProps> = ({
       sx={{ boxShadow: 0 }}
       onClick={onClick}
       size='large'
+      aria-label={ariaLabel}
       style={{
         ...(color ? { color } : {}),
         ...(maxHeight ? { maxHeight, width: maxHeight } : {}),

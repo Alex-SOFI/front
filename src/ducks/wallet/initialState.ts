@@ -3,7 +3,7 @@ import { WalletInfoState } from 'interfaces';
 export const initialState: WalletInfoState = {
   chainId: undefined,
   error: null,
-  address: undefined,
+  address: '0x',
   isConnected: false,
   balance: '0',
   decimals: 0,

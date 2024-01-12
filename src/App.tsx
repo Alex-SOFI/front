@@ -15,15 +15,9 @@ import {
   createRoutesFromElements,
 } from 'react-router-dom';
 
-import {
-  erc20ABI,
-  useAccount,
-  useBalance,
-  useConnect,
-  useContractEvent,
-  /* useContractRead, */
-  useNetwork,
-} from 'wagmi';
+import { formatUnits } from 'ethers';
+import { erc20Abi } from 'viem';
+import { useAccount, useConnect, useReadContracts } from 'wagmi';
 
 import addresses from 'constants/addresses';
 import chainIds from 'constants/chainIds';
@@ -32,72 +26,70 @@ import routes from 'constants/routes';
 import { selectIsWrongNetwork } from 'ducks/wallet';
 import { storeWalletInfo } from 'ducks/wallet/slice';
 
-import { lazyWithRetry } from 'tools';
+import { lazyWithRetry, noop } from 'tools';
 
 import { LoadingSpinner } from 'components/basic';
 
 const ExpertPage = lazyWithRetry(() => import('pages/ExpertPage'));
+
 const App = () => {
-  const { address, isConnected } = useAccount();
-  const { error, isLoading } = useConnect();
-  const { chain } = useNetwork();
+  const { address, isConnected, chain } = useAccount();
+  const { error, isPending: isLoading } = useConnect();
 
   const tokenAddress = useMemo(
     () =>
       chain?.id === chainIds.TESTNET ? addresses.USDC_MUMBAI : addresses.USDC,
     [chain?.id],
   );
-  const { data } = useBalance({
-    address,
-    token: tokenAddress,
+
+  const usdcContract = useMemo(
+    () => ({ address: tokenAddress, abi: erc20Abi }),
+    [tokenAddress],
+  );
+
+  const balance = useReadContracts({
+    allowFailure: false,
+    contracts: [
+      {
+        ...usdcContract,
+        functionName: 'balanceOf',
+        args: [address || '0x'],
+      },
+      {
+        ...usdcContract,
+        functionName: 'decimals',
+      },
+      {
+        ...usdcContract,
+        functionName: 'symbol',
+      },
+    ],
   });
 
   const dispatch = useDispatch();
 
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
-  /* const [owner, setOwner] = useState<`0x${string}`>('' as `0x${string}`);
-  const [spender, setSpender] = useState<`0x${string}`>('' as `0x${string}`); */
-
-  const unwatch = useContractEvent({
-    address: tokenAddress,
-    abi: erc20ABI,
-    eventName: 'Approval',
-    listener(log) {
-      // eslint-disable-next-line no-console
-      console.log(log);
-      /* setOwner(log[0]?.args.owner as `0x${string}`);
-      setSpender(log[0]?.args.spender as `0x${string}`); */
-    },
-  });
-
-  /* const allowance = useContractRead({
-    address: addresses.USDC,
-    abi: erc20ABI,
-    functionName: 'allowance',
-    args: [owner, spender],
-  }); */
-
-  useEffect(() => {
-    return () => unwatch?.();
-  }, [unwatch]);
-
   useEffect(() => {
     dispatch(
       storeWalletInfo({
-        address,
+        address: address || '0x',
         isConnected,
         error,
         chainId: chain?.id,
-        balance: !isConnected || isWrongNetwork ? '0' : data?.formatted || '0',
-        decimals: isWrongNetwork ? 0 : data?.decimals || 0,
+        balance:
+          !isConnected || isWrongNetwork
+            ? '0'
+            : balance?.data
+              ? formatUnits(balance?.data?.[0], balance?.data?.[1])
+              : '0',
+        decimals: isWrongNetwork ? 0 : balance?.data?.[1] || 0,
       }),
     );
   }, [
     address,
+    balance?.data,
     chain?.id,
-    data?.decimals,
-    data?.formatted,
     dispatch,
     error,
     isConnected,
@@ -122,7 +114,12 @@ const App = () => {
       <Route
         key={routes.EXPERT}
         path={routes.EXPERT}
-        element={elementWithSuspense(<ExpertPage />)}
+        element={elementWithSuspense(
+          <ExpertPage
+            tokenAddress={tokenAddress}
+            refetchBalance={balance?.refetch || noop}
+          />,
+        )}
       />,
       <Route
         key='*'

@@ -8,7 +8,6 @@ import {
 
 import styled from '@emotion/styled';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import Box from '@mui/material/Box';
 import { PUBLIC_URL } from 'config';
 
@@ -17,6 +16,7 @@ import { noop } from 'tools';
 import {
   Button,
   ButtonWithIcon,
+  LoadingSpinner,
   Picture,
   Text,
   TextInput,
@@ -55,14 +55,16 @@ interface ExpertPageMainProps {
   isMaxValueError: boolean;
   isMintSelected: boolean;
   setIsMintSelected: Dispatch<SetStateAction<boolean>>;
-  USDCInputValue: string;
-  handleUSDCInputValueChange: ChangeEventHandler<HTMLInputElement>;
-  SOFIInputValue: string | number;
-  setSOFIInputValue: Dispatch<SetStateAction<string | number>>;
+  activeInputValue: string;
+  handleActiveInputValueChange: ChangeEventHandler<HTMLInputElement>;
+  calculatedInputValue: string;
+  setCalculatedInputValue: Dispatch<SetStateAction<string>>;
   handleSwitchButtonClick: (chainId_?: number | undefined) => void;
   approveToken: () => void;
   isApproveSuccess: boolean;
-  isApproveLoading: boolean;
+  isLoading: boolean;
+  mintSOFI: () => void;
+  isApproveButtonVisible?: boolean;
 }
 
 const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
@@ -74,14 +76,16 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   isMaxValueError,
   isMintSelected,
   setIsMintSelected,
-  USDCInputValue,
-  handleUSDCInputValueChange,
-  SOFIInputValue,
-  setSOFIInputValue,
+  activeInputValue,
+  handleActiveInputValueChange,
+  calculatedInputValue,
+  setCalculatedInputValue,
   handleSwitchButtonClick,
   approveToken,
   isApproveSuccess,
-  isApproveLoading,
+  isLoading,
+  mintSOFI,
+  isApproveButtonVisible,
 }) => {
   const renderButton = useMemo(() => {
     if (isConnected) {
@@ -92,27 +96,44 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           </Button>
         );
       } else {
-        if (USDCInputValue && SOFIInputValue && !isApproveSuccess) {
+        if (isApproveButtonVisible) {
           return (
             <Button
               onClick={approveToken}
               disabled={
                 isMaxValueError ||
-                isApproveLoading ||
-                !USDCInputValue ||
-                !SOFIInputValue
+                isLoading ||
+                !activeInputValue ||
+                !calculatedInputValue
               }
             >
-              Approve {isMintSelected ? 'USDC' : 'SOFI'}
+              <Box
+                display='flex'
+                justifyContent='space-between'
+                alignItems='center'
+              >
+                <Text color='inherit' fontWeight={500} mr='0.15rem'>
+                  Approve {isMintSelected ? 'USDC' : 'SOFI'}
+                </Text>
+                {isLoading && <LoadingSpinner position='relative' size='22' />}
+              </Box>
             </Button>
           );
         } else {
           return (
             <Button
-              onClick={noop}
-              disabled={status?.error || !USDCInputValue || !SOFIInputValue}
+              onClick={isMintSelected ? mintSOFI : noop}
+              disabled={
+                status?.error ||
+                isLoading ||
+                !activeInputValue ||
+                !calculatedInputValue
+              }
             >
-              {isMintSelected ? 'Mint SOFI' : 'Redeem SOFI'}
+              <Text color='inherit' fontWeight={500} mr='0.15rem'>
+                {isMintSelected ? 'Mint SOFI' : 'Redeem SOFI'}
+              </Text>
+              {isLoading && <LoadingSpinner position='relative' size='22' />}
             </Button>
           );
         }
@@ -121,19 +142,44 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
       return <Button onClick={handleConnectButtonClick}>Connect Wallet</Button>;
     }
   }, [
-    SOFIInputValue,
-    USDCInputValue,
-    approveToken,
-    handleConnectButtonClick,
-    handleSwitchButtonClick,
-    isApproveLoading,
-    isApproveSuccess,
     isConnected,
-    isMaxValueError,
-    isMintSelected,
     isWrongNetwork,
+    handleSwitchButtonClick,
+    isApproveButtonVisible,
+    approveToken,
+    isMaxValueError,
+    isLoading,
+    activeInputValue,
+    calculatedInputValue,
+    isMintSelected,
+    mintSOFI,
     status?.error,
+    handleConnectButtonClick,
   ]);
+
+  const USDC = useMemo(
+    () => (
+      <>
+        <Picture src={`${PUBLIC_URL}/icons/logo_usdc.png`} alt='USDC logo' />
+        <Text pl='0.5rem' pr='1rem' variant='body1'>
+          USDC
+        </Text>
+      </>
+    ),
+    [],
+  );
+
+  const SOFI = useMemo(
+    () => (
+      <>
+        <Picture src={`${PUBLIC_URL}/icons/logo_sofi.webp`} alt='SOFI logo' />
+        <Text pl='0.5rem' pr='1rem' variant='body1'>
+          SOFI
+        </Text>
+      </>
+    ),
+    [],
+  );
 
   return (
     <Box
@@ -180,19 +226,14 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
             width: '6rem',
           }}
         >
-          <Picture src={`${PUBLIC_URL}/icons/logo_usdc.png`} alt='USDC logo' />
-          <Text pl='0.5rem' pr='1rem' variant='body1'>
-            USDC
-          </Text>
+          {isMintSelected ? USDC : SOFI}
         </Box>
         <TextInput
           placeholder='0'
-          value={USDCInputValue}
-          onChange={handleUSDCInputValueChange}
+          value={activeInputValue}
+          onChange={handleActiveInputValueChange}
           disabled={
-            !isConnected ||
-            isWrongNetwork ||
-            (isMintSelected && isApproveSuccess)
+            !isConnected || isWrongNetwork || isLoading || isApproveSuccess
           }
         />
       </InputGridBox>
@@ -210,12 +251,11 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         <Box sx={{ gridColumn: 2, width: '6rem' }} />
         <ButtonWithIcon
           onClick={() => setIsMintSelected((prevState) => !prevState)}
+          ariaLabel={
+            isMintSelected ? 'Switch to redeem state' : 'Switch to mint state'
+          }
         >
-          {isMintSelected ? (
-            <ArrowDownwardIcon aria-label='mint' fontSize='large' />
-          ) : (
-            <ArrowUpwardIcon aria-label='redeem' fontSize='large' />
-          )}
+          <ArrowDownwardIcon aria-label='mint' fontSize='large' />
         </ButtonWithIcon>
       </InputGridBox>
       <InputGridBox mb='1rem'>
@@ -227,16 +267,13 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
             width: '6rem',
           }}
         >
-          <Picture src={`${PUBLIC_URL}/icons/logo_sofi.webp`} alt='SOFI logo' />
-          <Text pl='0.5rem' pr='1rem' variant='body1'>
-            SOFI
-          </Text>
+          {isMintSelected ? SOFI : USDC}
         </Box>
 
         <TextInput
           placeholder='0'
-          value={SOFIInputValue}
-          onChange={(e) => setSOFIInputValue(e.target.value)}
+          value={calculatedInputValue}
+          onChange={(e) => setCalculatedInputValue(e.target.value)}
           disabled={!isConnected || isWrongNetwork}
           readOnly
         />

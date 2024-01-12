@@ -1,7 +1,9 @@
+import { Address } from 'viem';
+
 interface WalletInfoState {
   chainId: number | undefined;
   error: Error | null;
-  address: `0x${string}` | undefined;
+  address: Address;
   isConnected: boolean;
   balance: string;
   decimals: number;
