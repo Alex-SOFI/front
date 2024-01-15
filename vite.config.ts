@@ -13,4 +13,7 @@ export default defineConfig({
       include: ['path', 'util'],
     }),
   ],
+  build: {
+    outDir: 'release',
+  },
 });
