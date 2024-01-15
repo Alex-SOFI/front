@@ -23,7 +23,7 @@ import addresses from 'constants/addresses';
 import chainIds from 'constants/chainIds';
 import routes from 'constants/routes';
 
-import { selectIsWrongNetwork } from 'ducks/wallet';
+import { selectIsMintSelected, selectIsWrongNetwork } from 'ducks/wallet';
 import { storeWalletInfo } from 'ducks/wallet/slice';
 
 import { lazyWithRetry, noop } from 'tools';
@@ -33,6 +33,8 @@ import { LoadingSpinner } from 'components/basic';
 const ExpertPage = lazyWithRetry(() => import('pages/ExpertPage'));
 
 const App = () => {
+  const isMintSelected = !!useSelector(selectIsMintSelected);
+
   const { address, isConnected, chain } = useAccount();
   const { error, isPending: isLoading } = useConnect();
 
@@ -42,25 +44,28 @@ const App = () => {
     [chain?.id],
   );
 
-  const usdcContract = useMemo(
-    () => ({ address: tokenAddress, abi: erc20Abi }),
-    [tokenAddress],
+  const contract = useMemo(
+    () => ({
+      address: isMintSelected ? tokenAddress : addresses.SOFI_TOKEN,
+      abi: erc20Abi,
+    }),
+    [isMintSelected, tokenAddress],
   );
 
   const balance = useReadContracts({
     allowFailure: false,
     contracts: [
       {
-        ...usdcContract,
+        ...contract,
         functionName: 'balanceOf',
         args: [address || '0x'],
       },
       {
-        ...usdcContract,
+        ...contract,
         functionName: 'decimals',
       },
       {
-        ...usdcContract,
+        ...contract,
         functionName: 'symbol',
       },
     ],

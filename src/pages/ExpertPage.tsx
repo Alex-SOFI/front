@@ -6,7 +6,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import { formatUnits, parseUnits } from 'ethers';
@@ -25,11 +25,15 @@ import wagmiConfig from 'configs/wagmiConfig';
 import addresses from 'constants/addresses';
 import chainIds from 'constants/chainIds';
 import SOFIabi from 'constants/sofiAbi';
-import statusTexts from 'constants/statusTexts';
 
-import { selectIsWrongNetwork, selectWalletInfo } from 'ducks/wallet';
+import {
+  selectIsMintSelected,
+  selectIsWrongNetwork,
+  selectWalletInfo,
+} from 'ducks/wallet';
+import { changeMintState } from 'ducks/wallet/slice';
 
-import { formatBalance } from 'tools';
+import { formatBalance, status } from 'tools';
 
 import {
   ExpertPageLinksBlock,
@@ -37,8 +41,6 @@ import {
 } from 'components/pagesComponents/expertPage';
 
 import { Layout } from 'components';
-
-import { theme } from 'styles/theme';
 
 interface ExpertPageProps {
   tokenAddress: Address;
@@ -53,7 +55,16 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
   tokenAddress,
   refetchBalance,
 }) => {
-  const [isMintSelected, setIsMintSelected] = useState<boolean>(true);
+  const dispatch = useDispatch();
+
+  const isMintSelected = !!useSelector(selectIsMintSelected);
+  const setIsMintSelected = useCallback(
+    (state: boolean) => {
+      dispatch(changeMintState(state));
+    },
+    [dispatch],
+  );
+
   const [activeInputValue, setActiveInputValue] = useState<string>('');
   const [calculatedInputValue, setCalculatedInputValue] = useState<string>('');
 
@@ -74,8 +85,19 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
   const [isApproveButtonClicked, setIsApproveButtonClicked] =
     useState<boolean>(false);
 
+  const [resetStatus, setResetStatus] = useState<boolean>(false);
+
   const {
-    /* data: transactionData, */
+    isPending,
+    writeContract,
+    writeContractAsync,
+    isSuccess,
+    isError,
+    data,
+    reset,
+  } = useWriteContract();
+
+  const {
     isLoading: isTransactionLoading,
     isError: isTransactionError,
     isSuccess: isTransactionSuccess,
@@ -83,11 +105,21 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     hash,
   });
 
+  const success = useMemo(
+    () => isSuccess && isTransactionSuccess,
+    [isSuccess, isTransactionSuccess],
+  );
+
+  const error = useMemo(
+    () => isError || isTransactionError,
+    [isError, isTransactionError],
+  );
+
   useEffect(() => {
-    if (isTransactionSuccess) {
+    if (success) {
       refetchBalance();
     }
-  }, [isTransactionSuccess, refetchBalance]);
+  }, [success, refetchBalance]);
 
   const { data: allowance, refetch: refetchAllowance } = useReadContract({
     address: tokenAddress,
@@ -107,7 +139,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     if (allowance === 0n) {
       setIsApproveButtonVisible(true);
     }
-    if (isApproveButtonClicked && isTransactionSuccess) {
+    if (success) {
       refetchAllowance();
       setIsApproveButtonVisible(false);
     }
@@ -117,19 +149,10 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     activeInputValue,
     decimals,
     allowance,
-    isTransactionSuccess,
     refetchAllowance,
     isApproveButtonClicked,
+    success,
   ]);
-
-  const {
-    isPending,
-    /* isSuccess, */
-    writeContract,
-    writeContractAsync,
-    isError,
-    data,
-  } = useWriteContract();
 
   const activeValue = useMemo(
     () => (activeInputValue === '.' ? '0' : activeInputValue),
@@ -164,8 +187,9 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
   );
 
   useEffect(() => {
-    const timeOutId = setTimeout(async () => {
+    const timeoutId = setTimeout(async () => {
       if (!isMaxValueError && activeValue) {
+        setResetStatus(false);
         const SOFIValue = await estimateMint(activeValue);
 
         setCalculatedInputValue(formatUnits(SOFIValue, decimals));
@@ -173,7 +197,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
         setCalculatedInputValue('');
       }
     }, 200);
-    return () => clearTimeout(timeOutId);
+    return () => clearTimeout(timeoutId);
   }, [activeValue, estimateMint, decimals, balance, isMaxValueError]);
 
   const approveToken = useCallback(async () => {
@@ -188,7 +212,8 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     }
   }, [activeValue, address, decimals, tokenAddress, writeContract]);
 
-  const mintSOFI = useCallback(async () => {
+  const mint = useCallback(async () => {
+    setHash(undefined);
     if (address && calculatedInputValue) {
       setIsApproveButtonClicked(false);
       await writeContractAsync({
@@ -200,65 +225,34 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     }
   }, [address, calculatedInputValue, writeContractAsync, decimals]);
 
-  const status = useMemo(() => {
-    switch (true) {
-      case isWrongNetwork:
-        return {
-          color: theme.colors.error,
-          text: statusTexts.UNSUPPORTED_NETWORK,
-          error: true,
-        };
-
-      case isMaxValueError:
-        return {
-          color: theme.colors.error,
-          text: statusTexts.MAX_VALUE,
-          error: true,
-        };
-
-      case !isApproveButtonVisible && (isPending || isTransactionLoading):
-        return {
-          color: theme.colors.info,
-          text: statusTexts.MINT_LOADING,
-          error: false,
-        };
-
-      case !isApproveButtonVisible && (isError || isTransactionError):
-        return {
-          color: theme.colors.error,
-          text: statusTexts.MINT_FAILED,
-          error: false,
-        };
-
-      case !isApproveButtonClicked && isTransactionSuccess:
-        setCalculatedInputValue('');
-        return {
-          color: theme.colors.success,
-          text: statusTexts.MINT_SUCCESSFUL,
-          error: false,
-        };
-
-      case isTransactionError:
-        return {
-          color: theme.colors.error,
-          text: statusTexts.TRANSACTION_ERROR,
-          error: true,
-        };
-
-      default:
-        return null;
-    }
-  }, [
-    isWrongNetwork,
-    isMaxValueError,
-    isApproveButtonVisible,
-    isPending,
-    isTransactionLoading,
-    isError,
-    isTransactionError,
-    isApproveButtonClicked,
-    isTransactionSuccess,
-  ]);
+  const transactionStatus = useMemo(
+    () =>
+      status({
+        isWrongNetwork,
+        isMaxValueError,
+        isApproveButtonVisible,
+        isPending,
+        isTransactionLoading,
+        isApproveButtonClicked,
+        setActiveInputValue,
+        error,
+        success,
+        isTransactionError,
+        resetStatus,
+      }),
+    [
+      isWrongNetwork,
+      isMaxValueError,
+      isApproveButtonVisible,
+      isPending,
+      isTransactionLoading,
+      isApproveButtonClicked,
+      error,
+      success,
+      isTransactionError,
+      resetStatus,
+    ],
+  );
 
   const handleConnectButtonClick = useCallback(
     () => connect({ connector: connectors[0] }),
@@ -267,6 +261,11 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
 
   const handleActiveInputValueChange = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
+      setResetStatus(true);
+      setHash(undefined);
+      if (transactionStatus !== null) {
+        reset();
+      }
       if (
         (event.target.value.length === 1 && event.target.value === '.') ||
         (!isNaN(Number(event.target.value)) && Number(event.target.value) >= 0)
@@ -277,7 +276,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
         }
       }
     },
-    [decimals],
+    [decimals, reset, transactionStatus],
   );
 
   const handleSwitchButtonClick = useCallback(() => {
@@ -292,7 +291,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
           balance={formatBalance(balance, 3)}
           isWrongNetwork={isWrongNetwork}
           isMaxValueError={isMaxValueError}
-          status={status}
+          status={transactionStatus}
           handleConnectButtonClick={handleConnectButtonClick}
           isMintSelected={isMintSelected}
           setIsMintSelected={setIsMintSelected}
@@ -302,9 +301,9 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
           setCalculatedInputValue={setCalculatedInputValue}
           handleSwitchButtonClick={handleSwitchButtonClick}
           approveToken={approveToken}
-          isApproveSuccess={isApproveButtonClicked && isTransactionSuccess}
+          isApproveSuccess={isApproveButtonClicked && success}
           isLoading={isPending || isTransactionLoading}
-          mintSOFI={mintSOFI}
+          mint={mint}
           isApproveButtonVisible={isApproveButtonVisible}
         />
       }

@@ -19,11 +19,14 @@ export const walletSlice = createSlice({
       state.balance = payload.balance;
       state.decimals = payload.decimals;
     },
+    changeMintState(state, { payload }: { payload: boolean }) {
+      state.isMintSelected = payload;
+    },
   },
 });
 
 const { actions, reducer } = walletSlice;
 
-export const { storeWalletInfo } = actions;
+export const { storeWalletInfo, changeMintState } = actions;
 
 export default reducer;

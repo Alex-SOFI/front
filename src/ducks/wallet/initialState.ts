@@ -7,4 +7,5 @@ export const initialState: WalletInfoState = {
   isConnected: false,
   balance: '0',
   decimals: 0,
+  isMintSelected: true,
 };
