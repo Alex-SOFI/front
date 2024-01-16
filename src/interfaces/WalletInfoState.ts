@@ -7,6 +7,7 @@ interface WalletInfoState {
   isConnected: boolean;
   balance: string;
   decimals: number;
+  isMintSelected?: boolean;
 }
 
 export default WalletInfoState;

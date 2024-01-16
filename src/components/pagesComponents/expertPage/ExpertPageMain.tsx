@@ -11,8 +11,6 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import Box from '@mui/material/Box';
 import { PUBLIC_URL } from 'config';
 
-import { noop } from 'tools';
-
 import {
   Button,
   ButtonWithIcon,
@@ -54,7 +52,7 @@ interface ExpertPageMainProps {
   isWrongNetwork: boolean;
   isMaxValueError: boolean;
   isMintSelected: boolean;
-  setIsMintSelected: Dispatch<SetStateAction<boolean>>;
+  setIsMintSelected: (state: boolean) => void;
   activeInputValue: string;
   handleActiveInputValueChange: ChangeEventHandler<HTMLInputElement>;
   calculatedInputValue: string;
@@ -63,7 +61,7 @@ interface ExpertPageMainProps {
   approveToken: () => void;
   isApproveSuccess: boolean;
   isLoading: boolean;
-  mintSOFI: () => void;
+  mint: () => void;
   isApproveButtonVisible?: boolean;
 }
 
@@ -84,7 +82,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   approveToken,
   isApproveSuccess,
   isLoading,
-  mintSOFI,
+  mint,
   isApproveButtonVisible,
 }) => {
   const renderButton = useMemo(() => {
@@ -122,7 +120,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         } else {
           return (
             <Button
-              onClick={isMintSelected ? mintSOFI : noop}
+              onClick={mint}
               disabled={
                 status?.error ||
                 isLoading ||
@@ -152,7 +150,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
     activeInputValue,
     calculatedInputValue,
     isMintSelected,
-    mintSOFI,
+    mint,
     status?.error,
     handleConnectButtonClick,
   ]);
@@ -250,7 +248,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
       <InputGridBox mb='1rem' justifyItems='center'>
         <Box sx={{ gridColumn: 2, width: '6rem' }} />
         <ButtonWithIcon
-          onClick={() => setIsMintSelected((prevState) => !prevState)}
+          onClick={() => setIsMintSelected(!isMintSelected)}
           ariaLabel={
             isMintSelected ? 'Switch to redeem state' : 'Switch to mint state'
           }
