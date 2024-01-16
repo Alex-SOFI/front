@@ -38,18 +38,22 @@ const App = () => {
   const { address, isConnected, chain } = useAccount();
   const { error, isPending: isLoading } = useConnect();
 
-  const tokenAddress = useMemo(
-    () =>
-      chain?.id === chainIds.TESTNET ? addresses.USDC_MUMBAI : addresses.USDC,
-    [chain?.id],
-  );
+  const tokenAddress = useMemo(() => {
+    if (isMintSelected) {
+      return chain?.id === chainIds.TESTNET
+        ? addresses.USDC_MUMBAI
+        : addresses.USDC;
+    } else {
+      return addresses.SOFI_TOKEN;
+    }
+  }, [chain?.id, isMintSelected]);
 
   const contract = useMemo(
     () => ({
-      address: isMintSelected ? tokenAddress : addresses.SOFI_TOKEN,
+      address: tokenAddress,
       abi: erc20Abi,
     }),
-    [isMintSelected, tokenAddress],
+    [tokenAddress],
   );
 
   const balance = useReadContracts({

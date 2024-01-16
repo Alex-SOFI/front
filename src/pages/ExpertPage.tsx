@@ -136,6 +136,9 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
         setIsApproveButtonVisible(false);
       }
     }
+    if (!allowance) {
+      setIsApproveButtonVisible(true);
+    }
     if (allowance === 0n) {
       setIsApproveButtonVisible(true);
     }
@@ -239,6 +242,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
         success,
         isTransactionError,
         resetStatus,
+        isMintSelected,
       }),
     [
       isWrongNetwork,
@@ -251,6 +255,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
       success,
       isTransactionError,
       resetStatus,
+      isMintSelected,
     ],
   );
 

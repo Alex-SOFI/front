@@ -16,6 +16,7 @@ interface Status {
   success: boolean;
   isTransactionError: boolean;
   resetStatus: boolean;
+  isMintSelected: boolean;
 }
 
 const status = ({
@@ -30,6 +31,7 @@ const status = ({
   success,
   isTransactionError,
   resetStatus,
+  isMintSelected,
 }: Status) => {
   switch (true) {
     case isWrongNetwork:
@@ -42,21 +44,27 @@ const status = ({
     case isMaxValueError:
       return {
         color: theme.colors.error,
-        text: statusTexts.MAX_VALUE,
+        text: isMintSelected
+          ? statusTexts.MAX_USDC_VALUE
+          : statusTexts.MAX_SOFI_VALUE,
         error: true,
       };
 
     case !isApproveButtonVisible && (isPending || isTransactionLoading):
       return {
         color: theme.colors.info,
-        text: statusTexts.MINT_LOADING,
+        text: isMintSelected
+          ? statusTexts.MINT_LOADING
+          : statusTexts.REDEEM_LOADING,
         error: false,
       };
 
     case !isApproveButtonVisible && error:
       return {
         color: theme.colors.error,
-        text: statusTexts.MINT_FAILED,
+        text: isMintSelected
+          ? statusTexts.MINT_FAILED
+          : statusTexts.REDEEM_FAILED,
         error: false,
       };
 
@@ -64,7 +72,9 @@ const status = ({
       setActiveInputValue('');
       return {
         color: theme.colors.success,
-        text: statusTexts.MINT_SUCCESSFUL,
+        text: isMintSelected
+          ? statusTexts.MINT_SUCCESSFUL
+          : statusTexts.REDEEM_SUCCESSFUL,
         error: false,
       };
 
