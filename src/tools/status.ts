@@ -15,8 +15,8 @@ interface Status {
   setActiveInputValue: Dispatch<SetStateAction<string>>;
   success: boolean;
   isTransactionError: boolean;
-  resetStatus: boolean;
   isMintSelected: boolean;
+  isSwitchStateButtonClicked: boolean;
 }
 
 const status = ({
@@ -30,10 +30,13 @@ const status = ({
   setActiveInputValue,
   success,
   isTransactionError,
-  resetStatus,
   isMintSelected,
+  isSwitchStateButtonClicked,
 }: Status) => {
   switch (true) {
+    case isSwitchStateButtonClicked:
+      return null;
+
     case isWrongNetwork:
       return {
         color: theme.colors.error,
@@ -85,7 +88,6 @@ const status = ({
         error: true,
       };
 
-    case resetStatus:
     default:
       return null;
   }

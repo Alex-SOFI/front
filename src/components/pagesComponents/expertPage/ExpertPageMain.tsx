@@ -63,6 +63,7 @@ interface ExpertPageMainProps {
   isLoading: boolean;
   mint: () => void;
   isApproveButtonVisible?: boolean;
+  setIsSwitchStateButtonClicked: Dispatch<SetStateAction<boolean>>;
 }
 
 const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
@@ -84,6 +85,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   isLoading,
   mint,
   isApproveButtonVisible,
+  setIsSwitchStateButtonClicked,
 }) => {
   const renderButton = useMemo(() => {
     if (isConnected) {
@@ -202,14 +204,20 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
       >
         <Button
           isPrimaryColor={isMintSelected}
-          onClick={() => setIsMintSelected(true)}
+          onClick={() => {
+            setIsSwitchStateButtonClicked(true);
+            setIsMintSelected(true);
+          }}
           variant='text'
         >
           Mint
         </Button>
         <Button
           isPrimaryColor={!isMintSelected}
-          onClick={() => setIsMintSelected(false)}
+          onClick={() => {
+            setIsSwitchStateButtonClicked(true);
+            setIsMintSelected(false);
+          }}
           variant='text'
         >
           Redeem
@@ -248,7 +256,10 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
       <InputGridBox mb='1rem' justifyItems='center'>
         <Box sx={{ gridColumn: 2, width: '6rem' }} />
         <ButtonWithIcon
-          onClick={() => setIsMintSelected(!isMintSelected)}
+          onClick={() => {
+            setIsSwitchStateButtonClicked(true);
+            setIsMintSelected(!isMintSelected);
+          }}
           ariaLabel={
             isMintSelected ? 'Switch to redeem state' : 'Switch to mint state'
           }
