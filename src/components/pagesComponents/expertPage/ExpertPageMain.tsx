@@ -199,7 +199,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
           width: '100%',
-          marginBottom: '5rem',
+          marginBottom: 'clamp(1rem, 8dvh, 5rem)',
         }}
       >
         <Button
@@ -287,7 +287,11 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           readOnly
         />
       </InputGridBox>
-      <Text variant='body2' color={theme.colors.grayMedium} mb='2rem'>
+      <Text
+        variant='body2'
+        color={theme.colors.grayMedium}
+        mb='clamp(1rem, 3.2dvh, 2rem)'
+      >
         Fees | 0.00%
       </Text>
 
@@ -297,7 +301,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           gridTemplateColumns: '0.25fr 3.25fr',
           width: '100%',
           lineHeight: '1.2em',
-          minHeight: '4em',
+          minHeight: 'clamp(2rem, 6.4dvh, 4rem)',
         }}
       >
         {status && (
