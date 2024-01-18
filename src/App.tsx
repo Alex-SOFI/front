@@ -4,7 +4,6 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
-  /* useState, */
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -16,11 +15,11 @@ import {
 } from 'react-router-dom';
 
 import { formatUnits } from 'ethers';
-import { erc20Abi } from 'viem';
 import { useAccount, useConnect, useReadContracts } from 'wagmi';
 
 import addresses from 'constants/addresses';
 import chainIds from 'constants/chainIds';
+import { tokenContract } from 'constants/contracts';
 import routes from 'constants/routes';
 
 import { selectIsMintSelected, selectIsWrongNetwork } from 'ducks/wallet';
@@ -48,28 +47,20 @@ const App = () => {
     }
   }, [chain?.id, isMintSelected]);
 
-  const contract = useMemo(
-    () => ({
-      address: tokenAddress,
-      abi: erc20Abi,
-    }),
-    [tokenAddress],
-  );
-
   const balance = useReadContracts({
     allowFailure: false,
     contracts: [
       {
-        ...contract,
+        ...tokenContract(tokenAddress),
         functionName: 'balanceOf',
         args: [address || '0x'],
       },
       {
-        ...contract,
+        ...tokenContract(tokenAddress),
         functionName: 'decimals',
       },
       {
-        ...contract,
+        ...tokenContract(tokenAddress),
         functionName: 'symbol',
       },
     ],

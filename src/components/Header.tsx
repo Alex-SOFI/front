@@ -10,12 +10,17 @@ import { useDisconnect } from 'wagmi';
 import { Button, ButtonWithIcon, Link, Picture, Text } from 'components/basic';
 
 import { muiTheme } from 'styles/globalStyle';
+import { theme } from 'styles/theme';
 
 const StyledHeader = styled.header`
   display: flex;
   justify-content: space-between;
   margin-bottom: 5rem;
   padding: ${muiTheme.spacing(1)};
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    margin-bottom: clamp(1rem, 3.2dvh, 5rem);
+  }
 `;
 
 interface HeaderProps {

@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import { formatUnits, parseUnits } from 'ethers';
-import { Address, erc20Abi } from 'viem';
+import { Address } from 'viem';
 import {
   useConnect,
   useReadContract,
@@ -24,7 +24,7 @@ import wagmiConfig from 'configs/wagmiConfig';
 
 import addresses from 'constants/addresses';
 import chainIds from 'constants/chainIds';
-import SOFIabi from 'constants/sofiAbi';
+import { tokenContract, tokenManagerContract } from 'constants/contracts';
 
 import {
   selectIsMintSelected,
@@ -84,8 +84,8 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     useState<boolean>(false);
   const [isApproveButtonClicked, setIsApproveButtonClicked] =
     useState<boolean>(false);
-
-  const [resetStatus, setResetStatus] = useState<boolean>(false);
+  const [isSwitchStateButtonClicked, setIsSwitchStateButtonClicked] =
+    useState<boolean>(false);
 
   const {
     isPending,
@@ -122,8 +122,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
   }, [success, refetchBalance]);
 
   const { data: allowance, refetch: refetchAllowance } = useReadContract({
-    address: tokenAddress,
-    abi: erc20Abi,
+    ...tokenContract(tokenAddress),
     functionName: 'allowance',
     args: [address, addresses.TOKEN_MANAGER],
   });
@@ -179,8 +178,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
   const estimateMint = useCallback(
     async (value: string) => {
       const data = await readContract(wagmiConfig, {
-        address: addresses.TOKEN_MANAGER,
-        abi: SOFIabi,
+        ...tokenManagerContract,
         functionName: 'estimateMint',
         args: [parseUnits(value, decimals)],
       });
@@ -192,7 +190,6 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
   useEffect(() => {
     const timeoutId = setTimeout(async () => {
       if (!isMaxValueError && activeValue) {
-        setResetStatus(false);
         const SOFIValue = await estimateMint(activeValue);
 
         setCalculatedInputValue(formatUnits(SOFIValue, decimals));
@@ -203,30 +200,38 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     return () => clearTimeout(timeoutId);
   }, [activeValue, estimateMint, decimals, balance, isMaxValueError]);
 
-  const approveToken = useCallback(async () => {
+  const approveToken = useCallback(() => {
     if (address) {
+      setIsSwitchStateButtonClicked(false);
       setIsApproveButtonClicked(true);
       writeContract({
-        address: tokenAddress,
-        abi: erc20Abi,
+        ...tokenContract(tokenAddress),
         functionName: 'approve',
         args: [addresses.TOKEN_MANAGER, parseUnits(activeValue, decimals)],
       });
     }
   }, [activeValue, address, decimals, tokenAddress, writeContract]);
 
-  const mint = useCallback(async () => {
+  const mintOrRedeem = useCallback(async () => {
+    setIsSwitchStateButtonClicked(false);
     setHash(undefined);
     if (address && calculatedInputValue) {
       setIsApproveButtonClicked(false);
       await writeContractAsync({
-        address: addresses.TOKEN_MANAGER,
-        abi: SOFIabi,
-        functionName: 'mint',
-        args: [parseUnits(calculatedInputValue, decimals)],
+        ...tokenManagerContract,
+        functionName: isMintSelected ? 'mint' : 'redeem',
+        args: isMintSelected
+          ? [parseUnits(calculatedInputValue, decimals)]
+          : [], // temporary
       });
     }
-  }, [address, calculatedInputValue, writeContractAsync, decimals]);
+  }, [
+    address,
+    calculatedInputValue,
+    writeContractAsync,
+    isMintSelected,
+    decimals,
+  ]);
 
   const transactionStatus = useMemo(
     () =>
@@ -241,8 +246,8 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
         error,
         success,
         isTransactionError,
-        resetStatus,
         isMintSelected,
+        isSwitchStateButtonClicked,
       }),
     [
       isWrongNetwork,
@@ -254,8 +259,8 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
       error,
       success,
       isTransactionError,
-      resetStatus,
       isMintSelected,
+      isSwitchStateButtonClicked,
     ],
   );
 
@@ -266,7 +271,6 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
 
   const handleActiveInputValueChange = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
-      setResetStatus(true);
       setHash(undefined);
       if (transactionStatus !== null) {
         reset();
@@ -308,8 +312,9 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
           approveToken={approveToken}
           isApproveSuccess={isApproveButtonClicked && success}
           isLoading={isPending || isTransactionLoading}
-          mint={mint}
+          mint={mintOrRedeem}
           isApproveButtonVisible={isApproveButtonVisible}
+          setIsSwitchStateButtonClicked={setIsSwitchStateButtonClicked}
         />
       }
       footer={<ExpertPageLinksBlock />}

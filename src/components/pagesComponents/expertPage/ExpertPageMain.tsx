@@ -63,6 +63,7 @@ interface ExpertPageMainProps {
   isLoading: boolean;
   mint: () => void;
   isApproveButtonVisible?: boolean;
+  setIsSwitchStateButtonClicked: Dispatch<SetStateAction<boolean>>;
 }
 
 const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
@@ -84,6 +85,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   isLoading,
   mint,
   isApproveButtonVisible,
+  setIsSwitchStateButtonClicked,
 }) => {
   const renderButton = useMemo(() => {
     if (isConnected) {
@@ -197,19 +199,25 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
           width: '100%',
-          marginBottom: '5rem',
+          marginBottom: 'clamp(1rem, 8dvh, 5rem)',
         }}
       >
         <Button
           isPrimaryColor={isMintSelected}
-          onClick={() => setIsMintSelected(true)}
+          onClick={() => {
+            setIsSwitchStateButtonClicked(true);
+            setIsMintSelected(true);
+          }}
           variant='text'
         >
           Mint
         </Button>
         <Button
           isPrimaryColor={!isMintSelected}
-          onClick={() => setIsMintSelected(false)}
+          onClick={() => {
+            setIsSwitchStateButtonClicked(true);
+            setIsMintSelected(false);
+          }}
           variant='text'
         >
           Redeem
@@ -248,7 +256,10 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
       <InputGridBox mb='1rem' justifyItems='center'>
         <Box sx={{ gridColumn: 2, width: '6rem' }} />
         <ButtonWithIcon
-          onClick={() => setIsMintSelected(!isMintSelected)}
+          onClick={() => {
+            setIsSwitchStateButtonClicked(true);
+            setIsMintSelected(!isMintSelected);
+          }}
           ariaLabel={
             isMintSelected ? 'Switch to redeem state' : 'Switch to mint state'
           }
@@ -276,7 +287,11 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           readOnly
         />
       </InputGridBox>
-      <Text variant='body2' color={theme.colors.grayMedium} mb='2rem'>
+      <Text
+        variant='body2'
+        color={theme.colors.grayMedium}
+        mb='clamp(1rem, 3.2dvh, 2rem)'
+      >
         Fees | 0.00%
       </Text>
 
@@ -286,7 +301,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           gridTemplateColumns: '0.25fr 3.25fr',
           width: '100%',
           lineHeight: '1.2em',
-          minHeight: '4em',
+          minHeight: 'clamp(2rem, 6.4dvh, 4rem)',
         }}
       >
         {status && (
