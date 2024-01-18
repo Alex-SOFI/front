@@ -18,8 +18,6 @@ const ExpertPageLinksBlock: FunctionComponent = () => {
     <Box
       sx={{
         maxWidth: theme.breakpoints.sm,
-        paddingTop: theme.space.sm,
-        paddingBottom: theme.space.sm,
         width: '100%',
         display: 'grid',
         gridTemplateColumns: 'repeat(2, 1fr)',
@@ -28,8 +26,6 @@ const ExpertPageLinksBlock: FunctionComponent = () => {
       <List
         sx={{
           maxWidth: theme.breakpoints.sm,
-          paddingTop: theme.space.sm,
-          paddingBottom: theme.space.sm,
           display: 'grid',
           gridTemplateRows: 'repeat(4, 1fr)',
           alignItems: 'center',
@@ -63,8 +59,6 @@ const ExpertPageLinksBlock: FunctionComponent = () => {
       <List
         sx={{
           maxWidth: theme.breakpoints.sm,
-          paddingTop: theme.space.sm,
-          paddingBottom: theme.space.sm,
           display: 'grid',
           gridTemplateRows: 'repeat(4, 1fr)',
           alignItems: 'center',
