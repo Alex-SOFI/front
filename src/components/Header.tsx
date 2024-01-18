@@ -19,7 +19,7 @@ const StyledHeader = styled.header`
   padding: ${muiTheme.spacing(1)};
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    margin-bottom: clamp(1rem, 3.2dvh, 5rem);
+    margin-bottom: clamp(0rem, 1dvh, 5rem);
   }
 `;
 
