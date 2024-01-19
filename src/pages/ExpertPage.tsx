@@ -191,8 +191,11 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     const timeoutId = setTimeout(async () => {
       if (!isMaxValueError && activeValue) {
         const SOFIValue = await estimateMint(activeValue);
+        const formattedSOFIValue = formatUnits(SOFIValue, decimals);
 
-        setCalculatedInputValue(formatUnits(SOFIValue, decimals));
+        if (Number(formattedSOFIValue) > 0) {
+          setCalculatedInputValue(formattedSOFIValue);
+        }
       } else {
         setCalculatedInputValue('');
       }
