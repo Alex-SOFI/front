@@ -224,7 +224,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
         ...tokenManagerContract,
         functionName: isMintSelected ? 'mint' : 'redeem',
         args: isMintSelected
-          ? [parseUnits(calculatedInputValue, decimals)]
+          ? [parseUnits(calculatedInputValue, decimals), 10000 /* temporary */]
           : [], // temporary
       });
     }
