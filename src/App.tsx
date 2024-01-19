@@ -30,6 +30,7 @@ import { lazyWithRetry, noop } from 'tools';
 import { LoadingSpinner } from 'components/basic';
 
 const ExpertPage = lazyWithRetry(() => import('pages/ExpertPage'));
+const LoginPage = lazyWithRetry(() => import('pages/LoginPage'));
 
 const App = () => {
   const isMintSelected = !!useSelector(selectIsMintSelected);
@@ -110,6 +111,11 @@ const App = () => {
         key='/'
         path='/'
         element={<Navigate to={routes.EXPERT} replace />}
+      />,
+      <Route
+        key={routes.LOGIN}
+        path={routes.LOGIN}
+        element={elementWithSuspense(<LoginPage />)}
       />,
       <Route
         key={routes.EXPERT}

@@ -35,10 +35,8 @@ import { changeMintState } from 'ducks/wallet/slice';
 
 import { formatBalance, status } from 'tools';
 
-import {
-  ExpertPageLinksBlock,
-  ExpertPageMain,
-} from 'components/pagesComponents/expertPage';
+import LinksList from 'components/pagesComponents/LinksList';
+import ExpertPageMain from 'components/pagesComponents/expertPage/ExpertPageMain';
 
 import { Layout } from 'components';
 
@@ -320,7 +318,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
           setIsSwitchStateButtonClicked={setIsSwitchStateButtonClicked}
         />
       }
-      footer={<ExpertPageLinksBlock />}
+      footer={<LinksList />}
     />
   );
 };

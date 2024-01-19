@@ -8,7 +8,7 @@ import { Link } from 'components/basic';
 
 import { theme } from 'styles/theme';
 
-const ExpertPageLinksBlock: FunctionComponent = () => {
+const LinksList: FunctionComponent = () => {
   /* TODO: Add hrefs */
   const listItemLink = useCallback(
     (link: JSX.Element) => <ListItem disablePadding>{link}</ListItem>,
@@ -100,4 +100,4 @@ const ExpertPageLinksBlock: FunctionComponent = () => {
   );
 };
 
-export default ExpertPageLinksBlock;
+export default LinksList;
