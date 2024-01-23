@@ -84,8 +84,11 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     useState<boolean>(false);
   const [isApproveButtonClicked, setIsApproveButtonClicked] =
     useState<boolean>(false);
-  const [isSwitchStateButtonClicked, setIsSwitchStateButtonClicked] =
-    useState<boolean>(false);
+  const [isFunctionCalled, setIsFunctionCalled] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsFunctionCalled(false);
+  }, [isMintSelected]);
 
   const {
     isPending,
@@ -188,6 +191,10 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
   );
 
   useEffect(() => {
+    setActiveInputValue('');
+  }, [isMintSelected]);
+
+  useEffect(() => {
     const timeoutId = setTimeout(async () => {
       if (!isMaxValueError && activeValue) {
         const SOFIValue = await estimate(activeValue);
@@ -211,7 +218,6 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
 
   const approveToken = useCallback(() => {
     if (address) {
-      setIsSwitchStateButtonClicked(false);
       setIsApproveButtonClicked(true);
       writeContract({
         ...tokenContract(tokenAddress),
@@ -222,8 +228,8 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
   }, [activeValue, address, decimals, tokenAddress, writeContract]);
 
   const mintOrRedeem = useCallback(async () => {
-    setIsSwitchStateButtonClicked(false);
     setHash(undefined);
+    setIsFunctionCalled(true);
     if (address && calculatedInputValue) {
       setIsApproveButtonClicked(false);
       await writeContractAsync({
@@ -256,7 +262,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
         success,
         isTransactionError,
         isMintSelected,
-        isSwitchStateButtonClicked,
+        isFunctionCalled,
       }),
     [
       isWrongNetwork,
@@ -269,7 +275,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
       success,
       isTransactionError,
       isMintSelected,
-      isSwitchStateButtonClicked,
+      isFunctionCalled,
     ],
   );
 
@@ -323,7 +329,6 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
           isLoading={isPending || isTransactionLoading}
           mint={mintOrRedeem}
           isApproveButtonVisible={isApproveButtonVisible}
-          setIsSwitchStateButtonClicked={setIsSwitchStateButtonClicked}
         />
       }
       footer={<ExpertPageLinksBlock />}
