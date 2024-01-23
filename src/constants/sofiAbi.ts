@@ -60,6 +60,13 @@ const SOFIabi = [
     type: 'function',
   },
   {
+    inputs: [{ internalType: 'uint256', name: '_amount', type: 'uint256' }],
+    name: 'estimateRedeem',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'pure',
+    type: 'function',
+  },
+  {
     inputs: [
       { internalType: 'uint256', name: '_amountIn', type: 'uint256' },
       { internalType: 'uint24', name: '_poolFee', type: 'uint24' },
@@ -84,7 +91,10 @@ const SOFIabi = [
     type: 'function',
   },
   {
-    inputs: [],
+    inputs: [
+      { internalType: 'uint256', name: '_amountIn', type: 'uint256' },
+      { internalType: 'uint24', name: '_poolFee', type: 'uint24' },
+    ],
     name: 'redeem',
     outputs: [],
     stateMutability: 'nonpayable',

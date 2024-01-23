@@ -175,33 +175,39 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     }
   }, [activeValue, balance]);
 
-  const estimateMint = useCallback(
+  const estimate = useCallback(
     async (value: string) => {
       const data = await readContract(wagmiConfig, {
         ...tokenManagerContract,
-        functionName: 'estimateMint',
+        functionName: isMintSelected ? 'estimateMint' : 'estimateRedeem',
         args: [parseUnits(value, decimals)],
       });
-      return data as bigint;
+      return formatUnits(data as bigint, decimals);
     },
-    [decimals],
+    [decimals, isMintSelected],
   );
 
   useEffect(() => {
     const timeoutId = setTimeout(async () => {
       if (!isMaxValueError && activeValue) {
-        const SOFIValue = await estimateMint(activeValue);
-        const formattedSOFIValue = formatUnits(SOFIValue, decimals);
+        const SOFIValue = await estimate(activeValue);
 
-        if (Number(formattedSOFIValue) > 0) {
-          setCalculatedInputValue(formattedSOFIValue);
+        if (Number(SOFIValue) > 0) {
+          setCalculatedInputValue(SOFIValue);
         }
       } else {
         setCalculatedInputValue('');
       }
     }, 200);
     return () => clearTimeout(timeoutId);
-  }, [activeValue, estimateMint, decimals, balance, isMaxValueError]);
+  }, [
+    activeValue,
+    estimate,
+    decimals,
+    balance,
+    isMaxValueError,
+    isMintSelected,
+  ]);
 
   const approveToken = useCallback(() => {
     if (address) {
