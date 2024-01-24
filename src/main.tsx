@@ -19,7 +19,7 @@ import { store } from './store';
 
 const queryClient = new QueryClient();
 
-createWeb3Modal({ wagmiConfig, projectId, chains });
+createWeb3Modal({ wagmiConfig, projectId, chains, themeMode: 'light' });
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
