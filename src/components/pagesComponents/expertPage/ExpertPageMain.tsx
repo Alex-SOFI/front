@@ -9,6 +9,7 @@ import {
 import styled from '@emotion/styled';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import Box from '@mui/material/Box';
+import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { PUBLIC_URL } from 'config';
 
 import statusTexts from 'constants/statusTexts';
@@ -68,7 +69,7 @@ interface ExpertPageMainProps {
 }
 
 const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
-  handleConnectButtonClick,
+  /* handleConnectButtonClick, */
   isConnected,
   balance,
   status,
@@ -87,6 +88,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   mint,
   isApproveButtonVisible,
 }) => {
+  const { open } = useWeb3Modal();
   const isTransactionLoading = useMemo(
     () =>
       status?.text === (statusTexts.MINT_LOADING || statusTexts.REDEEM_LOADING),
@@ -144,7 +146,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         }
       }
     } else {
-      return <Button onClick={handleConnectButtonClick}>Connect Wallet</Button>;
+      return <Button onClick={open}>Connect Wallet</Button>;
     }
   }, [
     isConnected,
@@ -159,7 +161,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
     isMintSelected,
     mint,
     status?.error,
-    handleConnectButtonClick,
+    open,
   ]);
 
   const USDC = useMemo(

@@ -4,9 +4,12 @@ import { Provider } from 'react-redux';
 
 import { Global } from '@emotion/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { WagmiProvider } from 'wagmi';
 
 import wagmiConfig from 'configs/wagmiConfig';
+
+import { chains, projectId } from 'constants/wagmiConfig';
 
 import { ThemeProvider } from '@mui/material/styles';
 import { globalStyle, muiTheme } from 'styles/globalStyle';
@@ -15,6 +18,8 @@ import App from './App';
 import { store } from './store';
 
 const queryClient = new QueryClient();
+
+createWeb3Modal({ wagmiConfig, projectId, chains });
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
