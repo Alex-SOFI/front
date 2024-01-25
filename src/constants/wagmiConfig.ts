@@ -2,7 +2,7 @@ import { Chain, polygon, polygonMumbai } from 'viem/chains';
 
 export const chains: [Chain, ...Chain[]] = [polygon, polygonMumbai];
 
-export const projectId = 'd7e2f2c56641271add62d05d11d04eaa';
+export const projectId = 'd987c79808d3dd59ef85664fb3ac2373';
 
 export const metadata = {
   name: 'Web3Modal',
