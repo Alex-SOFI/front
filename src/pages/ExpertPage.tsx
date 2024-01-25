@@ -12,7 +12,6 @@ import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import { formatUnits, parseUnits } from 'ethers';
 import { Address } from 'viem';
 import {
-  useConnect,
   useReadContract,
   useSwitchChain,
   useWaitForTransactionReceipt,
@@ -70,7 +69,6 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
 
   const [isMaxValueError, setIsMaxValueError] = useState<boolean>(false);
 
-  const { connect, connectors } = useConnect();
   const { address, isConnected, balance, decimals } =
     useSelector(selectWalletInfo);
 
@@ -279,11 +277,6 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     ],
   );
 
-  const handleConnectButtonClick = useCallback(
-    () => connect({ connector: connectors[0] }),
-    [connect, connectors],
-  );
-
   const handleActiveInputValueChange = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
       setHash(undefined);
@@ -316,7 +309,6 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
           isWrongNetwork={isWrongNetwork}
           isMaxValueError={isMaxValueError}
           status={transactionStatus}
-          handleConnectButtonClick={handleConnectButtonClick}
           isMintSelected={isMintSelected}
           setIsMintSelected={setIsMintSelected}
           activeInputValue={activeInputValue}

@@ -44,7 +44,6 @@ const InputGridBox = styled(Box)<InputGridBoxProps>`
 `;
 
 interface ExpertPageMainProps {
-  handleConnectButtonClick: () => void;
   isConnected: boolean;
   balance: string | number | undefined;
   status: {
@@ -69,7 +68,6 @@ interface ExpertPageMainProps {
 }
 
 const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
-  /* handleConnectButtonClick, */
   isConnected,
   balance,
   status,
