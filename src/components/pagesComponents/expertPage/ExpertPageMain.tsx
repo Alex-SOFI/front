@@ -240,7 +240,10 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           value={activeInputValue}
           onChange={handleActiveInputValueChange}
           disabled={
-            !isConnected || isWrongNetwork || isLoading || isApproveSuccess
+            !isConnected ||
+            isWrongNetwork ||
+            isLoading ||
+            (isApproveSuccess && !!activeInputValue)
           }
         />
       </InputGridBox>

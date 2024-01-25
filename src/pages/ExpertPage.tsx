@@ -233,9 +233,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
       await writeContractAsync({
         ...tokenManagerContract,
         functionName: isMintSelected ? 'mint' : 'redeem',
-        args: isMintSelected
-          ? [parseUnits(calculatedInputValue, decimals), 10000 /* temporary */]
-          : [], // temporary
+        args: [parseUnits(calculatedInputValue, decimals), 10000],
       });
     }
   }, [
