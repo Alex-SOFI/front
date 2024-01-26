@@ -9,7 +9,10 @@ import {
 import styled from '@emotion/styled';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import Box from '@mui/material/Box';
+import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { PUBLIC_URL } from 'config';
+
+import statusTexts from 'constants/statusTexts';
 
 import {
   Button,
@@ -41,7 +44,6 @@ const InputGridBox = styled(Box)<InputGridBoxProps>`
 `;
 
 interface ExpertPageMainProps {
-  handleConnectButtonClick: () => void;
   isConnected: boolean;
   balance: string | number | undefined;
   status: {
@@ -63,11 +65,9 @@ interface ExpertPageMainProps {
   isLoading: boolean;
   mint: () => void;
   isApproveButtonVisible?: boolean;
-  setIsSwitchStateButtonClicked: Dispatch<SetStateAction<boolean>>;
 }
 
 const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
-  handleConnectButtonClick,
   isConnected,
   balance,
   status,
@@ -85,8 +85,13 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   isLoading,
   mint,
   isApproveButtonVisible,
-  setIsSwitchStateButtonClicked,
 }) => {
+  const { open } = useWeb3Modal();
+  const isTransactionLoading = useMemo(
+    () =>
+      status?.text === (statusTexts.MINT_LOADING || statusTexts.REDEEM_LOADING),
+    [status?.text],
+  );
   const renderButton = useMemo(() => {
     if (isConnected) {
       if (isWrongNetwork) {
@@ -139,7 +144,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         }
       }
     } else {
-      return <Button onClick={handleConnectButtonClick}>Connect Wallet</Button>;
+      return <Button onClick={open}>Connect Wallet</Button>;
     }
   }, [
     isConnected,
@@ -154,7 +159,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
     isMintSelected,
     mint,
     status?.error,
-    handleConnectButtonClick,
+    open,
   ]);
 
   const USDC = useMemo(
@@ -204,20 +209,16 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
       >
         <Button
           isPrimaryColor={isMintSelected}
-          onClick={() => {
-            setIsSwitchStateButtonClicked(true);
-            setIsMintSelected(true);
-          }}
+          onClick={() => setIsMintSelected(true)}
+          disabled={isTransactionLoading}
           variant='text'
         >
           Mint
         </Button>
         <Button
           isPrimaryColor={!isMintSelected}
-          onClick={() => {
-            setIsSwitchStateButtonClicked(true);
-            setIsMintSelected(false);
-          }}
+          onClick={() => setIsMintSelected(false)}
+          disabled={isTransactionLoading}
           variant='text'
         >
           Redeem
@@ -239,7 +240,10 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           value={activeInputValue}
           onChange={handleActiveInputValueChange}
           disabled={
-            !isConnected || isWrongNetwork || isLoading || isApproveSuccess
+            !isConnected ||
+            isWrongNetwork ||
+            isLoading ||
+            (isApproveSuccess && !!activeInputValue)
           }
         />
       </InputGridBox>
@@ -257,12 +261,12 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         <Box sx={{ gridColumn: 2, width: '6rem' }} />
         <ButtonWithIcon
           onClick={() => {
-            setIsSwitchStateButtonClicked(true);
             setIsMintSelected(!isMintSelected);
           }}
           ariaLabel={
             isMintSelected ? 'Switch to redeem state' : 'Switch to mint state'
           }
+          disabled={isTransactionLoading}
         >
           <ArrowDownwardIcon aria-label='mint' fontSize='large' />
         </ButtonWithIcon>

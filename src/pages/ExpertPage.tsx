@@ -12,7 +12,6 @@ import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import { formatUnits, parseUnits } from 'ethers';
 import { Address } from 'viem';
 import {
-  useConnect,
   useReadContract,
   useSwitchChain,
   useWaitForTransactionReceipt,
@@ -68,7 +67,6 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
 
   const [isMaxValueError, setIsMaxValueError] = useState<boolean>(false);
 
-  const { connect, connectors } = useConnect();
   const { address, isConnected, balance, decimals } =
     useSelector(selectWalletInfo);
 
@@ -82,8 +80,11 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     useState<boolean>(false);
   const [isApproveButtonClicked, setIsApproveButtonClicked] =
     useState<boolean>(false);
-  const [isSwitchStateButtonClicked, setIsSwitchStateButtonClicked] =
-    useState<boolean>(false);
+  const [isFunctionCalled, setIsFunctionCalled] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsFunctionCalled(false);
+  }, [isMintSelected]);
 
   const {
     isPending,
@@ -173,37 +174,46 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     }
   }, [activeValue, balance]);
 
-  const estimateMint = useCallback(
+  const estimate = useCallback(
     async (value: string) => {
       const data = await readContract(wagmiConfig, {
         ...tokenManagerContract,
-        functionName: 'estimateMint',
+        functionName: isMintSelected ? 'estimateMint' : 'estimateRedeem',
         args: [parseUnits(value, decimals)],
       });
-      return data as bigint;
+      return formatUnits(data as bigint, decimals);
     },
-    [decimals],
+    [decimals, isMintSelected],
   );
+
+  useEffect(() => {
+    setActiveInputValue('');
+  }, [isMintSelected]);
 
   useEffect(() => {
     const timeoutId = setTimeout(async () => {
       if (!isMaxValueError && activeValue) {
-        const SOFIValue = await estimateMint(activeValue);
-        const formattedSOFIValue = formatUnits(SOFIValue, decimals);
+        const SOFIValue = await estimate(activeValue);
 
-        if (Number(formattedSOFIValue) > 0) {
-          setCalculatedInputValue(formattedSOFIValue);
+        if (Number(SOFIValue) > 0) {
+          setCalculatedInputValue(SOFIValue);
         }
       } else {
         setCalculatedInputValue('');
       }
     }, 200);
     return () => clearTimeout(timeoutId);
-  }, [activeValue, estimateMint, decimals, balance, isMaxValueError]);
+  }, [
+    activeValue,
+    estimate,
+    decimals,
+    balance,
+    isMaxValueError,
+    isMintSelected,
+  ]);
 
   const approveToken = useCallback(() => {
     if (address) {
-      setIsSwitchStateButtonClicked(false);
       setIsApproveButtonClicked(true);
       writeContract({
         ...tokenContract(tokenAddress),
@@ -214,16 +224,14 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
   }, [activeValue, address, decimals, tokenAddress, writeContract]);
 
   const mintOrRedeem = useCallback(async () => {
-    setIsSwitchStateButtonClicked(false);
     setHash(undefined);
+    setIsFunctionCalled(true);
     if (address && calculatedInputValue) {
       setIsApproveButtonClicked(false);
       await writeContractAsync({
         ...tokenManagerContract,
         functionName: isMintSelected ? 'mint' : 'redeem',
-        args: isMintSelected
-          ? [parseUnits(calculatedInputValue, decimals)]
-          : [], // temporary
+        args: [parseUnits(calculatedInputValue, decimals), 10000],
       });
     }
   }, [
@@ -248,7 +256,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
         success,
         isTransactionError,
         isMintSelected,
-        isSwitchStateButtonClicked,
+        isFunctionCalled,
       }),
     [
       isWrongNetwork,
@@ -261,13 +269,8 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
       success,
       isTransactionError,
       isMintSelected,
-      isSwitchStateButtonClicked,
+      isFunctionCalled,
     ],
-  );
-
-  const handleConnectButtonClick = useCallback(
-    () => connect({ connector: connectors[0] }),
-    [connect, connectors],
   );
 
   const handleActiveInputValueChange = useCallback(
@@ -302,7 +305,6 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
           isWrongNetwork={isWrongNetwork}
           isMaxValueError={isMaxValueError}
           status={transactionStatus}
-          handleConnectButtonClick={handleConnectButtonClick}
           isMintSelected={isMintSelected}
           setIsMintSelected={setIsMintSelected}
           activeInputValue={activeInputValue}
@@ -315,7 +317,6 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
           isLoading={isPending || isTransactionLoading}
           mint={mintOrRedeem}
           isApproveButtonVisible={isApproveButtonVisible}
-          setIsSwitchStateButtonClicked={setIsSwitchStateButtonClicked}
         />
       }
       footer={<LinksList />}

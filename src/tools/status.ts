@@ -16,7 +16,7 @@ interface Status {
   success: boolean;
   isTransactionError: boolean;
   isMintSelected: boolean;
-  isSwitchStateButtonClicked: boolean;
+  isFunctionCalled: boolean;
 }
 
 const status = ({
@@ -31,12 +31,9 @@ const status = ({
   success,
   isTransactionError,
   isMintSelected,
-  isSwitchStateButtonClicked,
+  isFunctionCalled,
 }: Status) => {
   switch (true) {
-    case isSwitchStateButtonClicked:
-      return null;
-
     case isWrongNetwork:
       return {
         color: theme.colors.error,
@@ -53,7 +50,9 @@ const status = ({
         error: true,
       };
 
-    case !isApproveButtonVisible && (isPending || isTransactionLoading):
+    case isFunctionCalled &&
+      !isApproveButtonVisible &&
+      (isPending || isTransactionLoading):
       return {
         color: theme.colors.info,
         text: isMintSelected
@@ -62,7 +61,7 @@ const status = ({
         error: false,
       };
 
-    case !isApproveButtonVisible && error:
+    case isFunctionCalled && !isApproveButtonVisible && error:
       return {
         color: theme.colors.error,
         text: isMintSelected
@@ -71,7 +70,10 @@ const status = ({
         error: false,
       };
 
-    case !isApproveButtonClicked && success && !isTransactionLoading:
+    case isFunctionCalled &&
+      !isApproveButtonClicked &&
+      success &&
+      !isTransactionLoading:
       setActiveInputValue('');
       return {
         color: theme.colors.success,

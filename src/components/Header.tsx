@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Box from '@mui/material/Box';
+import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { PUBLIC_URL } from 'config';
 import { useDisconnect } from 'wagmi';
 
@@ -24,7 +25,6 @@ const StyledHeader = styled.header`
 `;
 
 interface HeaderProps {
-  handleConnectButtonClick: () => void;
   copyAddress: () => void;
   isLinkOnly: boolean;
   isConnected: boolean;
@@ -34,7 +34,6 @@ interface HeaderProps {
 }
 
 const Header: FunctionComponent<HeaderProps> = ({
-  handleConnectButtonClick,
   copyAddress,
   isLinkOnly,
   isConnected,
@@ -43,6 +42,7 @@ const Header: FunctionComponent<HeaderProps> = ({
   isWrongNetwork,
 }) => {
   const { disconnect } = useDisconnect();
+  const { open } = useWeb3Modal();
 
   return (
     <StyledHeader>
@@ -102,10 +102,7 @@ const Header: FunctionComponent<HeaderProps> = ({
               </Box>
             )
           ) : (
-            <Button
-              onClick={handleConnectButtonClick /* disconnect */}
-              minWidth='11rem'
-            >
+            <Button onClick={open} minWidth='11rem'>
               Connect Wallet
             </Button>
           )}

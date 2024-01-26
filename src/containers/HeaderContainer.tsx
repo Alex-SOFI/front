@@ -1,7 +1,7 @@
 import { FunctionComponent, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useConnect, useSwitchChain } from 'wagmi';
+import { useSwitchChain } from 'wagmi';
 
 import chainIds from 'constants/chainIds';
 
@@ -18,7 +18,6 @@ interface HeaderContainerProps {
 const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
   isLinkOnly,
 }) => {
-  const { connect, connectors } = useConnect();
   const { address, isConnected } = useSelector(selectWalletInfo);
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
@@ -35,7 +34,6 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
 
   return (
     <Header
-      handleConnectButtonClick={() => connect({ connector: connectors[0] })}
       copyAddress={copyAddress}
       isLinkOnly={isLinkOnly || false}
       isConnected={isConnected}

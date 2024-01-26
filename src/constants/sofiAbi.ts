@@ -1,6 +1,18 @@
 const SOFIabi = [
   {
-    inputs: [{ internalType: 'address', name: '_usdcToken', type: 'address' }],
+    inputs: [
+      { internalType: 'contract IERC20', name: '_usdcToken', type: 'address' },
+      {
+        internalType: 'contract ISwapRouter',
+        name: '_swapRouter',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IUniswapV3Factory',
+        name: '_swapFactory',
+        type: 'address',
+      },
+    ],
     stateMutability: 'nonpayable',
     type: 'constructor',
   },
@@ -34,6 +46,13 @@ const SOFIabi = [
     type: 'event',
   },
   {
+    inputs: [],
+    name: 'SWAP_TOKEN',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [{ internalType: 'uint256', name: '_amount', type: 'uint256' }],
     name: 'estimateMint',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
@@ -42,6 +61,16 @@ const SOFIabi = [
   },
   {
     inputs: [{ internalType: 'uint256', name: '_amount', type: 'uint256' }],
+    name: 'estimateRedeem',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'pure',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'uint256', name: '_amountIn', type: 'uint256' },
+      { internalType: 'uint24', name: '_poolFee', type: 'uint24' },
+    ],
     name: 'mint',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -56,6 +85,16 @@ const SOFIabi = [
   },
   {
     inputs: [],
+    name: 'poolFee',
+    outputs: [{ internalType: 'uint24', name: '', type: 'uint24' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'uint256', name: '_amountIn', type: 'uint256' },
+      { internalType: 'uint24', name: '_poolFee', type: 'uint24' },
+    ],
     name: 'redeem',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -73,6 +112,24 @@ const SOFIabi = [
     name: 'setToken',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'swapFactory',
+    outputs: [
+      { internalType: 'contract IUniswapV3Factory', name: '', type: 'address' },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'swapRouter',
+    outputs: [
+      { internalType: 'contract ISwapRouter', name: '', type: 'address' },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {

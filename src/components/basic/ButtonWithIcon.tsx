@@ -7,6 +7,7 @@ interface IconButtonProps extends PropsWithChildren {
   maxHeight?: string;
   color?: string;
   ariaLabel: string;
+  disabled?: boolean;
 }
 
 const ButtonWithIcon: FunctionComponent<IconButtonProps> = ({
@@ -14,6 +15,7 @@ const ButtonWithIcon: FunctionComponent<IconButtonProps> = ({
   maxHeight,
   color,
   ariaLabel,
+  disabled,
   children,
 }) => {
   return (
@@ -27,6 +29,7 @@ const ButtonWithIcon: FunctionComponent<IconButtonProps> = ({
         ...(color ? { color } : {}),
         ...(maxHeight ? { maxHeight, width: maxHeight } : {}),
       }}
+      disabled={disabled || false}
     >
       {children}
     </IconButton>
