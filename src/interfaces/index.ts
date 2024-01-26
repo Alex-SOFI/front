@@ -1,4 +1,5 @@
 import type ReduxState from './ReduxState';
+import type UserState from './UserState';
 import type WalletInfoState from './WalletInfoState';
 
-export { WalletInfoState, ReduxState };
+export { WalletInfoState, ReduxState, UserState };

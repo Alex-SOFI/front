@@ -15,13 +15,18 @@ import {
 } from 'react-router-dom';
 
 import { formatUnits } from 'ethers';
+import { checkUser } from 'service/magic';
 import { useAccount, useConnect, useReadContracts } from 'wagmi';
+
+import { UserState } from 'interfaces';
 
 import addresses from 'constants/addresses';
 import chainIds from 'constants/chainIds';
 import { tokenContract } from 'constants/contracts';
 import routes from 'constants/routes';
 
+import { selectUser } from 'ducks/user';
+import { setUser } from 'ducks/user/slice';
 import { selectIsMintSelected, selectIsWrongNetwork } from 'ducks/wallet';
 import { storeWalletInfo } from 'ducks/wallet/slice';
 
@@ -33,6 +38,29 @@ const ExpertPage = lazyWithRetry(() => import('pages/ExpertPage'));
 const LoginPage = lazyWithRetry(() => import('pages/LoginPage'));
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  const { isLoggedIn } = useSelector(selectUser);
+
+  const dispatchUser = useCallback(
+    (payload: UserState) => {
+      dispatch(setUser(payload));
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    const validateUser = async () => {
+      try {
+        await checkUser(dispatchUser);
+        return null;
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    validateUser();
+  }, [dispatchUser, isLoggedIn]);
+
   const isMintSelected = !!useSelector(selectIsMintSelected);
 
   const { address, isConnected, chain } = useAccount();
@@ -67,8 +95,6 @@ const App = () => {
     ],
   });
 
-  const dispatch = useDispatch();
-
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
   useEffect(() => {
@@ -100,9 +126,11 @@ const App = () => {
 
   const elementWithSuspense = useCallback(
     (element: ReactNode) => (
-      <Suspense fallback={<LoadingSpinner />}>{element}</Suspense>
+      <Suspense fallback={<LoadingSpinner />}>
+        {isLoggedIn === null ? <LoadingSpinner /> : element}
+      </Suspense>
     ),
-    [],
+    [isLoggedIn],
   );
 
   const router = createBrowserRouter(
@@ -115,7 +143,7 @@ const App = () => {
       <Route
         key={routes.LOGIN}
         path={routes.LOGIN}
-        element={elementWithSuspense(<LoginPage />)}
+        element={elementWithSuspense(<LoginPage dispatchUser={dispatchUser} />)}
       />,
       <Route
         key={routes.EXPERT}
@@ -135,7 +163,9 @@ const App = () => {
     ]),
   );
 
-  return <RouterProvider router={router} />;
+  return (
+    <RouterProvider router={router} fallbackElement={<LoadingSpinner />} />
+  );
 };
 
 export default App;
