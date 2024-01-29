@@ -10,7 +10,7 @@ interface LoginPageMainProps {
   emailInputValue: string;
   setEmailInputValue: Dispatch<SetStateAction<string>>;
   login: () => Promise<void>;
-  logout: () => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   error: string | null;
 }
 
@@ -18,7 +18,7 @@ const LoginPageMain: FunctionComponent<LoginPageMainProps> = ({
   emailInputValue,
   setEmailInputValue,
   login,
-  logout,
+  loginWithGoogle,
   error,
 }) => {
   return (
@@ -53,7 +53,7 @@ const LoginPageMain: FunctionComponent<LoginPageMainProps> = ({
       >
         Signup / Login
       </Button>
-      <Button fullWidth onClick={logout}>
+      <Button fullWidth onClick={loginWithGoogle}>
         Continue with Google
       </Button>
       <Box

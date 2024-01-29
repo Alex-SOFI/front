@@ -1,6 +1,6 @@
 import { FunctionComponent, useCallback, useEffect, useState } from 'react';
 
-import { loginUser, logoutUser } from 'service/magic';
+import { loginUser, loginWithGoogle } from 'service/magic';
 
 import { UserState } from 'interfaces';
 
@@ -29,18 +29,14 @@ const LoginPage: FunctionComponent<LoginPageProps> = ({ dispatchUser }) => {
       setError('Email is Invalid');
       return;
     }
-    try {
-      await loginUser(emailInputValue, dispatchUser);
-    } catch (error) {
-      setError('Unable to log in');
-    }
+    await loginUser(emailInputValue, dispatchUser);
   }, [dispatchUser, emailInputValue]);
 
-  const logout = useCallback(async () => {
+  const loginUserWithGoogle = useCallback(async () => {
     try {
-      await logoutUser(dispatchUser);
+      await loginWithGoogle(dispatchUser);
     } catch (error) {
-      setError('Unable to log out');
+      setError('Unable to log in');
       console.error(error);
     }
   }, [dispatchUser]);
@@ -53,7 +49,7 @@ const LoginPage: FunctionComponent<LoginPageProps> = ({ dispatchUser }) => {
           emailInputValue={emailInputValue}
           setEmailInputValue={setEmailInputValue}
           login={login}
-          logout={logout}
+          loginWithGoogle={loginUserWithGoogle}
           error={error}
         />
       }
