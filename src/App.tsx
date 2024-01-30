@@ -15,6 +15,7 @@ import {
 } from 'react-router-dom';
 
 import { formatUnits } from 'ethers';
+import { PrivateRoute, PublicRoute } from 'layout';
 import { checkUser } from 'service/magic';
 import { useAccount, useConnect, useReadContracts } from 'wagmi';
 
@@ -126,11 +127,9 @@ const App = () => {
 
   const elementWithSuspense = useCallback(
     (element: ReactNode) => (
-      <Suspense fallback={<LoadingSpinner />}>
-        {isLoggedIn === null ? <LoadingSpinner /> : element}
-      </Suspense>
+      <Suspense fallback={<LoadingSpinner />}>{element}</Suspense>
     ),
-    [isLoggedIn],
+    [],
   );
 
   const router = createBrowserRouter(
@@ -143,17 +142,25 @@ const App = () => {
       <Route
         key={routes.LOGIN}
         path={routes.LOGIN}
-        element={elementWithSuspense(<LoginPage dispatchUser={dispatchUser} />)}
+        element={
+          <PublicRoute isLoggedIn={isLoggedIn}>
+            {elementWithSuspense(<LoginPage dispatchUser={dispatchUser} />)}
+          </PublicRoute>
+        }
       />,
       <Route
         key={routes.EXPERT}
         path={routes.EXPERT}
-        element={elementWithSuspense(
-          <ExpertPage
-            tokenAddress={tokenAddress}
-            refetchBalance={balance?.refetch || noop}
-          />,
-        )}
+        element={
+          <PrivateRoute isLoggedIn={isLoggedIn} dispatchUser={dispatchUser}>
+            {elementWithSuspense(
+              <ExpertPage
+                tokenAddress={tokenAddress}
+                refetchBalance={balance?.refetch || noop}
+              />,
+            )}
+          </PrivateRoute>
+        }
       />,
       <Route
         key='*'

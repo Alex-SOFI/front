@@ -29,17 +29,17 @@ const LoginPage: FunctionComponent<LoginPageProps> = ({ dispatchUser }) => {
       setError('Email is Invalid');
       return;
     }
-    await loginUser(emailInputValue, dispatchUser);
+    await loginUser(emailInputValue, dispatchUser, setError);
   }, [dispatchUser, emailInputValue]);
 
   const loginUserWithGoogle = useCallback(async () => {
     try {
-      await loginWithGoogle(dispatchUser);
+      await loginWithGoogle();
     } catch (error) {
       setError('Unable to log in');
       console.error(error);
     }
-  }, [dispatchUser]);
+  }, []);
 
   return (
     <Layout

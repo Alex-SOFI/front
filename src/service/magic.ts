@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react';
+
 import { OAuthExtension } from '@magic-ext/oauth';
 import { Magic } from 'magic-sdk';
 
@@ -5,7 +7,7 @@ import { UserState } from 'interfaces';
 
 import routes from 'constants/routes';
 
-const magic = new Magic(import.meta.env.VITE_MAGIC_LINK_PUBLIC_KEY, {
+export const magic = new Magic(import.meta.env.VITE_MAGIC_LINK_PUBLIC_KEY, {
   extensions: [new OAuthExtension()],
 });
 
@@ -21,20 +23,21 @@ export const checkUser = async (cb: (payload: UserState) => void) => {
 export const loginUser = async (
   email: string,
   cb: (payload: UserState) => void,
+  errorCb: Dispatch<SetStateAction<string | null>>,
 ) => {
-  await magic?.auth.loginWithMagicLink({
-    email,
-  });
+  await magic?.auth
+    .loginWithMagicLink({
+      email,
+    })
+    .on('email-not-deliverable', () => errorCb('Email is not delivered'));
   return checkUser(cb);
 };
 
-export const loginWithGoogle = async (cb: (payload: UserState) => void) => {
-  await magic?.oauth.loginWithRedirect({
+export const loginWithGoogle = async () => {
+  await magic.oauth.loginWithRedirect({
     provider: 'google',
     redirectURI: new URL(routes.EXPERT, window.location.origin).href,
   });
-
-  return checkUser(cb);
 };
 
 export const logoutUser = async (cb: (payload: UserState) => void) => {
