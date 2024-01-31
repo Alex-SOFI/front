@@ -9,7 +9,7 @@ import { WagmiProvider } from 'wagmi';
 
 import wagmiConfig from 'configs/wagmiConfig';
 
-import { chains, projectId } from 'constants/wagmiConfig';
+import { projectId } from 'constants/wagmiConfig';
 
 import { ThemeProvider } from '@mui/material/styles';
 import { globalStyle, muiTheme } from 'styles/globalStyle';
@@ -19,7 +19,7 @@ import { store } from './store';
 
 const queryClient = new QueryClient();
 
-createWeb3Modal({ wagmiConfig, projectId, chains, themeMode: 'light' });
+createWeb3Modal({ wagmiConfig, projectId, themeMode: 'light' });
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,

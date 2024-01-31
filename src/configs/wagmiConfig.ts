@@ -1,5 +1,5 @@
 /* import { injected } from '@wagmi/connectors'; */
-import { defaultWagmiConfig } from '@web3modal/wagmi/react';
+import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
 
 /* import { createConfig, http } from 'wagmi'; */
 import { chains, metadata, projectId } from 'constants/wagmiConfig';
