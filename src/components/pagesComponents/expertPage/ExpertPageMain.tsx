@@ -11,7 +11,6 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import Box from '@mui/material/Box';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { PUBLIC_URL } from 'config';
-import useMagic from 'hooks/useMagic';
 
 import statusTexts from 'constants/statusTexts';
 
@@ -163,8 +162,6 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
     open,
   ]);
 
-  const { logoutUser } = useMagic(window.location.pathname);
-
   const USDC = useMemo(
     () => (
       <>
@@ -263,11 +260,9 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
       <InputGridBox mb='1rem' justifyItems='center'>
         <Box sx={{ gridColumn: 2, width: '6rem' }} />
         <ButtonWithIcon
-          onClick={
-            /* () => {
-              setIsMintSelected(!isMintSelected);
-            } */ () => logoutUser(/* dispatchUser */)
-          }
+          onClick={() => {
+            setIsMintSelected(!isMintSelected);
+          }}
           ariaLabel={
             isMintSelected ? 'Switch to redeem state' : 'Switch to mint state'
           }

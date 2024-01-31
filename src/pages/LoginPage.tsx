@@ -2,7 +2,6 @@ import { FunctionComponent, useCallback, useEffect, useState } from 'react';
 
 import useMagic from 'hooks/useMagic';
 
-/* import { loginUser, loginWithGoogle } from 'service/magic'; */
 import { UserState } from 'interfaces';
 
 import { emailRegex } from 'constants/regex';
@@ -35,18 +34,14 @@ const LoginPage: FunctionComponent<LoginPageProps> = () => {
     await loginUser(emailInputValue, setError);
   }, [emailInputValue, loginUser]);
 
-  const loginUserWithGoogle = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-    async (/* e: any */) => {
-      try {
-        await oauthLogin(/* e */);
-      } catch (error) {
-        setError('Unable to log in');
-        console.error(error);
-      }
-    },
-    [oauthLogin],
-  );
+  const loginUserWithGoogle = useCallback(async () => {
+    try {
+      await oauthLogin();
+    } catch (error) {
+      setError('Unable to log in');
+      console.error(error);
+    }
+  }, [oauthLogin]);
 
   return (
     <Layout

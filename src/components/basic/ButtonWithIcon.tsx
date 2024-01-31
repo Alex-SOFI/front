@@ -1,13 +1,16 @@
-import { FunctionComponent, PropsWithChildren } from 'react';
+import { FunctionComponent, MouseEvent, PropsWithChildren } from 'react';
 
 import IconButton from '@mui/material/IconButton';
 
 interface IconButtonProps extends PropsWithChildren {
-  onClick: () => void;
+  onClick: (() => void) | ((event: MouseEvent<HTMLButtonElement>) => void);
   maxHeight?: string;
   color?: string;
   ariaLabel: string;
   disabled?: boolean;
+  ariaControls?: string | undefined;
+  ariaHaspopup?: boolean | undefined;
+  ariaExpanded?: boolean | undefined;
 }
 
 const ButtonWithIcon: FunctionComponent<IconButtonProps> = ({
@@ -17,6 +20,9 @@ const ButtonWithIcon: FunctionComponent<IconButtonProps> = ({
   ariaLabel,
   disabled,
   children,
+  ariaControls,
+  ariaHaspopup,
+  ariaExpanded,
 }) => {
   return (
     <IconButton
@@ -30,6 +36,9 @@ const ButtonWithIcon: FunctionComponent<IconButtonProps> = ({
         ...(maxHeight ? { maxHeight, width: maxHeight } : {}),
       }}
       disabled={disabled || false}
+      aria-controls={ariaControls}
+      aria-haspopup={ariaHaspopup}
+      aria-expanded={ariaExpanded}
     >
       {children}
     </IconButton>
