@@ -11,6 +11,7 @@ interface IconButtonProps extends PropsWithChildren {
   ariaControls?: string | undefined;
   ariaHaspopup?: boolean | undefined;
   ariaExpanded?: boolean | undefined;
+  size?: 'small' | 'large' | 'medium';
 }
 
 const ButtonWithIcon: FunctionComponent<IconButtonProps> = ({
@@ -23,13 +24,14 @@ const ButtonWithIcon: FunctionComponent<IconButtonProps> = ({
   ariaControls,
   ariaHaspopup,
   ariaExpanded,
+  size,
 }) => {
   return (
     <IconButton
       type={'button'}
       sx={{ boxShadow: 0 }}
       onClick={onClick}
-      size='large'
+      size={size || 'large'}
       aria-label={ariaLabel}
       style={{
         ...(color ? { color } : {}),

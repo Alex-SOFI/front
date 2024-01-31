@@ -58,7 +58,7 @@ const Header: FunctionComponent<HeaderProps> = ({
 
   return (
     <StyledHeader>
-      <Box>
+      <Box display='flex' alignItems='center'>
         {isLoggedIn && <AppMenu />}
         <Link
           href='https://www.sophie.fi/'

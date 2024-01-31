@@ -32,6 +32,7 @@ const AppMenu: FunctionComponent = () => {
         ariaExpanded={open ? true : undefined}
         ariaLabel='Menu button'
         onClick={handleClick}
+        size='small'
       >
         <MenuIcon />
       </ButtonWithIcon>
