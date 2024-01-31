@@ -102,7 +102,7 @@ const Header: FunctionComponent<HeaderProps> = ({
               </Box>
             )
           ) : (
-            <Button onClick={open} minWidth='11rem'>
+            <Button onClick={() => open()} minWidth='11rem'>
               Connect Wallet
             </Button>
           )}

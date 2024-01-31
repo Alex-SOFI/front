@@ -158,7 +158,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         }
       }
     } else {
-      return <Button onClick={open}>Connect Wallet</Button>;
+      return <Button onClick={() => open()}>Connect Wallet</Button>;
     }
   }, [
     isConnected,

@@ -6,8 +6,8 @@ export const projectId = 'd987c79808d3dd59ef85664fb3ac2373';
 
 export const metadata = {
   name: 'Web3Modal',
-  description: 'Web3Modal Example',
-  url: 'https://web3modal.com',
+  description: 'Web3Modal',
+  url: 'http://localhost:5173',
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
   verifyUrl: '',
 };
