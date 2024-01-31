@@ -1,12 +1,5 @@
-import {
-  FunctionComponent,
-  PropsWithChildren,
-  useEffect,
-  useState,
-} from 'react';
-import { Navigate, useSearchParams } from 'react-router-dom';
-
-import { magic } from 'service/magic';
+import { FunctionComponent, PropsWithChildren } from 'react';
+import { Navigate } from 'react-router-dom';
 
 import { UserState } from 'interfaces';
 
@@ -22,52 +15,11 @@ interface LayoutProps extends PropsWithChildren {
 export const PrivateRoute: FunctionComponent<LayoutProps> = ({
   isLoggedIn,
   children,
-  dispatchUser,
 }) => {
-  const [searchParams] = useSearchParams();
-
-  const [userInfo, setUserInfo] = useState<{
-    isLoggedIn: boolean | null | undefined;
-    email: string | null;
-  } | null>(null);
-
-  useEffect(() => {
-    if (dispatchUser) {
-      if (userInfo) {
-        dispatchUser(userInfo);
-      }
-      if (searchParams.has('provider') && !userInfo) {
-        const finishLoginWithGoogle = async () => {
-          try {
-            const result = await magic.oauth.getRedirectResult();
-
-            setUserInfo({
-              isLoggedIn: !!result.magic?.userMetadata?.email,
-              email: result?.magic?.userMetadata.email,
-            });
-          } catch (err) {
-            console.error(err);
-          }
-        };
-        finishLoginWithGoogle();
-      }
-    }
-  }, [dispatchUser, searchParams, userInfo]);
-
-  if (searchParams.has('provider') && !userInfo) {
+  if (isLoggedIn === undefined || isLoggedIn === null) {
     return <LoadingSpinner />;
   }
-  if (
-    !searchParams.has('provider') &&
-    (isLoggedIn === undefined || isLoggedIn === null)
-  ) {
-    return <LoadingSpinner />;
-  }
-  return !searchParams.has('provider') && isLoggedIn ? (
-    children
-  ) : (
-    <Navigate to={routes.LOGIN} replace />
-  );
+  return isLoggedIn ? children : <Navigate to={routes.LOGIN} replace />;
 };
 
 export const PublicRoute: FunctionComponent<LayoutProps> = ({

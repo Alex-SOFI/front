@@ -1,7 +1,8 @@
 import { FunctionComponent, useCallback, useEffect, useState } from 'react';
 
-import { loginUser, loginWithGoogle } from 'service/magic';
+import useMagic from 'hooks/useMagic';
 
+/* import { loginUser, loginWithGoogle } from 'service/magic'; */
 import { UserState } from 'interfaces';
 
 import { emailRegex } from 'constants/regex';
@@ -15,7 +16,7 @@ interface LoginPageProps {
   dispatchUser: (payload: UserState) => void;
 }
 
-const LoginPage: FunctionComponent<LoginPageProps> = ({ dispatchUser }) => {
+const LoginPage: FunctionComponent<LoginPageProps> = () => {
   const [emailInputValue, setEmailInputValue] = useState<string>('');
 
   const [error, setError] = useState<string | null>(null);
@@ -24,22 +25,28 @@ const LoginPage: FunctionComponent<LoginPageProps> = ({ dispatchUser }) => {
     setError(null);
   }, [emailInputValue]);
 
+  const { loginUser, oauthLogin } = useMagic(window.location.pathname);
+
   const login = useCallback(async () => {
     if (!emailInputValue.match(emailRegex)) {
       setError('Email is Invalid');
       return;
     }
-    await loginUser(emailInputValue, dispatchUser, setError);
-  }, [dispatchUser, emailInputValue]);
+    await loginUser(emailInputValue, setError);
+  }, [emailInputValue, loginUser]);
 
-  const loginUserWithGoogle = useCallback(async () => {
-    try {
-      await loginWithGoogle();
-    } catch (error) {
-      setError('Unable to log in');
-      console.error(error);
-    }
-  }, []);
+  const loginUserWithGoogle = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+    async (/* e: any */) => {
+      try {
+        await oauthLogin(/* e */);
+      } catch (error) {
+        setError('Unable to log in');
+        console.error(error);
+      }
+    },
+    [oauthLogin],
+  );
 
   return (
     <Layout

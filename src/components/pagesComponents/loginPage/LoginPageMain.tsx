@@ -53,7 +53,7 @@ const LoginPageMain: FunctionComponent<LoginPageMainProps> = ({
       >
         Signup / Login
       </Button>
-      <Button fullWidth onClick={loginWithGoogle}>
+      <Button fullWidth onClick={() => loginWithGoogle()}>
         Continue with Google
       </Button>
       <Box

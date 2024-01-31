@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 
 import { Global } from '@emotion/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -31,7 +32,9 @@ root.render(
         <QueryClientProvider client={queryClient}>
           <ThemeProvider theme={muiTheme}>
             <Global styles={globalStyle} />
-            <App />
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
           </ThemeProvider>
         </QueryClientProvider>
       </WagmiProvider>

@@ -9,14 +9,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Navigate,
   Route,
-  RouterProvider,
-  createBrowserRouter,
   createRoutesFromElements,
+  useRoutes,
 } from 'react-router-dom';
 
 import { formatUnits } from 'ethers';
+import useMagic from 'hooks/useMagic';
 import { PrivateRoute, PublicRoute } from 'layout';
-import { checkUser } from 'service/magic';
 import { useAccount, useConnect, useReadContracts } from 'wagmi';
 
 import { UserState } from 'interfaces';
@@ -37,6 +36,7 @@ import { LoadingSpinner } from 'components/basic';
 
 const ExpertPage = lazyWithRetry(() => import('pages/ExpertPage'));
 const LoginPage = lazyWithRetry(() => import('pages/LoginPage'));
+const OauthPage = lazyWithRetry(() => import('pages/OauthPage'));
 
 const App = () => {
   const dispatch = useDispatch();
@@ -50,17 +50,11 @@ const App = () => {
     [dispatch],
   );
 
+  const { checkUserLoggedIn } = useMagic(window.location.pathname);
+
   useEffect(() => {
-    const validateUser = async () => {
-      try {
-        await checkUser(dispatchUser);
-        return null;
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    validateUser();
-  }, [dispatchUser, isLoggedIn]);
+    checkUserLoggedIn();
+  }, [checkUserLoggedIn]);
 
   const isMintSelected = !!useSelector(selectIsMintSelected);
 
@@ -132,47 +126,46 @@ const App = () => {
     [],
   );
 
-  const router = createBrowserRouter(
-    createRoutesFromElements([
-      <Route
-        key='/'
-        path='/'
-        element={<Navigate to={routes.EXPERT} replace />}
-      />,
-      <Route
-        key={routes.LOGIN}
-        path={routes.LOGIN}
-        element={
-          <PublicRoute isLoggedIn={isLoggedIn}>
-            {elementWithSuspense(<LoginPage dispatchUser={dispatchUser} />)}
-          </PublicRoute>
-        }
-      />,
-      <Route
-        key={routes.EXPERT}
-        path={routes.EXPERT}
-        element={
-          <PrivateRoute isLoggedIn={isLoggedIn} dispatchUser={dispatchUser}>
-            {elementWithSuspense(
-              <ExpertPage
-                tokenAddress={tokenAddress}
-                refetchBalance={balance?.refetch || noop}
-              />,
-            )}
-          </PrivateRoute>
-        }
-      />,
-      <Route
-        key='*'
-        path='*'
-        element={<Navigate to={routes.EXPERT} replace />}
-      />,
-    ]),
-  );
+  const routesArray = createRoutesFromElements([
+    <Route
+      key='/'
+      path='/'
+      element={<Navigate to={routes.EXPERT} replace />}
+    />,
+    <Route
+      key={routes.LOGIN}
+      path={routes.LOGIN}
+      element={
+        <PublicRoute isLoggedIn={isLoggedIn}>
+          {elementWithSuspense(<LoginPage dispatchUser={dispatchUser} />)}
+        </PublicRoute>
+      }
+    />,
+    <Route
+      key={routes.EXPERT}
+      path={routes.EXPERT}
+      element={
+        <PrivateRoute isLoggedIn={isLoggedIn} dispatchUser={dispatchUser}>
+          {elementWithSuspense(
+            <ExpertPage
+              tokenAddress={tokenAddress}
+              refetchBalance={balance?.refetch || noop}
+            />,
+          )}
+        </PrivateRoute>
+      }
+    />,
+    <Route key={routes.OAUTH} path={routes.OAUTH} element={<OauthPage />} />,
+    <Route
+      key='*'
+      path='*'
+      element={<Navigate to={routes.EXPERT} replace />}
+    />,
+  ]);
 
-  return (
-    <RouterProvider router={router} fallbackElement={<LoadingSpinner />} />
-  );
+  const element = useRoutes(routesArray);
+
+  return element;
 };
 
 export default App;

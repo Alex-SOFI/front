@@ -3,23 +3,17 @@ import {
   Dispatch,
   FunctionComponent,
   SetStateAction,
-  useCallback,
   useMemo,
 } from 'react';
-import { useDispatch } from 'react-redux';
 
 import styled from '@emotion/styled';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import Box from '@mui/material/Box';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { PUBLIC_URL } from 'config';
-import { logoutUser } from 'service/magic';
-
-import { UserState } from 'interfaces';
+import useMagic from 'hooks/useMagic';
 
 import statusTexts from 'constants/statusTexts';
-
-import { setUser } from 'ducks/user/slice';
 
 import {
   Button,
@@ -93,13 +87,6 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   mint,
   isApproveButtonVisible,
 }) => {
-  const dispatch = useDispatch();
-  const dispatchUser = useCallback(
-    (payload: UserState) => {
-      dispatch(setUser(payload));
-    },
-    [dispatch],
-  );
   const { open } = useWeb3Modal();
   const isTransactionLoading = useMemo(
     () =>
@@ -175,6 +162,8 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
     status?.error,
     open,
   ]);
+
+  const { logoutUser } = useMagic(window.location.pathname);
 
   const USDC = useMemo(
     () => (
@@ -276,8 +265,8 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         <ButtonWithIcon
           onClick={
             /* () => {
-            setIsMintSelected(!isMintSelected);
-          } */ () => logoutUser(dispatchUser)
+              setIsMintSelected(!isMintSelected);
+            } */ () => logoutUser(/* dispatchUser */)
           }
           ariaLabel={
             isMintSelected ? 'Switch to redeem state' : 'Switch to mint state'
