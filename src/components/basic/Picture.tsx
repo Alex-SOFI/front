@@ -25,7 +25,7 @@ const PictureStyled = styled.picture<PictureStyledProps>`
   ${(props) => props.marginRight && `margin-right: ${props.marginRight}`}
 `;
 
-interface PictureProps extends PropsWithChildren, PictureStyledProps {
+interface PictureProps extends PictureStyledProps {
   alt: string;
   src: string;
 }

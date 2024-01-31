@@ -9,19 +9,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Navigate,
   Route,
-  RouterProvider,
-  createBrowserRouter,
   createRoutesFromElements,
+  useRoutes,
 } from 'react-router-dom';
 
 import { formatUnits } from 'ethers';
+import useMagic from 'hooks/useMagic';
+import { PrivateRoute, PublicRoute } from 'layout';
 import { useAccount, useConnect, useReadContracts } from 'wagmi';
+
+import { UserState } from 'interfaces';
 
 import addresses from 'constants/addresses';
 import chainIds from 'constants/chainIds';
 import { tokenContract } from 'constants/contracts';
 import routes from 'constants/routes';
 
+import { selectUser } from 'ducks/user';
+import { setUser } from 'ducks/user/slice';
 import { selectIsMintSelected, selectIsWrongNetwork } from 'ducks/wallet';
 import { storeWalletInfo } from 'ducks/wallet/slice';
 
@@ -30,8 +35,27 @@ import { lazyWithRetry, noop } from 'tools';
 import { LoadingSpinner } from 'components/basic';
 
 const ExpertPage = lazyWithRetry(() => import('pages/ExpertPage'));
+const LoginPage = lazyWithRetry(() => import('pages/LoginPage'));
+const OauthPage = lazyWithRetry(() => import('pages/OauthPage'));
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  const { isLoggedIn } = useSelector(selectUser);
+
+  const dispatchUser = useCallback(
+    (payload: UserState) => {
+      dispatch(setUser(payload));
+    },
+    [dispatch],
+  );
+
+  const { checkUserLoggedIn } = useMagic(window.location.pathname);
+
+  useEffect(() => {
+    checkUserLoggedIn();
+  }, [checkUserLoggedIn]);
+
   const isMintSelected = !!useSelector(selectIsMintSelected);
 
   const { address, isConnected, chain } = useAccount();
@@ -65,8 +89,6 @@ const App = () => {
       },
     ],
   });
-
-  const dispatch = useDispatch();
 
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
@@ -104,32 +126,46 @@ const App = () => {
     [],
   );
 
-  const router = createBrowserRouter(
-    createRoutesFromElements([
-      <Route
-        key='/'
-        path='/'
-        element={<Navigate to={routes.EXPERT} replace />}
-      />,
-      <Route
-        key={routes.EXPERT}
-        path={routes.EXPERT}
-        element={elementWithSuspense(
-          <ExpertPage
-            tokenAddress={tokenAddress}
-            refetchBalance={balance?.refetch || noop}
-          />,
-        )}
-      />,
-      <Route
-        key='*'
-        path='*'
-        element={<Navigate to={routes.EXPERT} replace />}
-      />,
-    ]),
-  );
+  const routesArray = createRoutesFromElements([
+    <Route
+      key='/'
+      path='/'
+      element={<Navigate to={routes.EXPERT} replace />}
+    />,
+    <Route
+      key={routes.LOGIN}
+      path={routes.LOGIN}
+      element={
+        <PublicRoute isLoggedIn={isLoggedIn}>
+          {elementWithSuspense(<LoginPage dispatchUser={dispatchUser} />)}
+        </PublicRoute>
+      }
+    />,
+    <Route
+      key={routes.EXPERT}
+      path={routes.EXPERT}
+      element={
+        <PrivateRoute isLoggedIn={isLoggedIn} dispatchUser={dispatchUser}>
+          {elementWithSuspense(
+            <ExpertPage
+              tokenAddress={tokenAddress}
+              refetchBalance={balance?.refetch || noop}
+            />,
+          )}
+        </PrivateRoute>
+      }
+    />,
+    <Route key={routes.OAUTH} path={routes.OAUTH} element={<OauthPage />} />,
+    <Route
+      key='*'
+      path='*'
+      element={<Navigate to={routes.EXPERT} replace />}
+    />,
+  ]);
 
-  return <RouterProvider router={router} />;
+  const element = useRoutes(routesArray);
+
+  return element;
 };
 
 export default App;

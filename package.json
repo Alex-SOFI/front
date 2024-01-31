@@ -14,6 +14,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@magic-ext/oauth": "^16.0.0",
     "@mui/icons-material": "^5.15.0",
     "@mui/material": "^5.14.20",
     "@reduxjs/toolkit": "^2.0.1",
@@ -32,6 +33,7 @@
     "emotion-normalize": "^11.0.1",
     "ethers": "^6.9.2",
     "history": "^5.3.0",
+    "magic-sdk": "^22.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^9.0.4",

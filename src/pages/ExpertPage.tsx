@@ -21,6 +21,8 @@ import { ReadContractsErrorType, readContract } from 'wagmi/actions';
 
 import wagmiConfig from 'configs/wagmiConfig';
 
+import { UserState } from 'interfaces';
+
 import addresses from 'constants/addresses';
 import chainIds from 'constants/chainIds';
 import { tokenContract, tokenManagerContract } from 'constants/contracts';
@@ -34,10 +36,8 @@ import { changeMintState } from 'ducks/wallet/slice';
 
 import { formatBalance, status } from 'tools';
 
-import {
-  ExpertPageLinksBlock,
-  ExpertPageMain,
-} from 'components/pagesComponents/expertPage';
+import LinksList from 'components/pagesComponents/LinksList';
+import ExpertPageMain from 'components/pagesComponents/expertPage/ExpertPageMain';
 
 import { Layout } from 'components';
 
@@ -48,6 +48,7 @@ interface ExpertPageProps {
   ) => Promise<
     QueryObserverResult<[bigint, number, string], ReadContractsErrorType>
   >;
+  dispatchUser: (payload: UserState) => void;
 }
 
 const ExpertPage: FunctionComponent<ExpertPageProps> = ({
@@ -321,7 +322,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
           isApproveButtonVisible={isApproveButtonVisible}
         />
       }
-      footer={<ExpertPageLinksBlock />}
+      footer={<LinksList />}
     />
   );
 };

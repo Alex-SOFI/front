@@ -8,6 +8,7 @@ interface TextProps extends PropsWithChildren {
   color?: string;
   fontSize?: string;
   fontWeight?: number;
+  alignSelf?: string;
   [x: string]: any;
 }
 
@@ -17,6 +18,7 @@ const Text: FunctionComponent<TextProps> = ({
   fontSize,
   children,
   fontWeight,
+  alignSelf,
   ...props
 }) => {
   return (
@@ -26,6 +28,7 @@ const Text: FunctionComponent<TextProps> = ({
       {...(fontSize ? { fontSize } : {})}
       {...props}
       {...(fontWeight ? { fontWeight } : {})}
+      {...(alignSelf ? { alignSelf } : {})}
     >
       {children}
     </Typography>
