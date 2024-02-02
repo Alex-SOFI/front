@@ -107,15 +107,31 @@ const status = ({
   switch (true) {
     case isWrongNetwork:
       return {
-        text: statusTexts.UNSUPPORTED_NETWORK,
+        text: (
+          <TextWithHash
+            text={statusTexts.UNSUPPORTED_NETWORK}
+            color={theme.colors.error}
+            hash={hash}
+          />
+        ),
         error: true,
       };
 
     case isMaxValueError:
       return {
-        text: isMintSelected
-          ? statusTexts.MAX_USDC_VALUE
-          : statusTexts.MAX_SOFI_VALUE,
+        text: isMintSelected ? (
+          <TextWithHash
+            text={statusTexts.MAX_USDC_VALUE}
+            color={theme.colors.error}
+            hash={hash}
+          />
+        ) : (
+          <TextWithHash
+            text={statusTexts.MAX_SOFI_VALUE}
+            color={theme.colors.error}
+            hash={hash}
+          />
+        ),
         error: true,
       };
 
