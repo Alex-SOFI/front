@@ -47,8 +47,7 @@ interface ExpertPageMainProps {
   isConnected: boolean;
   balance: string | number | undefined;
   status: {
-    color: string;
-    text: string;
+    text: string | JSX.Element;
     error: boolean;
   } | null;
   isWrongNetwork: boolean;
@@ -65,6 +64,7 @@ interface ExpertPageMainProps {
   isLoading: boolean;
   mint: () => void;
   isApproveButtonVisible?: boolean;
+  setMaxActiveValue: () => void;
 }
 
 const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
@@ -85,6 +85,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   isLoading,
   mint,
   isApproveButtonVisible,
+  setMaxActiveValue,
 }) => {
   const { open } = useWeb3Modal();
   const isTransactionLoading = useMemo(
@@ -248,14 +249,18 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         />
       </InputGridBox>
       <InputGridBox>
-        <Text
-          sx={{ gridColumn: 3, textAlign: 'end' }}
-          variant='body1'
-          color={theme.colors.grayMedium}
+        <Button
+          variant='text'
+          onClick={setMaxActiveValue}
+          gridColumn={3}
           fontSize='14px'
+          textColor={theme.colors.grayMedium}
+          minHeight='0rem'
+          lineHeight={1.5}
+          justifySelf='end'
         >
           Max: {balance}
-        </Text>
+        </Button>
       </InputGridBox>
       <InputGridBox mb='1rem' justifyItems='center'>
         <Box sx={{ gridColumn: 2, width: '6rem' }} />
@@ -308,16 +313,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           minHeight: 'clamp(3rem, 6.4dvh, 4rem)',
         }}
       >
-        {status && (
-          <Text
-            sx={{ gridColumn: 2 }}
-            variant='body2'
-            color={status?.color}
-            ml='1rem'
-          >
-            {status?.text}
-          </Text>
-        )}
+        {status && status?.text}
       </Box>
       {renderButton}
     </Box>

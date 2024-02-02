@@ -14,6 +14,9 @@ interface ButtonProps extends PropsWithChildren {
   minWidth?: string;
   ariaLabel?: string;
   fullWidth?: boolean;
+  minHeight?: string;
+  gridColumn?: number;
+  textColor?: string;
   [x: string]: any;
 }
 
@@ -28,6 +31,8 @@ const Button: FunctionComponent<ButtonProps> = ({
   children,
   ariaLabel,
   fullWidth,
+  minHeight,
+  textColor,
   ...props
 }) => {
   return (
@@ -37,12 +42,14 @@ const Button: FunctionComponent<ButtonProps> = ({
       type={type || 'button'}
       sx={{
         boxShadow: 0,
-        minHeight: '2.719rem',
+        minHeight: minHeight || '2.719rem',
+        textAlign: 'right',
         ...(variant
           ? { fontWeight: isPrimaryColor ? 500 : 400, padding: '0px' }
           : {}),
         ...(maxWidth ? { maxWidth } : {}),
         ...(minWidth ? { minWidth } : {}),
+        ...(textColor ? { color: textColor } : {}),
         ...props,
       }}
       onClick={onClick}

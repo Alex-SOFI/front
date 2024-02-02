@@ -1,4 +1,4 @@
-import { FunctionComponent, PropsWithChildren } from 'react';
+import { FunctionComponent } from 'react';
 
 import styled from '@emotion/styled';
 

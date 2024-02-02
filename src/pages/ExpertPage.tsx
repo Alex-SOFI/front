@@ -260,6 +260,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
         isTransactionError,
         isMintSelected,
         isFunctionCalled,
+        hash,
       }),
     [
       isWrongNetwork,
@@ -273,6 +274,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
       isTransactionError,
       isMintSelected,
       isFunctionCalled,
+      hash,
     ],
   );
 
@@ -299,6 +301,12 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     switchChain({ chainId: chainIds.TESTNET });
   }, [switchChain]);
 
+  const setMaxActiveValue = useCallback(() => {
+    if (balance) {
+      setActiveInputValue(balance);
+    }
+  }, [balance]);
+
   return (
     <Layout
       main={
@@ -320,6 +328,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
           isLoading={isPending || isTransactionLoading}
           mint={mintOrRedeem}
           isApproveButtonVisible={isApproveButtonVisible}
+          setMaxActiveValue={setMaxActiveValue}
         />
       }
       footer={<LinksList />}
