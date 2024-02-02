@@ -36,8 +36,7 @@ import { changeMintState } from 'ducks/wallet/slice';
 
 import { formatBalance, status } from 'tools';
 
-import LinksList from 'components/pagesComponents/LinksList';
-import ExpertPageMain from 'components/pagesComponents/expertPage/ExpertPageMain';
+import { ExpertPageMain } from 'components/pagesComponents/expertPage';
 
 import { Layout } from 'components';
 
@@ -331,7 +330,6 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
           setMaxActiveValue={setMaxActiveValue}
         />
       }
-      footer={<LinksList />}
     />
   );
 };

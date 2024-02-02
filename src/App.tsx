@@ -37,6 +37,8 @@ import { LoadingSpinner } from 'components/basic';
 const ExpertPage = lazyWithRetry(() => import('pages/ExpertPage'));
 const LoginPage = lazyWithRetry(() => import('pages/LoginPage'));
 const OauthPage = lazyWithRetry(() => import('pages/OauthPage'));
+const DashboardPage = lazyWithRetry(() => import('pages/DashboardPage'));
+const HomePage = lazyWithRetry(() => import('pages/HomePage'));
 
 const App = () => {
   const dispatch = useDispatch();
@@ -127,11 +129,7 @@ const App = () => {
   );
 
   const routesArray = createRoutesFromElements([
-    <Route
-      key='/'
-      path='/'
-      element={<Navigate to={routes.EXPERT} replace />}
-    />,
+    <Route key='/' path='/' element={<HomePage />} />,
     <Route
       key={routes.LOGIN}
       path={routes.LOGIN}
@@ -156,6 +154,7 @@ const App = () => {
       }
     />,
     <Route key={routes.OAUTH} path={routes.OAUTH} element={<OauthPage />} />,
+    <Route key={routes.MAIN} path={routes.MAIN} element={<DashboardPage />} />,
     <Route
       key='*'
       path='*'

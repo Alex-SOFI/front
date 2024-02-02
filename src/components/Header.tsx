@@ -1,5 +1,4 @@
 import { FunctionComponent } from 'react';
-import { useSelector } from 'react-redux';
 
 import styled from '@emotion/styled';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -9,16 +8,7 @@ import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { PUBLIC_URL } from 'config';
 import { useDisconnect } from 'wagmi';
 
-import { selectUser } from 'ducks/user';
-
-import {
-  AppMenu,
-  Button,
-  ButtonWithIcon,
-  Link,
-  Picture,
-  Text,
-} from 'components/basic';
+import { Button, ButtonWithIcon, Link, Picture, Text } from 'components/basic';
 
 import { muiTheme } from 'styles/globalStyle';
 import { theme } from 'styles/theme';
@@ -54,12 +44,9 @@ const Header: FunctionComponent<HeaderProps> = ({
   const { disconnect } = useDisconnect();
   const { open } = useWeb3Modal();
 
-  const { isLoggedIn } = useSelector(selectUser);
-
   return (
     <StyledHeader>
       <Box display='flex' alignItems='center'>
-        {isLoggedIn && <AppMenu />}
         <Link
           href='https://www.sophie.fi/'
           ariaLabel='Visit sophie.fi main page which opens in a new window.'
