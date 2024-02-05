@@ -1,6 +1,6 @@
 import { FunctionComponent, useCallback, useEffect, useState } from 'react';
 
-import useMagic from 'hooks/useMagic';
+import { useMagic } from 'hooks';
 
 import { UserState } from 'interfaces';
 

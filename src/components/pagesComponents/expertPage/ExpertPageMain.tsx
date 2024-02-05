@@ -192,7 +192,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
       sx={{
         maxWidth: theme.breakpoints.sm,
         paddingTop: theme.space.sm,
-        paddingVottom: theme.space.sm,
+        paddingBottom: theme.space.sm,
         width: '100%',
         display: 'flex',
         alignItems: 'center',

@@ -1,10 +1,4 @@
-import React, {
-  ReactNode,
-  Suspense,
-  useCallback,
-  useEffect,
-  useMemo,
-} from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Navigate,
@@ -14,8 +8,8 @@ import {
 } from 'react-router-dom';
 
 import { formatUnits } from 'ethers';
-import useMagic from 'hooks/useMagic';
-import { PrivateRoute, PublicRoute } from 'layout';
+import { useMagic } from 'hooks';
+import { HomeRoute, PrivateRoute, PublicRoute, WalletRoute } from 'layout';
 import { useAccount, useConnect, useReadContracts } from 'wagmi';
 
 import { UserState } from 'interfaces';
@@ -31,8 +25,6 @@ import { selectIsMintSelected, selectIsWrongNetwork } from 'ducks/wallet';
 import { storeWalletInfo } from 'ducks/wallet/slice';
 
 import { lazyWithRetry, noop } from 'tools';
-
-import { LoadingSpinner } from 'components/basic';
 
 const ExpertPage = lazyWithRetry(() => import('pages/ExpertPage'));
 const LoginPage = lazyWithRetry(() => import('pages/LoginPage'));
@@ -121,40 +113,47 @@ const App = () => {
     isWrongNetwork,
   ]);
 
-  const elementWithSuspense = useCallback(
-    (element: ReactNode) => (
-      <Suspense fallback={<LoadingSpinner />}>{element}</Suspense>
-    ),
-    [],
-  );
-
   const routesArray = createRoutesFromElements([
-    <Route key='/' path='/' element={<HomePage />} />,
     <Route
-      key={routes.LOGIN}
-      path={routes.LOGIN}
+      key={routes.HOME}
+      path={routes.HOME}
       element={
-        <PublicRoute isLoggedIn={isLoggedIn}>
-          {elementWithSuspense(<LoginPage dispatchUser={dispatchUser} />)}
-        </PublicRoute>
+        <HomeRoute>
+          <HomePage />
+        </HomeRoute>
       }
     />,
     <Route
       key={routes.EXPERT}
       path={routes.EXPERT}
       element={
-        <PrivateRoute isLoggedIn={isLoggedIn} dispatchUser={dispatchUser}>
-          {elementWithSuspense(
-            <ExpertPage
-              tokenAddress={tokenAddress}
-              refetchBalance={balance?.refetch || noop}
-            />,
-          )}
-        </PrivateRoute>
+        <WalletRoute>
+          <ExpertPage
+            tokenAddress={tokenAddress}
+            refetchBalance={balance?.refetch || noop}
+          />
+        </WalletRoute>
+      }
+    />,
+    <Route
+      key={routes.LOGIN}
+      path={routes.LOGIN}
+      element={
+        <PublicRoute isLoggedIn={isLoggedIn}>
+          {<LoginPage dispatchUser={dispatchUser} />}
+        </PublicRoute>
       }
     />,
     <Route key={routes.OAUTH} path={routes.OAUTH} element={<OauthPage />} />,
-    <Route key={routes.MAIN} path={routes.MAIN} element={<DashboardPage />} />,
+    <Route
+      key={routes.MAIN}
+      path={routes.MAIN}
+      element={
+        <PrivateRoute>
+          <DashboardPage />
+        </PrivateRoute>
+      }
+    />,
     <Route
       key='*'
       path='*'

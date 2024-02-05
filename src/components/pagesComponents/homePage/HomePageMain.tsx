@@ -3,8 +3,6 @@ import { FunctionComponent } from 'react';
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 
-import { noop } from 'tools';
-
 import { Button } from 'components/basic';
 
 import { theme } from 'styles/theme';
@@ -21,11 +19,19 @@ const StyledBox = styled(Box)`
   }
 `;
 
-const HomePageMain: FunctionComponent = () => {
+interface HomePageMainProps {
+  handleEmailButtonClick: () => void;
+  handleWalletButtonClick: () => void;
+}
+
+const HomePageMain: FunctionComponent<HomePageMainProps> = ({
+  handleEmailButtonClick,
+  handleWalletButtonClick,
+}) => {
   return (
     <StyledBox>
-      <Button onClick={noop}>E-mail signup / signin</Button>
-      <Button onClick={noop}>I use my own wallet</Button>
+      <Button onClick={handleEmailButtonClick}>E-mail signup / signin</Button>
+      <Button onClick={handleWalletButtonClick}>I use my own wallet</Button>
     </StyledBox>
   );
 };

@@ -86,7 +86,7 @@ const useMagic = (pathname: string) => {
     });
 
     const render = async () => {
-      if (pathname === '/oauth') {
+      if (pathname === routes.OAUTH) {
         try {
           await magic.current?.oauth.getRedirectResult();
           navigate(routes.EXPERT, { replace: true });

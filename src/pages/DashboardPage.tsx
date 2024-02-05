@@ -5,7 +5,7 @@ import { DashboardPageMain } from 'components/pagesComponents/dashboardPage';
 import { Layout } from 'components';
 
 const DashboardPage: FunctionComponent = () => {
-  return <Layout isLinkOnly main={<DashboardPageMain />} />;
+  return <Layout main={<DashboardPageMain balance={null} />} />;
 };
 
 export default DashboardPage;

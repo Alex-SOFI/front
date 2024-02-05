@@ -1,6 +1,7 @@
 import { FunctionComponent, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useHasWallet, useMagic } from 'hooks';
 import { useSwitchChain } from 'wagmi';
 
 import chainIds from 'constants/chainIds';
@@ -21,6 +22,8 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
   const { address, isConnected } = useSelector(selectWalletInfo);
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
+  const userHasWallet = useHasWallet();
+
   const { switchChain } = useSwitchChain();
 
   const handleSwitchButtonClick = useCallback(() => {
@@ -32,6 +35,8 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
     [address],
   );
 
+  const { logoutUser } = useMagic(window.location.pathname);
+
   return (
     <Header
       copyAddress={copyAddress}
@@ -40,6 +45,8 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
       address={address}
       handleSwitchButtonClick={handleSwitchButtonClick}
       isWrongNetwork={isWrongNetwork}
+      userHasWallet={userHasWallet}
+      logoutUser={logoutUser}
     />
   );
 };
