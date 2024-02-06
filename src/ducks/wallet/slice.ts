@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
+import { Address } from 'viem';
 
 import { WalletInfoState } from 'interfaces';
 
@@ -22,11 +23,22 @@ export const walletSlice = createSlice({
     changeMintState(state, { payload }: { payload: boolean }) {
       state.isMintSelected = payload;
     },
+    storeMagicLinkAddress(state, { payload }: { payload: Address }) {
+      state.magicLinkAddress = payload;
+    },
+    resetMagicLinkAddress(state) {
+      state.magicLinkAddress = '0x';
+    },
   },
 });
 
 const { actions, reducer } = walletSlice;
 
-export const { storeWalletInfo, changeMintState } = actions;
+export const {
+  storeWalletInfo,
+  changeMintState,
+  storeMagicLinkAddress,
+  resetMagicLinkAddress,
+} = actions;
 
 export default reducer;

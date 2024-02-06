@@ -8,8 +8,9 @@ import {
 } from 'react-router-dom';
 
 import { formatUnits } from 'ethers';
-import { useMagic } from 'hooks';
+import { useHasWallet, useMagic } from 'hooks';
 import { HomeRoute, PrivateRoute, PublicRoute, WalletRoute } from 'layout';
+import { Address } from 'viem';
 import { useAccount, useConnect, useReadContracts } from 'wagmi';
 
 import { UserState } from 'interfaces';
@@ -22,7 +23,7 @@ import routes from 'constants/routes';
 import { selectUser } from 'ducks/user';
 import { setUser } from 'ducks/user/slice';
 import { selectIsMintSelected, selectIsWrongNetwork } from 'ducks/wallet';
-import { storeWalletInfo } from 'ducks/wallet/slice';
+import { storeMagicLinkAddress, storeWalletInfo } from 'ducks/wallet/slice';
 
 import { lazyWithRetry, noop } from 'tools';
 
@@ -34,8 +35,21 @@ const HomePage = lazyWithRetry(() => import('pages/HomePage'));
 
 const App = () => {
   const dispatch = useDispatch();
-
   const { isLoggedIn } = useSelector(selectUser);
+  const userHasWallet = useHasWallet();
+  const { provider } = useMagic(window.location.pathname);
+
+  const getAddress = useCallback(async () => {
+    return provider?.getSigner().then((signer) => {
+      dispatch(storeMagicLinkAddress(signer.address as Address));
+    });
+  }, [dispatch, provider]);
+
+  useEffect(() => {
+    if (isLoggedIn && !userHasWallet) {
+      getAddress();
+    }
+  }, [getAddress, isLoggedIn, userHasWallet]);
 
   const dispatchUser = useCallback(
     (payload: UserState) => {
@@ -149,7 +163,7 @@ const App = () => {
       key={routes.MAIN}
       path={routes.MAIN}
       element={
-        <PrivateRoute>
+        <PrivateRoute isLoggedIn={isLoggedIn}>
           <DashboardPage />
         </PrivateRoute>
       }

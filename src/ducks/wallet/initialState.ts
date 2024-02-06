@@ -8,4 +8,5 @@ export const initialState: WalletInfoState = {
   balance: '0',
   decimals: 0,
   isMintSelected: true,
+  magicLinkAddress: '0x',
 };
