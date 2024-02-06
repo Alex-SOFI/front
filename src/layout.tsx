@@ -1,7 +1,12 @@
-import { FunctionComponent, PropsWithChildren } from 'react';
+import {
+  FunctionComponent,
+  PropsWithChildren,
+  ReactNode,
+  Suspense,
+} from 'react';
 import { Navigate } from 'react-router-dom';
 
-import { UserState } from 'interfaces';
+import { useHasWallet } from 'hooks';
 
 import routes from 'constants/routes';
 
@@ -9,25 +14,85 @@ import { LoadingSpinner } from 'components/basic';
 
 interface LayoutProps extends PropsWithChildren {
   isLoggedIn?: boolean | null | undefined;
-  dispatchUser?: (payload: UserState) => void;
+  userHasWallet?: boolean;
 }
+
+const elementWithSuspense = (element: ReactNode) => (
+  <Suspense fallback={<LoadingSpinner />}>{element}</Suspense>
+);
+
+export const HomeRoute: FunctionComponent<LayoutProps> = ({ children }) => {
+  const userHasWallet = useHasWallet();
+  if (userHasWallet === null) {
+    return elementWithSuspense(children);
+  }
+  return userHasWallet ? (
+    <Navigate to={routes.EXPERT} replace />
+  ) : (
+    <Navigate to={routes.LOGIN} replace />
+  );
+};
 
 export const PrivateRoute: FunctionComponent<LayoutProps> = ({
   isLoggedIn,
   children,
 }) => {
-  if (isLoggedIn === undefined || isLoggedIn === null) {
-    return <LoadingSpinner />;
+  const userHasWallet = useHasWallet();
+  switch (true) {
+    case userHasWallet === null:
+      return <Navigate to={routes.HOME} replace />;
+
+    case userHasWallet:
+      return <Navigate to={routes.EXPERT} replace />;
+
+    case !userHasWallet && (isLoggedIn === undefined || isLoggedIn === null):
+      return <LoadingSpinner />;
+
+    case !userHasWallet && isLoggedIn:
+      return elementWithSuspense(children);
+
+    case !userHasWallet && !isLoggedIn:
+      return <Navigate to={routes.LOGIN} replace />;
+
+    default:
+      return null;
   }
-  return isLoggedIn ? children : <Navigate to={routes.LOGIN} replace />;
 };
 
 export const PublicRoute: FunctionComponent<LayoutProps> = ({
   isLoggedIn,
   children,
 }) => {
-  if (isLoggedIn === undefined || isLoggedIn === null) {
-    return <LoadingSpinner />;
+  const userHasWallet = useHasWallet();
+  switch (true) {
+    case userHasWallet === null:
+      return <Navigate to={routes.HOME} replace />;
+
+    case userHasWallet:
+      return <Navigate to={routes.EXPERT} replace />;
+
+    case !userHasWallet && (isLoggedIn === undefined || isLoggedIn === null):
+      return <LoadingSpinner />;
+
+    case !userHasWallet && isLoggedIn:
+      return <Navigate to={routes.MAIN} replace />;
+
+    case !userHasWallet && !isLoggedIn:
+      return elementWithSuspense(children);
+
+    default:
+      return null;
   }
-  return isLoggedIn ? <Navigate to={routes.EXPERT} replace /> : children;
+};
+
+export const WalletRoute: FunctionComponent<LayoutProps> = ({ children }) => {
+  const userHasWallet = useHasWallet();
+  if (userHasWallet === null) {
+    return <Navigate to={routes.HOME} replace />;
+  }
+  return userHasWallet ? (
+    elementWithSuspense(children)
+  ) : (
+    <Navigate to={routes.LOGIN} replace />
+  );
 };

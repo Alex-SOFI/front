@@ -1,5 +1,4 @@
-import { FunctionComponent } from 'react';
-import { useSelector } from 'react-redux';
+import { FunctionComponent, useCallback, useMemo } from 'react';
 
 import styled from '@emotion/styled';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -9,16 +8,9 @@ import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { PUBLIC_URL } from 'config';
 import { useDisconnect } from 'wagmi';
 
-import { selectUser } from 'ducks/user';
+import { noop } from 'tools';
 
-import {
-  AppMenu,
-  Button,
-  ButtonWithIcon,
-  Link,
-  Picture,
-  Text,
-} from 'components/basic';
+import { Button, ButtonWithIcon, Link, Picture, Text } from 'components/basic';
 
 import { muiTheme } from 'styles/globalStyle';
 import { theme } from 'styles/theme';
@@ -41,6 +33,8 @@ interface HeaderProps {
   address?: string;
   handleSwitchButtonClick: (chainId_?: number | undefined) => void;
   isWrongNetwork: boolean;
+  userHasWallet: boolean | null;
+  logoutUser: () => Promise<void>;
 }
 
 const Header: FunctionComponent<HeaderProps> = ({
@@ -50,16 +44,110 @@ const Header: FunctionComponent<HeaderProps> = ({
   address,
   handleSwitchButtonClick,
   isWrongNetwork,
+  userHasWallet,
+  logoutUser,
 }) => {
   const { disconnect } = useDisconnect();
   const { open } = useWeb3Modal();
 
-  const { isLoggedIn } = useSelector(selectUser);
+  const addressButton = useMemo(
+    () => (
+      <Button onClick={copyAddress} variant='text' maxWidth='11rem'>
+        <Text
+          sx={{
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+          }}
+          variant='h1'
+        >
+          {address}
+        </Text>
+        <ContentCopyIcon
+          sx={{
+            fontSize: '30px',
+          }}
+        />
+      </Button>
+    ),
+    [address, copyAddress],
+  );
+
+  const disconnectButton = useMemo(
+    () => (
+      <ButtonWithIcon
+        onClick={userHasWallet ? disconnect : logoutUser}
+        maxHeight='2.719rem'
+        color='black'
+        ariaLabel='disconnect'
+      >
+        <LogoutIcon aria-label='disconnect' fontSize='large' />
+      </ButtonWithIcon>
+    ),
+    [disconnect, logoutUser, userHasWallet],
+  );
+
+  const render = useCallback(() => {
+    if (isLinkOnly) {
+      return null;
+    } else {
+      if (userHasWallet) {
+        return (
+          <>
+            <Picture
+              src={`${PUBLIC_URL}/icons/logo_polygon.svg`}
+              alt='Polygon logo'
+              width={40}
+              height={40}
+              marginRight='1rem'
+            />
+            {isConnected ? (
+              isWrongNetwork ? (
+                <>
+                  <Button
+                    onClick={() => handleSwitchButtonClick()}
+                    minWidth='11rem'
+                  >
+                    Switch Network
+                  </Button>
+                </>
+              ) : (
+                <Box display='flex' maxWidth='11rem'>
+                  {addressButton}
+                  {disconnectButton}
+                </Box>
+              )
+            ) : (
+              <Button onClick={() => open()} minWidth='11rem'>
+                Connect Wallet
+              </Button>
+            )}
+          </>
+        );
+      } else {
+        return (
+          <>
+            {addressButton}
+            <Button onClick={noop}>Buy SOFI</Button>
+            {disconnectButton}
+          </>
+        );
+      }
+    }
+  }, [
+    addressButton,
+    disconnectButton,
+    handleSwitchButtonClick,
+    isConnected,
+    isLinkOnly,
+    isWrongNetwork,
+    open,
+    userHasWallet,
+  ]);
 
   return (
     <StyledHeader>
       <Box display='flex' alignItems='center'>
-        {isLoggedIn && <AppMenu />}
         <Link
           href='https://www.sophie.fi/'
           ariaLabel='Visit sophie.fi main page which opens in a new window.'
@@ -67,62 +155,7 @@ const Header: FunctionComponent<HeaderProps> = ({
           sophie.fi
         </Link>
       </Box>
-      {!isLinkOnly && (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Picture
-            src={`${PUBLIC_URL}/icons/logo_polygon.svg`}
-            alt='Polygon logo'
-            width={40}
-            height={40}
-            marginRight='1rem'
-          />
-          {isConnected ? (
-            isWrongNetwork ? (
-              <>
-                <Button
-                  onClick={() => handleSwitchButtonClick()}
-                  minWidth='11rem'
-                >
-                  Switch Network
-                </Button>
-              </>
-            ) : (
-              <Box display='flex' maxWidth='11rem'>
-                <Button onClick={copyAddress} variant='text' maxWidth='11rem'>
-                  <Text
-                    sx={{
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                    }}
-                    variant='h1'
-                  >
-                    {address}
-                  </Text>
-                  <ContentCopyIcon
-                    sx={{
-                      marginRight: '0.5rem',
-                      fontSize: '30px',
-                    }}
-                  />
-                </Button>
-                <ButtonWithIcon
-                  onClick={disconnect}
-                  maxHeight='2.719rem'
-                  color='black'
-                  ariaLabel='disconnect'
-                >
-                  <LogoutIcon aria-label='disconnect' fontSize='large' />
-                </ButtonWithIcon>
-              </Box>
-            )
-          ) : (
-            <Button onClick={() => open()} minWidth='11rem'>
-              Connect Wallet
-            </Button>
-          )}
-        </Box>
-      )}
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>{render()}</Box>
     </StyledHeader>
   );
 };

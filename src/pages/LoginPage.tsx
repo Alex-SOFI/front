@@ -1,13 +1,12 @@
 import { FunctionComponent, useCallback, useEffect, useState } from 'react';
 
-import useMagic from 'hooks/useMagic';
+import { useMagic } from 'hooks';
 
 import { UserState } from 'interfaces';
 
 import { emailRegex } from 'constants/regex';
 
-import LinksList from 'components/pagesComponents/LinksList';
-import LoginPageMain from 'components/pagesComponents/loginPage/LoginPageMain';
+import { LoginPageMain } from 'components/pagesComponents/loginPage';
 
 import { Layout } from 'components';
 
@@ -55,7 +54,6 @@ const LoginPage: FunctionComponent<LoginPageProps> = () => {
           error={error}
         />
       }
-      footer={<LinksList />}
     />
   );
 };

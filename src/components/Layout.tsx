@@ -2,6 +2,8 @@ import { FunctionComponent, ReactNode } from 'react';
 
 import styled from '@emotion/styled';
 
+import LinksList from './pagesComponents/LinksList';
+
 import HeaderContainer from 'containers/HeaderContainer';
 
 import { theme } from 'styles/theme';
@@ -39,20 +41,17 @@ const Footer = styled.footer`
 
 interface LayoutProps {
   main: ReactNode;
-  footer?: ReactNode;
   isLinkOnly?: boolean;
 }
 
-const Layout: FunctionComponent<LayoutProps> = ({
-  main,
-  footer,
-  isLinkOnly,
-}) => {
+const Layout: FunctionComponent<LayoutProps> = ({ main, isLinkOnly }) => {
   return (
     <Section>
       <HeaderContainer isLinkOnly={isLinkOnly} />
       <Main>{main}</Main>
-      {footer && <Footer>{footer}</Footer>}
+      <Footer>
+        <LinksList />
+      </Footer>
     </Section>
   );
 };

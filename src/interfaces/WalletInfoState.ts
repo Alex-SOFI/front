@@ -8,6 +8,7 @@ interface WalletInfoState {
   balance: string;
   decimals: number;
   isMintSelected?: boolean;
+  magicLinkAddress?: Address;
 }
 
 export default WalletInfoState;

@@ -3,13 +3,16 @@ import {
   SetStateAction,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
+  useState,
 } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { OAuthExtension } from '@magic-ext/oauth';
 import { InstanceWithExtensions, SDKBase } from '@magic-sdk/provider';
+import { BrowserProvider, ethers } from 'ethers';
 import { Magic } from 'magic-sdk';
 
 import routes from 'constants/routes';
@@ -24,6 +27,7 @@ const useMagic = (pathname: string) => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [provider, setProvider] = useState<BrowserProvider | null>(null);
 
   const loginUser = useCallback(
     async (
@@ -80,13 +84,23 @@ const useMagic = (pathname: string) => {
     }
   }, [dispatch, getToken]);
 
+  const customNodeOptions = useMemo(
+    () => ({
+      rpcUrl: 'https://rpc-amoy.polygon.technology/',
+
+      chainId: 80002,
+    }),
+    [],
+  );
+
   useEffect(() => {
     magic.current = new Magic(import.meta.env.VITE_MAGIC_LINK_PUBLIC_KEY, {
       extensions: [new OAuthExtension()],
+      network: customNodeOptions,
     });
 
     const render = async () => {
-      if (pathname === '/oauth') {
+      if (pathname === routes.OAUTH) {
         try {
           await magic.current?.oauth.getRedirectResult();
           navigate(routes.EXPERT, { replace: true });
@@ -98,9 +112,15 @@ const useMagic = (pathname: string) => {
       checkUserLoggedIn();
     };
     render();
-  }, [checkUserLoggedIn, navigate, pathname]);
+  }, [checkUserLoggedIn, customNodeOptions, navigate, pathname]);
 
-  return { loginUser, logoutUser, oauthLogin, checkUserLoggedIn };
+  useEffect(() => {
+    if (magic.current) {
+      setProvider(new ethers.BrowserProvider(magic.current.rpcProvider));
+    }
+  }, []);
+
+  return { loginUser, logoutUser, oauthLogin, checkUserLoggedIn, provider };
 };
 
 export default useMagic;

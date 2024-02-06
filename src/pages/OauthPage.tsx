@@ -10,7 +10,7 @@ const OauthPage: FunctionComponent = () => {
   const navigate = useNavigate();
 
   if (!searchParams.has('provider')) {
-    navigate(routes.EXPERT, { replace: true });
+    navigate(routes.MAIN, { replace: true });
   }
 
   return <LoadingSpinner />;
