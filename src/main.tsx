@@ -10,8 +10,6 @@ import { WagmiProvider } from 'wagmi';
 
 import wagmiConfig from 'configs/wagmiConfig';
 
-import { projectId } from 'constants/wagmiConfig';
-
 import { ThemeProvider } from '@mui/material/styles';
 import { globalStyle, muiTheme } from 'styles/globalStyle';
 
@@ -20,7 +18,11 @@ import { store } from './store';
 
 const queryClient = new QueryClient();
 
-createWeb3Modal({ wagmiConfig, projectId, themeMode: 'light' });
+createWeb3Modal({
+  wagmiConfig,
+  projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID,
+  themeMode: 'light',
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,

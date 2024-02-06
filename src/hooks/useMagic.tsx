@@ -103,7 +103,7 @@ const useMagic = (pathname: string) => {
       if (pathname === routes.OAUTH) {
         try {
           await magic.current?.oauth.getRedirectResult();
-          navigate(routes.EXPERT, { replace: true });
+          navigate(routes.MAIN, { replace: true });
         } catch {
           throw new Error('Oauth login failed');
         }
