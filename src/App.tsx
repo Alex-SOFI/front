@@ -32,6 +32,7 @@ const LoginPage = lazyWithRetry(() => import('pages/LoginPage'));
 const OauthPage = lazyWithRetry(() => import('pages/OauthPage'));
 const DashboardPage = lazyWithRetry(() => import('pages/DashboardPage'));
 const HomePage = lazyWithRetry(() => import('pages/HomePage'));
+const BuyPage = lazyWithRetry(() => import('pages/BuyPage'));
 
 const App = () => {
   const dispatch = useDispatch();
@@ -166,6 +167,15 @@ const App = () => {
         <PrivateRoute isLoggedIn={isLoggedIn}>
           <DashboardPage />
         </PrivateRoute>
+      }
+    />,
+    <Route
+      key={routes.BUY}
+      path={routes.BUY}
+      element={
+        /* <PrivateRoute isLoggedIn={isLoggedIn}> */
+        <BuyPage />
+        /* </PrivateRoute> */
       }
     />,
     <Route

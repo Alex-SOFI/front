@@ -12,8 +12,8 @@ const StyledBox = styled(Box)`
   flex-direction: column;
   width: 40%;
   height: 100%;
-  justify-content: space-between;
-  margin: 35% auto;
+  justify-content: space-evenly;
+  margin: auto;
   @media (max-width: ${theme.breakpoints.sm}) {
     width: 60%;
   }
@@ -30,8 +30,12 @@ const HomePageMain: FunctionComponent<HomePageMainProps> = ({
 }) => {
   return (
     <StyledBox>
-      <Button onClick={handleEmailButtonClick}>E-mail signup / signin</Button>
-      <Button onClick={handleWalletButtonClick}>I use my own wallet</Button>
+      <Button marginTop='20%' onClick={handleEmailButtonClick}>
+        E-mail signup / signin
+      </Button>
+      <Button marginBottom='20%' onClick={handleWalletButtonClick}>
+        I use my own wallet
+      </Button>
     </StyledBox>
   );
 };

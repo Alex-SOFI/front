@@ -60,5 +60,6 @@ export const theme = {
 
   breakpoints: {
     sm: '40em',
+    xl: '64em',
   },
 };

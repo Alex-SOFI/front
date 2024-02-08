@@ -8,8 +8,6 @@ import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { PUBLIC_URL } from 'config';
 import { useDisconnect } from 'wagmi';
 
-import { noop } from 'tools';
-
 import { Button, ButtonWithIcon, Link, Picture, Text } from 'components/basic';
 
 import { muiTheme } from 'styles/globalStyle';
@@ -35,6 +33,7 @@ interface HeaderProps {
   isWrongNetwork: boolean;
   userHasWallet: boolean | null;
   logoutUser: () => Promise<void>;
+  navigateToBuyPage: () => void;
 }
 
 const Header: FunctionComponent<HeaderProps> = ({
@@ -46,6 +45,7 @@ const Header: FunctionComponent<HeaderProps> = ({
   isWrongNetwork,
   userHasWallet,
   logoutUser,
+  navigateToBuyPage,
 }) => {
   const { disconnect } = useDisconnect();
   const { open } = useWeb3Modal();
@@ -128,7 +128,7 @@ const Header: FunctionComponent<HeaderProps> = ({
         return (
           <>
             {addressButton}
-            <Button onClick={noop}>Buy SOFI</Button>
+            <Button onClick={navigateToBuyPage}>Buy SOFI</Button>
             {disconnectButton}
           </>
         );
@@ -141,6 +141,7 @@ const Header: FunctionComponent<HeaderProps> = ({
     isConnected,
     isLinkOnly,
     isWrongNetwork,
+    navigateToBuyPage,
     open,
     userHasWallet,
   ]);

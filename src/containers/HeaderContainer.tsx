@@ -1,10 +1,12 @@
 import { FunctionComponent, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { useHasWallet, useMagic } from 'hooks';
 import { useSwitchChain } from 'wagmi';
 
 import chainIds from 'constants/chainIds';
+import routes from 'constants/routes';
 
 import { selectIsWrongNetwork, selectWalletInfo } from 'ducks/wallet';
 import { resetMagicLinkAddress } from 'ducks/wallet/slice';
@@ -21,6 +23,14 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
   isLinkOnly,
 }) => {
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
+  const navigateToBuyPage = useCallback(() => {
+    if (window.location.pathname !== routes.BUY) {
+      navigate(routes.BUY);
+    }
+  }, [navigate]);
 
   const { address, isConnected, magicLinkAddress } =
     useSelector(selectWalletInfo);
@@ -61,6 +71,7 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
       isWrongNetwork={isWrongNetwork}
       userHasWallet={userHasWallet}
       logoutUser={logout}
+      navigateToBuyPage={navigateToBuyPage}
     />
   );
 };
