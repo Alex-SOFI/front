@@ -6,7 +6,6 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import Box from '@mui/material/Box';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { PUBLIC_URL } from 'config';
-import { useDisconnect } from 'wagmi';
 
 import { Button, ButtonWithIcon, Link, Picture, Text } from 'components/basic';
 
@@ -34,6 +33,7 @@ interface HeaderProps {
   userHasWallet: boolean | null;
   logoutUser: () => Promise<void>;
   navigateToBuyPage: () => void;
+  disconnectUser: () => void;
 }
 
 const Header: FunctionComponent<HeaderProps> = ({
@@ -46,13 +46,18 @@ const Header: FunctionComponent<HeaderProps> = ({
   userHasWallet,
   logoutUser,
   navigateToBuyPage,
+  disconnectUser,
 }) => {
-  const { disconnect } = useDisconnect();
   const { open } = useWeb3Modal();
 
   const addressButton = useMemo(
     () => (
-      <Button onClick={copyAddress} variant='text' maxWidth='11rem'>
+      <Button
+        onClick={copyAddress}
+        variant='text'
+        maxWidth='11rem'
+        width='25dvw'
+      >
         <Text
           sx={{
             textOverflow: 'ellipsis',
@@ -76,7 +81,7 @@ const Header: FunctionComponent<HeaderProps> = ({
   const disconnectButton = useMemo(
     () => (
       <ButtonWithIcon
-        onClick={userHasWallet ? disconnect : logoutUser}
+        onClick={userHasWallet ? disconnectUser : logoutUser}
         maxHeight='2.719rem'
         color='black'
         ariaLabel='disconnect'
@@ -84,7 +89,7 @@ const Header: FunctionComponent<HeaderProps> = ({
         <LogoutIcon aria-label='disconnect' fontSize='large' />
       </ButtonWithIcon>
     ),
-    [disconnect, logoutUser, userHasWallet],
+    [disconnectUser, logoutUser, userHasWallet],
   );
 
   const render = useCallback(() => {

@@ -4475,22 +4475,12 @@
     "@webassemblyjs/ast" "1.11.6"
     "@xtuc/long" "4.2.2"
 
-"@wert-io/module-react-component@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@wert-io/module-react-component/-/module-react-component-2.0.0.tgz#1a4912b1b553258673444a2441abd862f5a822b1"
-  integrity sha512-roO0jLm4N0ylBlNQ6UZHHERa7zfSoOC9pXpXMwcyCY6dmNHBbGCDmTZs2FP0bo8iZphc4V1sTdlt4ln/Pm1pFw==
-  dependencies:
-    "@wert-io/widget-initializer" "5.2.0"
-    "@wert-io/widget-sc-signer" "2.0.1"
-    react "^18.1.0"
-    react-dom "^18.1.0"
-
-"@wert-io/widget-initializer@5.2.0":
+"@wert-io/widget-initializer@^5.2.0":
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/@wert-io/widget-initializer/-/widget-initializer-5.2.0.tgz#20598d189b59618774cc9069c5ffb270454c1485"
   integrity sha512-Rs9XLeFtvWtZGg9kOVvMZ+PpRxFconMFox6fGQO9psET1B29bBNO6sifOeNzxQ5pMVVbLiK2ZQD5w194sqrB3A==
 
-"@wert-io/widget-sc-signer@2.0.1":
+"@wert-io/widget-sc-signer@^2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@wert-io/widget-sc-signer/-/widget-sc-signer-2.0.1.tgz#c60e06a816b42ebcaf008f445e5a832d2bdf7694"
   integrity sha512-Oy8tAS1b0yuTpDvO/2WmNLPo4aWXcBGeX9NjQ5CWNRsVaV3HMkrZAeHnQihX2RhVemJNfUtmkHQCVzaYEoXxPw==
@@ -11611,7 +11601,7 @@ react-dev-utils@^12.0.1:
     strip-ansi "^6.0.1"
     text-table "^0.2.0"
 
-react-dom@>=17, react-dom@^18.1.0, react-dom@^18.2.0:
+react-dom@>=17, react-dom@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"
   integrity sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==
@@ -11753,7 +11743,7 @@ react-transition-group@^4.4.5:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react@>=17, react@^18.1.0, react@^18.2.0:
+react@>=17, react@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==

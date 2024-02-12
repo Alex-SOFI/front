@@ -4,11 +4,14 @@ import {
   ReactNode,
   Suspense,
 } from 'react';
+import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 
 import { useHasWallet } from 'hooks';
 
 import routes from 'constants/routes';
+
+import { selectWalletInfo } from 'ducks/wallet';
 
 import { LoadingSpinner } from 'components/basic';
 
@@ -37,6 +40,7 @@ export const PrivateRoute: FunctionComponent<LayoutProps> = ({
   isLoggedIn,
   children,
 }) => {
+  const { magicLinkAddress } = useSelector(selectWalletInfo);
   const userHasWallet = useHasWallet();
   switch (true) {
     case userHasWallet === null:
@@ -46,6 +50,7 @@ export const PrivateRoute: FunctionComponent<LayoutProps> = ({
       return <Navigate to={routes.EXPERT} replace />;
 
     case !userHasWallet && (isLoggedIn === undefined || isLoggedIn === null):
+    case magicLinkAddress === '0x':
       return <LoadingSpinner />;
 
     case !userHasWallet && isLoggedIn:

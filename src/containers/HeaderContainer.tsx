@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { useHasWallet, useMagic } from 'hooks';
-import { useSwitchChain } from 'wagmi';
+import { useDisconnect, useSwitchChain } from 'wagmi';
 
 import chainIds from 'constants/chainIds';
 import routes from 'constants/routes';
@@ -23,6 +23,8 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
   isLinkOnly,
 }) => {
   const dispatch = useDispatch();
+
+  const { disconnect } = useDisconnect();
 
   const navigate = useNavigate();
 
@@ -59,7 +61,13 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
   const logout = useCallback(async () => {
     await logoutUser();
     dispatch(resetMagicLinkAddress());
+    localStorage.removeItem('hasWallet');
   }, [dispatch, logoutUser]);
+
+  const disconnectUser = useCallback(() => {
+    disconnect();
+    localStorage.removeItem('hasWallet');
+  }, [disconnect]);
 
   return (
     <Header
@@ -72,6 +80,7 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
       userHasWallet={userHasWallet}
       logoutUser={logout}
       navigateToBuyPage={navigateToBuyPage}
+      disconnectUser={disconnectUser}
     />
   );
 };

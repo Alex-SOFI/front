@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { OAuthExtension } from '@magic-ext/oauth';
 import { InstanceWithExtensions, SDKBase } from '@magic-sdk/provider';
-import { BrowserProvider, ethers } from 'ethers';
+import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers';
 import { Magic } from 'magic-sdk';
 
 import routes from 'constants/routes';
@@ -28,6 +28,7 @@ const useMagic = (pathname: string) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [provider, setProvider] = useState<BrowserProvider | null>(null);
+  const [signer, setSigner] = useState<JsonRpcSigner | null>(null);
 
   const loginUser = useCallback(
     async (
@@ -86,9 +87,9 @@ const useMagic = (pathname: string) => {
 
   const customNodeOptions = useMemo(
     () => ({
-      rpcUrl: 'https://rpc-amoy.polygon.technology/',
-
-      chainId: 80002,
+      rpcUrl:
+        'https://polygon-mumbai.g.alchemy.com/v2/9b1326CuGOhpxr_RhB2QoPXKpfbuJsDF',
+      chainId: 80001,
     }),
     [],
   );
@@ -116,11 +117,22 @@ const useMagic = (pathname: string) => {
 
   useEffect(() => {
     if (magic.current) {
-      setProvider(new ethers.BrowserProvider(magic.current.rpcProvider));
+      const provider = new ethers.BrowserProvider(magic.current.rpcProvider);
+      setProvider(provider);
+      provider?.getSigner().then((signer) => {
+        setSigner(signer);
+      });
     }
   }, []);
 
-  return { loginUser, logoutUser, oauthLogin, checkUserLoggedIn, provider };
+  return {
+    loginUser,
+    logoutUser,
+    oauthLogin,
+    checkUserLoggedIn,
+    provider,
+    signer,
+  };
 };
 
 export default useMagic;
