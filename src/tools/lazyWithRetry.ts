@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FunctionComponent, lazy } from 'react';
 
+import { setLocalStorageItem } from './localStorageTools';
+
 type ImportComponent = () => Promise<{ default: FunctionComponent<any> }>;
 
 const lazyWithRetry = (componentToImport: ImportComponent) =>
@@ -12,12 +14,12 @@ const lazyWithRetry = (componentToImport: ImportComponent) =>
     try {
       const component = await componentToImport();
 
-      window.localStorage.setItem('page-has-been-force-refreshed', 'false');
+      setLocalStorageItem('page-has-been-force-refreshed', 'false');
 
       return component;
     } catch (error) {
       if (!pageHasAlreadyBeenForceRefreshed) {
-        window.localStorage.setItem('page-has-been-force-refreshed', 'true');
+        setLocalStorageItem('page-has-been-force-refreshed', 'true');
         return window.location.reload();
       }
 
