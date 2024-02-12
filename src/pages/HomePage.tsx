@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 import routes from 'constants/routes';
 
-import setHasWallet from 'tools/setHasWallet';
-
 import { HomePageMain } from 'components/pagesComponents/homePage';
 
 import { Layout } from 'components';
@@ -13,13 +11,11 @@ const DashboardPage: FunctionComponent = () => {
   const navigate = useNavigate();
 
   const handleEmailButtonClick = useCallback(() => {
-    setHasWallet('false');
-    navigate(routes.LOGIN, { replace: true });
+    navigate(routes.LOGIN);
   }, [navigate]);
 
   const handleWalletButtonClick = useCallback(() => {
-    setHasWallet('true');
-    navigate(routes.EXPERT, { replace: true });
+    navigate(routes.EXPERT);
   }, [navigate]);
 
   return (

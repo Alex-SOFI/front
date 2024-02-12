@@ -1,7 +1,7 @@
 import { FunctionComponent, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useHasWallet, useMagic } from 'hooks';
+import { useIsUserConnected, useMagic } from 'hooks';
 import { useSwitchChain } from 'wagmi';
 
 import chainIds from 'constants/chainIds';
@@ -26,11 +26,11 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
     useSelector(selectWalletInfo);
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
-  const userHasWallet = useHasWallet();
+  const { userConnectedWithWallet } = useIsUserConnected();
 
   const walletAddress = useMemo(
-    () => (userHasWallet ? address : magicLinkAddress),
-    [address, magicLinkAddress, userHasWallet],
+    () => (userConnectedWithWallet ? address : magicLinkAddress),
+    [address, magicLinkAddress, userConnectedWithWallet],
   );
 
   const { switchChain } = useSwitchChain();
@@ -59,7 +59,6 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
       address={walletAddress}
       handleSwitchButtonClick={handleSwitchButtonClick}
       isWrongNetwork={isWrongNetwork}
-      userHasWallet={userHasWallet}
       logoutUser={logout}
     />
   );

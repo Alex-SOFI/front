@@ -19,6 +19,11 @@ import routes from 'constants/routes';
 
 import { setUser } from 'ducks/user/slice';
 
+import {
+  removeLocalStorageItem,
+  setLocalStorageItem,
+} from 'tools/localStorageTools';
+
 const useMagic = (pathname: string) => {
   const magic = useRef<InstanceWithExtensions<
     SDKBase,
@@ -37,6 +42,7 @@ const useMagic = (pathname: string) => {
       try {
         await magic.current?.auth.loginWithMagicLink({ email });
         dispatch(setUser({ isLoggedIn: true, email }));
+        setLocalStorageItem('connectedWithMagicLink', 'true');
       } catch (err) {
         dispatch(setUser({ isLoggedIn: false, email: null }));
         setError('Unable to log in');
@@ -49,6 +55,7 @@ const useMagic = (pathname: string) => {
     try {
       return await magic.current?.user.getIdToken();
     } catch (err) {
+      removeLocalStorageItem('connectedWithMagicLink');
       throw new Error('Authenticate current session failed');
     }
   }, []);
@@ -57,16 +64,22 @@ const useMagic = (pathname: string) => {
     try {
       await magic.current?.user.logout();
       dispatch(setUser({ isLoggedIn: false, email: null }));
-    } catch (err) {
+      removeLocalStorageItem('connectedWithMagicLink');
+      navigate(routes.HOME);
+    } catch (error) {
       throw new Error('User logout failed');
     }
-  }, [dispatch]);
+  }, [dispatch, navigate]);
 
   const oauthLogin = useCallback(async () => {
-    await magic.current?.oauth.loginWithRedirect({
-      provider: 'google',
-      redirectURI: `${window.location.origin}/oauth`,
-    });
+    try {
+      await magic.current?.oauth.loginWithRedirect({
+        provider: 'google',
+        redirectURI: `${window.location.origin}/oauth`,
+      });
+    } catch (error) {
+      throw new Error('Unable to log in');
+    }
   }, []);
 
   const checkUserLoggedIn = useCallback(async () => {
@@ -80,15 +93,16 @@ const useMagic = (pathname: string) => {
         dispatch(setUser({ isLoggedIn: false, email: null }));
       }
     } catch (err) {
+      removeLocalStorageItem('connectedWithMagicLink');
       throw new Error('User is not logged in');
     }
   }, [dispatch, getToken]);
 
   const customNodeOptions = useMemo(
     () => ({
-      rpcUrl: 'https://rpc-amoy.polygon.technology/',
-
-      chainId: 80002,
+      rpcUrl:
+        'https://polygon-mumbai.g.alchemy.com/v2/9b1326CuGOhpxr_RhB2QoPXKpfbuJsDF',
+      chainId: 80001,
     }),
     [],
   );
@@ -103,6 +117,7 @@ const useMagic = (pathname: string) => {
       if (pathname === routes.OAUTH) {
         try {
           await magic.current?.oauth.getRedirectResult();
+          setLocalStorageItem('connectedWithMagicLink', 'true');
           navigate(routes.MAIN, { replace: true });
         } catch {
           throw new Error('Oauth login failed');

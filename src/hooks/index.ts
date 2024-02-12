@@ -1,4 +1,4 @@
-import useHasWallet from 'hooks/useHasWallet';
-import useMagic from 'hooks/useMagic';
+import useIsUserConnected from './useIsUserConnected';
+import useMagic from './useMagic';
 
-export { useHasWallet, useMagic };
+export { useIsUserConnected, useMagic };

@@ -4,11 +4,14 @@ import {
   ReactNode,
   Suspense,
 } from 'react';
+import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 
-import { useHasWallet } from 'hooks';
+import { useIsUserConnected } from 'hooks';
 
 import routes from 'constants/routes';
+
+import { selectWalletInfo } from 'ducks/wallet';
 
 import { LoadingSpinner } from 'components/basic';
 
@@ -22,37 +25,41 @@ const elementWithSuspense = (element: ReactNode) => (
 );
 
 export const HomeRoute: FunctionComponent<LayoutProps> = ({ children }) => {
-  const userHasWallet = useHasWallet();
-  if (userHasWallet === null) {
+  const { userConnectedWithMagicLink, userConnectedWithWallet } =
+    useIsUserConnected();
+  if (!userConnectedWithMagicLink && !userConnectedWithWallet) {
     return elementWithSuspense(children);
   }
-  return userHasWallet ? (
-    <Navigate to={routes.EXPERT} replace />
-  ) : (
-    <Navigate to={routes.LOGIN} replace />
-  );
+  if (userConnectedWithWallet) {
+    return <Navigate to={routes.EXPERT} replace />;
+  }
+
+  if (userConnectedWithMagicLink) {
+    return <Navigate to={routes.MAIN} replace />;
+  }
 };
 
 export const PrivateRoute: FunctionComponent<LayoutProps> = ({
   isLoggedIn,
   children,
 }) => {
-  const userHasWallet = useHasWallet();
+  const { magicLinkAddress } = useSelector(selectWalletInfo);
+  const { userConnectedWithMagicLink, userConnectedWithWallet } =
+    useIsUserConnected();
   switch (true) {
-    case userHasWallet === null:
-      return <Navigate to={routes.HOME} replace />;
-
-    case userHasWallet:
+    case userConnectedWithWallet:
       return <Navigate to={routes.EXPERT} replace />;
 
-    case !userHasWallet && (isLoggedIn === undefined || isLoggedIn === null):
+    case userConnectedWithMagicLink &&
+      (isLoggedIn === undefined || isLoggedIn === null):
+    case userConnectedWithMagicLink && isLoggedIn && magicLinkAddress === '0x':
       return <LoadingSpinner />;
 
-    case !userHasWallet && isLoggedIn:
+    case userConnectedWithMagicLink && isLoggedIn:
       return elementWithSuspense(children);
 
-    case !userHasWallet && !isLoggedIn:
-      return <Navigate to={routes.LOGIN} replace />;
+    case !userConnectedWithMagicLink && !isLoggedIn:
+      return <Navigate to={routes.HOME} replace />;
 
     default:
       return null;
@@ -63,21 +70,20 @@ export const PublicRoute: FunctionComponent<LayoutProps> = ({
   isLoggedIn,
   children,
 }) => {
-  const userHasWallet = useHasWallet();
+  const { userConnectedWithMagicLink, userConnectedWithWallet } =
+    useIsUserConnected();
   switch (true) {
-    case userHasWallet === null:
-      return <Navigate to={routes.HOME} replace />;
-
-    case userHasWallet:
+    case userConnectedWithWallet:
       return <Navigate to={routes.EXPERT} replace />;
 
-    case !userHasWallet && (isLoggedIn === undefined || isLoggedIn === null):
+    case userConnectedWithMagicLink &&
+      (isLoggedIn === undefined || isLoggedIn === null):
       return <LoadingSpinner />;
 
-    case !userHasWallet && isLoggedIn:
+    case isLoggedIn:
       return <Navigate to={routes.MAIN} replace />;
 
-    case !userHasWallet && !isLoggedIn:
+    case !isLoggedIn:
       return elementWithSuspense(children);
 
     default:
@@ -86,13 +92,9 @@ export const PublicRoute: FunctionComponent<LayoutProps> = ({
 };
 
 export const WalletRoute: FunctionComponent<LayoutProps> = ({ children }) => {
-  const userHasWallet = useHasWallet();
-  if (userHasWallet === null) {
-    return <Navigate to={routes.HOME} replace />;
+  const { userConnectedWithMagicLink } = useIsUserConnected();
+  if (userConnectedWithMagicLink) {
+    return <Navigate to={routes.MAIN} replace />;
   }
-  return userHasWallet ? (
-    elementWithSuspense(children)
-  ) : (
-    <Navigate to={routes.LOGIN} replace />
-  );
+  return elementWithSuspense(children);
 };

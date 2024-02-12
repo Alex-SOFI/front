@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom';
 
 import { formatUnits } from 'ethers';
-import { useHasWallet, useMagic } from 'hooks';
+import { useIsUserConnected, useMagic } from 'hooks';
 import { HomeRoute, PrivateRoute, PublicRoute, WalletRoute } from 'layout';
 import { Address } from 'viem';
 import { useAccount, useConnect, useReadContracts } from 'wagmi';
@@ -26,6 +26,10 @@ import { selectIsMintSelected, selectIsWrongNetwork } from 'ducks/wallet';
 import { storeMagicLinkAddress, storeWalletInfo } from 'ducks/wallet/slice';
 
 import { lazyWithRetry, noop } from 'tools';
+import {
+  removeLocalStorageItem,
+  setLocalStorageItem,
+} from 'tools/localStorageTools';
 
 const ExpertPage = lazyWithRetry(() => import('pages/ExpertPage'));
 const LoginPage = lazyWithRetry(() => import('pages/LoginPage'));
@@ -36,7 +40,7 @@ const HomePage = lazyWithRetry(() => import('pages/HomePage'));
 const App = () => {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector(selectUser);
-  const userHasWallet = useHasWallet();
+  const { userConnectedWithMagicLink } = useIsUserConnected();
   const { provider } = useMagic(window.location.pathname);
 
   const getAddress = useCallback(async () => {
@@ -46,10 +50,10 @@ const App = () => {
   }, [dispatch, provider]);
 
   useEffect(() => {
-    if (isLoggedIn && !userHasWallet) {
+    if (isLoggedIn && userConnectedWithMagicLink) {
       getAddress();
     }
-  }, [getAddress, isLoggedIn, userHasWallet]);
+  }, [getAddress, isLoggedIn, userConnectedWithMagicLink]);
 
   const dispatchUser = useCallback(
     (payload: UserState) => {
@@ -127,6 +131,15 @@ const App = () => {
     isWrongNetwork,
   ]);
 
+  useEffect(() => {
+    if (error) {
+      removeLocalStorageItem('connectedWithWallet');
+    }
+    if (address && isConnected) {
+      setLocalStorageItem('connectedWithWallet', 'true');
+    }
+  }, [address, error, isConnected]);
+
   const routesArray = createRoutesFromElements([
     <Route
       key={routes.HOME}
@@ -168,11 +181,7 @@ const App = () => {
         </PrivateRoute>
       }
     />,
-    <Route
-      key='*'
-      path='*'
-      element={<Navigate to={routes.EXPERT} replace />}
-    />,
+    <Route key='*' path='*' element={<Navigate to={routes.HOME} replace />} />,
   ]);
 
   const element = useRoutes(routesArray);
