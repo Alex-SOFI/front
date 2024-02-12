@@ -1,4 +1,5 @@
 import { FunctionComponent, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import styled from '@emotion/styled';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -6,6 +7,11 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import Box from '@mui/material/Box';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { PUBLIC_URL } from 'config';
+import { useDisconnect } from 'wagmi';
+
+import routes from 'constants/routes';
+
+import { removeLocalStorageItem } from 'tools/localStorageTools';
 
 import { Button, ButtonWithIcon, Link, Picture, Text } from 'components/basic';
 
@@ -30,10 +36,8 @@ interface HeaderProps {
   address?: string;
   handleSwitchButtonClick: (chainId_?: number | undefined) => void;
   isWrongNetwork: boolean;
-  userHasWallet: boolean | null;
   logoutUser: () => Promise<void>;
   navigateToBuyPage: () => void;
-  disconnectUser: () => void;
 }
 
 const Header: FunctionComponent<HeaderProps> = ({
@@ -43,12 +47,18 @@ const Header: FunctionComponent<HeaderProps> = ({
   address,
   handleSwitchButtonClick,
   isWrongNetwork,
-  userHasWallet,
   logoutUser,
   navigateToBuyPage,
-  disconnectUser,
 }) => {
+  const { disconnect } = useDisconnect();
   const { open } = useWeb3Modal();
+  const navigate = useNavigate();
+
+  const disconnectUser = useCallback(() => {
+    disconnect();
+    removeLocalStorageItem('connectedWithWallet');
+    navigate(routes.HOME);
+  }, [disconnect, navigate]);
 
   const addressButton = useMemo(
     () => (
@@ -81,7 +91,11 @@ const Header: FunctionComponent<HeaderProps> = ({
   const disconnectButton = useMemo(
     () => (
       <ButtonWithIcon
-        onClick={userHasWallet ? disconnectUser : logoutUser}
+        onClick={
+          window.location.pathname === routes.EXPERT
+            ? disconnectUser
+            : logoutUser
+        }
         maxHeight='2.719rem'
         color='black'
         ariaLabel='disconnect'
@@ -89,14 +103,14 @@ const Header: FunctionComponent<HeaderProps> = ({
         <LogoutIcon aria-label='disconnect' fontSize='large' />
       </ButtonWithIcon>
     ),
-    [disconnectUser, logoutUser, userHasWallet],
+    [disconnectUser, logoutUser],
   );
 
   const render = useCallback(() => {
     if (isLinkOnly) {
       return null;
     } else {
-      if (userHasWallet) {
+      if (window.location.pathname === routes.EXPERT) {
         return (
           <>
             <Picture
@@ -148,7 +162,6 @@ const Header: FunctionComponent<HeaderProps> = ({
     isWrongNetwork,
     navigateToBuyPage,
     open,
-    userHasWallet,
   ]);
 
   return (

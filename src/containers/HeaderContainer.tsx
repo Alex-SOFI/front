@@ -2,8 +2,8 @@ import { FunctionComponent, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { useHasWallet, useMagic } from 'hooks';
-import { useDisconnect, useSwitchChain } from 'wagmi';
+import { useIsUserConnected, useMagic } from 'hooks';
+import { useSwitchChain } from 'wagmi';
 
 import chainIds from 'constants/chainIds';
 import routes from 'constants/routes';
@@ -24,8 +24,6 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
 }) => {
   const dispatch = useDispatch();
 
-  const { disconnect } = useDisconnect();
-
   const navigate = useNavigate();
 
   const navigateToBuyPage = useCallback(() => {
@@ -38,11 +36,11 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
     useSelector(selectWalletInfo);
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
-  const userHasWallet = useHasWallet();
+  const { userConnectedWithWallet } = useIsUserConnected();
 
   const walletAddress = useMemo(
-    () => (userHasWallet ? address : magicLinkAddress),
-    [address, magicLinkAddress, userHasWallet],
+    () => (userConnectedWithWallet ? address : magicLinkAddress),
+    [address, magicLinkAddress, userConnectedWithWallet],
   );
 
   const { switchChain } = useSwitchChain();
@@ -64,11 +62,6 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
     localStorage.removeItem('hasWallet');
   }, [dispatch, logoutUser]);
 
-  const disconnectUser = useCallback(() => {
-    disconnect();
-    localStorage.removeItem('hasWallet');
-  }, [disconnect]);
-
   return (
     <Header
       copyAddress={copyAddress}
@@ -77,10 +70,8 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
       address={walletAddress}
       handleSwitchButtonClick={handleSwitchButtonClick}
       isWrongNetwork={isWrongNetwork}
-      userHasWallet={userHasWallet}
       logoutUser={logout}
       navigateToBuyPage={navigateToBuyPage}
-      disconnectUser={disconnectUser}
     />
   );
 };
