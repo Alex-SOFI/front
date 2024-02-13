@@ -9,8 +9,8 @@ import {
 import { useSelector } from 'react-redux';
 
 import { ethers, formatUnits } from 'ethers';
-import { useMagic } from 'hooks';
-import useWert from 'hooks/useWert';
+import { useMagic, useTransak } from 'hooks';
+import useWert from 'hooks/useTransak';
 import { Address, erc20Abi } from 'viem';
 
 import addresses from 'constants/addresses';
@@ -45,9 +45,7 @@ const BuyPage: FunctionComponent = () => {
     [],
   );
 
-  const { signer, provider } = useMagic(window.location.pathname);
-
-  console.log(signer);
+  const { signer } = useMagic(window.location.pathname);
 
   const erc20 = useMemo(() => {
     if (signer) {
@@ -59,37 +57,18 @@ const BuyPage: FunctionComponent = () => {
     }
   }, [signer]);
 
-  useEffect(() => {
-    const aboba = async () => {
-      if (erc20 && signer) {
-        const b = await provider?.getNetwork();
-        console.log(erc20);
-        const a = await erc20.balanceOf(signer.getAddress());
-        console.log(formatUnits(a, 18));
-      }
-    };
-    aboba();
-  }, [erc20, signer]);
-
-  const wertWidget = useWert(
-    investInputValue || '0',
+  const { openModal } = useTransak(
+    Number(investInputValue) || 0,
     magicLinkAddress as Address,
+    setInvestInputValue,
   );
-
-  useEffect(() => {
-    wertWidget.addEventListeners({ close: () => setInvestInputValue('') });
-  }, [wertWidget]);
-
-  const handleBuyButtonClick = useCallback(() => {
-    wertWidget.open();
-  }, [wertWidget]);
 
   return (
     <>
       <Layout
         main={
           <BuyPageMain
-            handleBuyButtonClick={handleBuyButtonClick}
+            handleBuyButtonClick={openModal}
             investInputValue={investInputValue}
             handleInputChange={handleInputChange}
           />

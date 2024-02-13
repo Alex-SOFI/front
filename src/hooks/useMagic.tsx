@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { OAuthExtension } from '@magic-ext/oauth';
 import { InstanceWithExtensions, SDKBase } from '@magic-sdk/provider';
 import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers';
+import useIsUserConnected from 'hooks/useIsUserConnected';
 import { Magic } from 'magic-sdk';
 
 import routes from 'constants/routes';
@@ -29,6 +30,8 @@ const useMagic = (pathname: string) => {
     SDKBase,
     OAuthExtension[]
   > | null>(null);
+
+  const { userConnectedWithMagicLink } = useIsUserConnected();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -131,7 +134,7 @@ const useMagic = (pathname: string) => {
   }, [checkUserLoggedIn, customNodeOptions, navigate, pathname]);
 
   useEffect(() => {
-    if (magic.current) {
+    if (magic.current && userConnectedWithMagicLink) {
       const provider = new ethers.BrowserProvider(magic.current.rpcProvider);
       setProvider(provider);
       provider?.getSigner().then((signer) => {
