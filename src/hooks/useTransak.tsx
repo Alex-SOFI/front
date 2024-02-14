@@ -14,16 +14,18 @@ const useTransak = (
   address: Address,
   setInputValue: Dispatch<SetStateAction<string>>,
 ) => {
-  const transakConfig: TransakConfig = useMemo(
-    () => ({
+  const transakConfig: TransakConfig = useMemo(() => {
+    return {
       apiKey: '0fd102fe-4030-473a-b2d0-79cf6bcb3c97',
       environment: Transak.ENVIRONMENTS.STAGING,
-      network: 'mumbai',
-      cryptoAmount: amount,
+      network: 'Polygon',
+      fiatAmount: amount,
+      fiatCurrency: 'EUR',
       walletAddress: address,
-    }),
-    [address, amount],
-  );
+      defaultPaymentMethod: 'credit_debit_card',
+      cryptoCurrencyCode: 'USDC',
+    };
+  }, [address, amount]);
 
   const transak = useMemo(() => new Transak(transakConfig), [transakConfig]);
 
@@ -37,6 +39,7 @@ const useTransak = (
         setInputValue('');
       });
       Transak.on(Transak.EVENTS.TRANSAK_ORDER_SUCCESSFUL, () => {
+        setInputValue('');
         transak.close();
       });
     }

@@ -1,5 +1,4 @@
 import { FunctionComponent, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import styled from '@emotion/styled';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -7,11 +6,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import Box from '@mui/material/Box';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { PUBLIC_URL } from 'config';
-import { useDisconnect } from 'wagmi';
 
 import routes from 'constants/routes';
-
-import { removeLocalStorageItem } from 'tools/localStorageTools';
 
 import { Button, ButtonWithIcon, Link, Picture, Text } from 'components/basic';
 
@@ -38,6 +34,7 @@ interface HeaderProps {
   isWrongNetwork: boolean;
   logoutUser: () => Promise<void>;
   navigateToBuyPage: () => void;
+  disconnectUser: () => void;
 }
 
 const Header: FunctionComponent<HeaderProps> = ({
@@ -49,16 +46,9 @@ const Header: FunctionComponent<HeaderProps> = ({
   isWrongNetwork,
   logoutUser,
   navigateToBuyPage,
+  disconnectUser,
 }) => {
-  const { disconnect } = useDisconnect();
   const { open } = useWeb3Modal();
-  const navigate = useNavigate();
-
-  const disconnectUser = useCallback(() => {
-    disconnect();
-    removeLocalStorageItem('connectedWithWallet');
-    navigate(routes.HOME);
-  }, [disconnect, navigate]);
 
   const addressButton = useMemo(
     () => (

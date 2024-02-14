@@ -76,14 +76,10 @@ const useMagic = (pathname: string) => {
   }, [dispatch, navigate]);
 
   const oauthLogin = useCallback(async () => {
-    try {
-      await magic.current?.oauth.loginWithRedirect({
-        provider: 'google',
-        redirectURI: `${window.location.origin}/oauth`,
-      });
-    } catch (error) {
-      throw new Error('Unable to log in');
-    }
+    await magic.current?.oauth.loginWithRedirect({
+      provider: 'google',
+      redirectURI: `${window.location.origin}/oauth`,
+    });
   }, []);
 
   const checkUserLoggedIn = useCallback(async () => {
@@ -141,7 +137,7 @@ const useMagic = (pathname: string) => {
         setSigner(signer);
       });
     }
-  }, []);
+  }, [userConnectedWithMagicLink]);
 
   return {
     loginUser,
