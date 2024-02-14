@@ -9,7 +9,6 @@ interface ButtonProps extends PropsWithChildren {
   variant?: 'text';
   isPrimaryColor?: boolean;
   disabled?: boolean;
-  marginLeft?: string;
   maxWidth?: string;
   minWidth?: string;
   ariaLabel?: string;

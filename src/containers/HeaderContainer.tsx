@@ -1,15 +1,18 @@
 import { FunctionComponent, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { useIsUserConnected, useMagic } from 'hooks';
-import { useSwitchChain } from 'wagmi';
+import { useDisconnect, useSwitchChain } from 'wagmi';
 
 import chainIds from 'constants/chainIds';
+import routes from 'constants/routes';
 
 import { selectIsWrongNetwork, selectWalletInfo } from 'ducks/wallet';
 import { resetMagicLinkAddress } from 'ducks/wallet/slice';
 
 import { copyToClipboard, noop } from 'tools';
+import { removeLocalStorageItem } from 'tools/localStorageTools';
 
 import Header from 'components/Header';
 
@@ -21,6 +24,16 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
   isLinkOnly,
 }) => {
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
+  const { disconnect } = useDisconnect();
+
+  const navigateToBuyPage = useCallback(() => {
+    if (window.location.pathname !== routes.BUY) {
+      navigate(routes.BUY);
+    }
+  }, [navigate]);
 
   const { address, isConnected, magicLinkAddress } =
     useSelector(selectWalletInfo);
@@ -51,6 +64,12 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
     dispatch(resetMagicLinkAddress());
   }, [dispatch, logoutUser]);
 
+  const disconnectUser = useCallback(() => {
+    disconnect();
+    removeLocalStorageItem('connectedWithWallet');
+    navigate(routes.HOME);
+  }, [disconnect, navigate]);
+
   return (
     <Header
       copyAddress={copyAddress}
@@ -60,6 +79,8 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
       handleSwitchButtonClick={handleSwitchButtonClick}
       isWrongNetwork={isWrongNetwork}
       logoutUser={logout}
+      navigateToBuyPage={navigateToBuyPage}
+      disconnectUser={disconnectUser}
     />
   );
 };

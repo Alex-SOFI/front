@@ -1,9 +1,10 @@
 const routes = {
+  HOME: '/',
   EXPERT: '/expert',
   LOGIN: '/login',
   OAUTH: '/oauth',
   MAIN: '/main',
-  HOME: '/',
+  BUY: '/buy',
 };
 
 export default routes;

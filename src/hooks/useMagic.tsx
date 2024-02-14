@@ -12,7 +12,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { OAuthExtension } from '@magic-ext/oauth';
 import { InstanceWithExtensions, SDKBase } from '@magic-sdk/provider';
-import { BrowserProvider, ethers } from 'ethers';
+import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers';
+import useIsUserConnected from 'hooks/useIsUserConnected';
 import { Magic } from 'magic-sdk';
 
 import routes from 'constants/routes';
@@ -30,9 +31,12 @@ const useMagic = (pathname: string) => {
     OAuthExtension[]
   > | null>(null);
 
+  const { userConnectedWithMagicLink } = useIsUserConnected();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [provider, setProvider] = useState<BrowserProvider | null>(null);
+  const [signer, setSigner] = useState<JsonRpcSigner | null>(null);
 
   const loginUser = useCallback(
     async (
@@ -72,14 +76,10 @@ const useMagic = (pathname: string) => {
   }, [dispatch, navigate]);
 
   const oauthLogin = useCallback(async () => {
-    try {
-      await magic.current?.oauth.loginWithRedirect({
-        provider: 'google',
-        redirectURI: `${window.location.origin}/oauth`,
-      });
-    } catch (error) {
-      throw new Error('Unable to log in');
-    }
+    await magic.current?.oauth.loginWithRedirect({
+      provider: 'google',
+      redirectURI: `${window.location.origin}/oauth`,
+    });
   }, []);
 
   const checkUserLoggedIn = useCallback(async () => {
@@ -130,12 +130,23 @@ const useMagic = (pathname: string) => {
   }, [checkUserLoggedIn, customNodeOptions, navigate, pathname]);
 
   useEffect(() => {
-    if (magic.current) {
-      setProvider(new ethers.BrowserProvider(magic.current.rpcProvider));
+    if (magic.current && userConnectedWithMagicLink) {
+      const provider = new ethers.BrowserProvider(magic.current.rpcProvider);
+      setProvider(provider);
+      provider?.getSigner().then((signer) => {
+        setSigner(signer);
+      });
     }
-  }, []);
+  }, [userConnectedWithMagicLink]);
 
-  return { loginUser, logoutUser, oauthLogin, checkUserLoggedIn, provider };
+  return {
+    loginUser,
+    logoutUser,
+    oauthLogin,
+    checkUserLoggedIn,
+    provider,
+    signer,
+  };
 };
 
 export default useMagic;

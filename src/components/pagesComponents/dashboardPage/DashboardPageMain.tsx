@@ -3,8 +3,6 @@ import { FunctionComponent } from 'react';
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 
-import { noop } from 'tools';
-
 import { Button, Text } from 'components/basic';
 
 import { theme } from 'styles/theme';
@@ -33,10 +31,12 @@ const GridBox = styled(Box)`
 
 interface DashboardPageMainProps {
   balance: unknown;
+  navigateToBuyPage: () => void;
 }
 
 const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
   balance,
+  navigateToBuyPage,
 }) => {
   return (
     <StyledBox>
@@ -76,7 +76,7 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
             }}
           >
             <Text>You don&#39;t have any Tokens</Text>
-            <Button onClick={noop}>Buy SOFI</Button>
+            <Button onClick={navigateToBuyPage}>Buy SOFI</Button>
           </Box>
         </>
       )}

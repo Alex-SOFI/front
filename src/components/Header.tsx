@@ -1,5 +1,4 @@
 import { FunctionComponent, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import styled from '@emotion/styled';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -7,12 +6,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import Box from '@mui/material/Box';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { PUBLIC_URL } from 'config';
-import { useDisconnect } from 'wagmi';
 
 import routes from 'constants/routes';
-
-import { noop } from 'tools';
-import { removeLocalStorageItem } from 'tools/localStorageTools';
 
 import { Button, ButtonWithIcon, Link, Picture, Text } from 'components/basic';
 
@@ -38,6 +33,8 @@ interface HeaderProps {
   handleSwitchButtonClick: (chainId_?: number | undefined) => void;
   isWrongNetwork: boolean;
   logoutUser: () => Promise<void>;
+  navigateToBuyPage: () => void;
+  disconnectUser: () => void;
 }
 
 const Header: FunctionComponent<HeaderProps> = ({
@@ -48,20 +45,19 @@ const Header: FunctionComponent<HeaderProps> = ({
   handleSwitchButtonClick,
   isWrongNetwork,
   logoutUser,
+  navigateToBuyPage,
+  disconnectUser,
 }) => {
-  const { disconnect } = useDisconnect();
   const { open } = useWeb3Modal();
-  const navigate = useNavigate();
-
-  const disconnectUser = useCallback(() => {
-    disconnect();
-    removeLocalStorageItem('connectedWithWallet');
-    navigate(routes.HOME);
-  }, [disconnect, navigate]);
 
   const addressButton = useMemo(
     () => (
-      <Button onClick={copyAddress} variant='text' maxWidth='11rem'>
+      <Button
+        onClick={copyAddress}
+        variant='text'
+        maxWidth='11rem'
+        width='25dvw'
+      >
         <Text
           sx={{
             textOverflow: 'ellipsis',
@@ -141,7 +137,7 @@ const Header: FunctionComponent<HeaderProps> = ({
         return (
           <>
             {addressButton}
-            <Button onClick={noop}>Buy SOFI</Button>
+            <Button onClick={navigateToBuyPage}>Buy SOFI</Button>
             {disconnectButton}
           </>
         );
@@ -154,6 +150,7 @@ const Header: FunctionComponent<HeaderProps> = ({
     isConnected,
     isLinkOnly,
     isWrongNetwork,
+    navigateToBuyPage,
     open,
   ]);
 

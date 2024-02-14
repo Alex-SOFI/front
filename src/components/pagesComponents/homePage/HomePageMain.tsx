@@ -12,7 +12,6 @@ const StyledBox = styled(Box)`
   flex-direction: column;
   width: 40%;
   height: 100%;
-  justify-content: space-between;
   justify-content: space-evenly;
   margin: auto;
   @media (max-width: ${theme.breakpoints.sm}) {
