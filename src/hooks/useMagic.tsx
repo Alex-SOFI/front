@@ -7,18 +7,22 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { OAuthExtension } from '@magic-ext/oauth';
 import { InstanceWithExtensions, SDKBase } from '@magic-sdk/provider';
-import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers';
 import useIsUserConnected from 'hooks/useIsUserConnected';
 import { Magic } from 'magic-sdk';
+import { Client } from 'viem';
 
+import { walletClient } from 'constants/contracts';
 import routes from 'constants/routes';
 
+import { selectUser } from 'ducks/user';
 import { setUser } from 'ducks/user/slice';
+import { selectWalletInfo } from 'ducks/wallet';
+import { storeMagicLinkAddress } from 'ducks/wallet/slice';
 
 import {
   removeLocalStorageItem,
@@ -35,8 +39,9 @@ const useMagic = (pathname: string) => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [provider, setProvider] = useState<BrowserProvider | null>(null);
-  const [signer, setSigner] = useState<JsonRpcSigner | null>(null);
+  const [client, setClient] = useState<Client | null>(null);
+  const user = useSelector(selectUser);
+  const { magicLinkAddress } = useSelector(selectWalletInfo);
 
   const loginUser = useCallback(
     async (
@@ -87,7 +92,9 @@ const useMagic = (pathname: string) => {
       const isLoggedIn = await magic.current?.user.isLoggedIn();
       if (isLoggedIn) {
         const result = await magic.current?.user.getInfo();
-        dispatch(setUser({ isLoggedIn, email: result?.email }));
+        if (!user?.isLoggedIn || !user?.email) {
+          dispatch(setUser({ isLoggedIn, email: result?.email }));
+        }
         getToken();
       } else {
         dispatch(setUser({ isLoggedIn: false, email: null }));
@@ -96,7 +103,7 @@ const useMagic = (pathname: string) => {
       removeLocalStorageItem('connectedWithMagicLink');
       throw new Error('User is not logged in');
     }
-  }, [dispatch, getToken]);
+  }, [dispatch, getToken, user?.email, user?.isLoggedIn]);
 
   const customNodeOptions = useMemo(
     () => ({
@@ -131,21 +138,26 @@ const useMagic = (pathname: string) => {
 
   useEffect(() => {
     if (magic.current && userConnectedWithMagicLink) {
-      const provider = new ethers.BrowserProvider(magic.current.rpcProvider);
-      setProvider(provider);
-      provider?.getSigner().then((signer) => {
-        setSigner(signer);
-      });
+      const client = walletClient(magic.current?.rpcProvider as never);
+
+      setClient(client);
+
+      const getAddress = async () => {
+        const [address] = await client.getAddresses();
+        if (magicLinkAddress === '0x') {
+          dispatch(storeMagicLinkAddress(address));
+        }
+      };
+      getAddress();
     }
-  }, [userConnectedWithMagicLink]);
+  }, [dispatch, magicLinkAddress, userConnectedWithMagicLink]);
 
   return {
     loginUser,
     logoutUser,
     oauthLogin,
     checkUserLoggedIn,
-    provider,
-    signer,
+    walletClient: client,
   };
 };
 

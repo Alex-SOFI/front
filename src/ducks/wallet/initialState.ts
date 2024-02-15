@@ -9,4 +9,6 @@ export const initialState: WalletInfoState = {
   decimals: 0,
   isMintSelected: true,
   magicLinkAddress: '0x',
+  magicLinkBalance: { SOFI: null, USDC: null, MATIC: null },
+  isMagicLinkBalanceSet: false,
 };

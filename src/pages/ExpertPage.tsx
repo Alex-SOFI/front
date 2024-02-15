@@ -9,8 +9,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
-import { formatUnits, parseUnits } from 'ethers';
-import { Address } from 'viem';
+import { Address, formatUnits, parseUnits } from 'viem';
 import {
   useReadContract,
   useSwitchChain,

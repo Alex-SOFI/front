@@ -1,22 +1,8 @@
-import {
-  ChangeEvent,
-  FunctionComponent,
-  useCallback,
-  /* useEffect,
-useMemo, */
-  useState,
-} from 'react';
+import { ChangeEvent, FunctionComponent, useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-/* import { ethers, formatUnits } from 'ethers'; */
-import {
-  /* useMagic, */
-  useTransak,
-} from 'hooks';
-import {
-  Address,
-  /* , erc20Abi */
-} from 'viem';
+import { useTransak } from 'hooks';
+import { Address } from 'viem';
 
 import { selectWalletInfo } from 'ducks/wallet';
 
@@ -47,19 +33,6 @@ const BuyPage: FunctionComponent = () => {
     },
     [],
   );
-
-  /* const { provider, signer } = useMagic(window.location.pathname); */
-
-  /* const erc20 = useMemo(() => {
-    if (signer) {
-      return new ethers.Contract(
-        '0x0c86A754A29714C4Fe9C6F1359fa7099eD174c0b',
-        erc20Abi,
-        signer,
-      );
-    }
-  }, [signer]);
- */
 
   const { openModal } = useTransak(
     Number(investInputValue) || 0,
