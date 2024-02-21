@@ -7,10 +7,9 @@ import {
   useRoutes,
 } from 'react-router-dom';
 
-import { formatUnits } from 'ethers';
-import { useIsUserConnected, useMagic } from 'hooks';
+import { useMagic } from 'hooks';
 import { HomeRoute, PrivateRoute, PublicRoute, WalletRoute } from 'layout';
-import { Address } from 'viem';
+import { formatUnits } from 'viem';
 import { useAccount, useConnect, useReadContracts } from 'wagmi';
 
 import { UserState } from 'interfaces';
@@ -23,7 +22,7 @@ import routes from 'constants/routes';
 import { selectUser } from 'ducks/user';
 import { setUser } from 'ducks/user/slice';
 import { selectIsMintSelected, selectIsWrongNetwork } from 'ducks/wallet';
-import { storeMagicLinkAddress, storeWalletInfo } from 'ducks/wallet/slice';
+import { storeWalletInfo } from 'ducks/wallet/slice';
 
 import { lazyWithRetry, noop } from 'tools';
 import {
@@ -41,20 +40,6 @@ const BuyPage = lazyWithRetry(() => import('pages/BuyPage'));
 const App = () => {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector(selectUser);
-  const { userConnectedWithMagicLink } = useIsUserConnected();
-  const { provider } = useMagic(window.location.pathname);
-
-  const getAddress = useCallback(async () => {
-    return provider?.getSigner().then((signer) => {
-      dispatch(storeMagicLinkAddress(signer.address as Address));
-    });
-  }, [dispatch, provider]);
-
-  useEffect(() => {
-    if (isLoggedIn && userConnectedWithMagicLink) {
-      getAddress();
-    }
-  }, [getAddress, isLoggedIn, userConnectedWithMagicLink]);
 
   const dispatchUser = useCallback(
     (payload: UserState) => {
