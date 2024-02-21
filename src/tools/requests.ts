@@ -4,7 +4,7 @@ import humps from 'humps';
 import qs from 'query-string';
 
 const request = axios.create({
-  baseURL: import.meta.env.VITE_BINANCE_API_BASE_URL,
+  baseURL: import.meta.env.VITE_COINGECKO_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },

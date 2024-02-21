@@ -13,6 +13,11 @@ import {
 } from 'constants/contracts';
 import routes from 'constants/routes';
 
+import {
+  getBalanceValue,
+  resetBalanceValue,
+  selectBalanceValue,
+} from 'ducks/balanceValue';
 import { selectWalletInfo } from 'ducks/wallet';
 import { resetMagicLinkBalance, setMagicLinkBalance } from 'ducks/wallet/slice';
 
@@ -24,8 +29,11 @@ import { LoadingSpinner } from 'components/basic';
 const DashboardPage: FunctionComponent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { magicLinkAddress, /* magicLinkBalance, */ isMagicLinkBalanceSet } =
+  const { magicLinkAddress, magicLinkBalance, isMagicLinkBalanceSet } =
     useSelector(selectWalletInfo);
+
+  const { isLoading, sofiValue, usdcValue, maticValue } =
+    useSelector(selectBalanceValue);
 
   const navigateToBuyPage = useCallback(() => {
     navigate(routes.BUY);
@@ -66,18 +74,18 @@ const DashboardPage: FunctionComponent = () => {
         });
         dispatch(
           setMagicLinkBalance({
-            SOFI:
-              results[0].status === 'success'
-                ? formatUnits(results[0].result as bigint, 18)
-                : null,
-            USDC:
-              results[1].status === 'success'
-                ? formatUnits(results[1].result as bigint, 18)
-                : null,
-            MATIC:
-              results[2].status === 'success'
-                ? formatUnits(results[2].result as bigint, 18)
-                : null,
+            ...(results[0].status === 'success' &&
+              results[0].result !== 0n && {
+                SOFI: formatUnits(results[0].result as bigint, 18),
+              }),
+            ...(results[1].status === 'success' &&
+              results[1].result !== 0n && {
+                USDC: formatUnits(results[1].result as bigint, 18),
+              }),
+            ...(results[2].status === 'success' &&
+              results[2].result !== 0n && {
+                MATIC: formatUnits(results[2].result as bigint, 18),
+              }),
           }),
         );
       }
@@ -86,17 +94,46 @@ const DashboardPage: FunctionComponent = () => {
   }, [contract, dispatch, magicLinkAddress]);
 
   useEffect(() => {
+    if (
+      isMagicLinkBalanceSet &&
+      (magicLinkBalance?.SOFI ||
+        magicLinkBalance?.USDC ||
+        magicLinkBalance?.MATIC)
+    ) {
+      dispatch(
+        getBalanceValue({
+          ...(magicLinkBalance?.SOFI && { SOFI: magicLinkBalance?.SOFI }),
+          ...(magicLinkBalance?.USDC && { USDC: magicLinkBalance?.USDC }),
+          ...(magicLinkBalance?.MATIC && { MATIC: magicLinkBalance?.MATIC }),
+        }),
+      );
+    }
+  }, [
+    dispatch,
+    isMagicLinkBalanceSet,
+    magicLinkBalance?.MATIC,
+    magicLinkBalance?.SOFI,
+    magicLinkBalance?.USDC,
+  ]);
+
+  useEffect(() => {
     return () => {
       dispatch(resetMagicLinkBalance());
+      dispatch(resetBalanceValue());
     };
   }, [dispatch]);
 
   return (
     <Layout
       main={
-        isMagicLinkBalanceSet ? (
+        isMagicLinkBalanceSet && !isLoading ? (
           <DashboardPageMain
-            balance={null}
+            balance={magicLinkBalance}
+            balanceValue={{
+              SOFI: sofiValue,
+              USDC: usdcValue,
+              MATIC: maticValue,
+            }}
             navigateToBuyPage={navigateToBuyPage}
           />
         ) : (

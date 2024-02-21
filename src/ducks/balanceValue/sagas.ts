@@ -7,6 +7,7 @@ import {
   getBalanceValue,
   getBalanceValueError,
   getValue,
+  resetIsLoading,
   setMaticBalanceValue,
   setSofiBalanceValue,
   setUsdcBalanceValue,
@@ -14,7 +15,7 @@ import {
 
 function* getBalanceValueSaga({ payload }: ReturnType<typeof getBalanceValue>) {
   try {
-    if (payload.sofi) {
+    if (payload?.SOFI) {
       const estimateBalance = async (sofi: string) => {
         const data = await publicClient.readContract({
           ...tokenManagerContract,
@@ -23,17 +24,22 @@ function* getBalanceValueSaga({ payload }: ReturnType<typeof getBalanceValue>) {
         });
         return formatUnits(data as bigint, 18);
       };
-      const balance: string = yield call(estimateBalance, payload.sofi);
+      const balance: string = yield call(estimateBalance, payload?.SOFI);
       yield put(setSofiBalanceValue(balance));
     }
-    if (payload.usdc) {
-      const usdcValue: string = yield call(getValue, 'USDCUSDT');
-      yield put(setUsdcBalanceValue(usdcValue));
+    if (payload?.USDC) {
+      const {
+        usdCoin: { usd },
+      } = yield call(getValue, 'usd-coin', 'USD');
+      yield put(setUsdcBalanceValue(usd));
     }
-    if (payload.matic) {
-      const maticValue: string = yield call(getValue, 'MATICUSDT');
-      yield put(setMaticBalanceValue(maticValue));
+    if (payload?.MATIC) {
+      const {
+        maticNetwork: { usd },
+      } = yield call(getValue, 'matic-network', 'USD');
+      yield put(setMaticBalanceValue(usd));
     }
+    yield put(resetIsLoading());
   } catch (error) {
     yield put(getBalanceValueError());
   }

@@ -1,9 +1,9 @@
 import { Address } from 'viem';
 
 export interface MagicLinkBalance {
-  SOFI: string | null;
-  USDC: string | null;
-  MATIC: string | null;
+  SOFI?: string | null;
+  USDC?: string | null;
+  MATIC?: string | null;
 }
 
 interface WalletInfoState {
@@ -15,7 +15,7 @@ interface WalletInfoState {
   decimals: number;
   isMintSelected: boolean;
   magicLinkAddress: Address;
-  magicLinkBalance: MagicLinkBalance;
+  magicLinkBalance: MagicLinkBalance | null;
   isMagicLinkBalanceSet: boolean;
 }
 

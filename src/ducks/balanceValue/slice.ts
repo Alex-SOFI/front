@@ -14,9 +14,9 @@ export const balanceSlice = createSlice({
         payload,
       }: {
         payload: {
-          sofi: string;
-          usdc: string;
-          matic: string;
+          SOFI?: string;
+          USDC?: string;
+          MATIC?: string;
         };
       },
     ) {
@@ -43,6 +43,9 @@ export const balanceSlice = createSlice({
       state.maticValue = '0';
       state.error = false;
     },
+    resetIsLoading(state) {
+      state.isLoading = false;
+    },
   },
 });
 
@@ -55,6 +58,7 @@ export const {
   setMaticBalanceValue,
   getBalanceValueError,
   resetBalanceValue,
+  resetIsLoading,
 } = actions;
 
 export default reducer;

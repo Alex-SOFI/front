@@ -1,5 +1,5 @@
 const apiRoutes = {
-  AVG_PRICE: '/api/v3/avgPrice',
+  PRICE: '/simple/price',
 };
 
 export default apiRoutes;
