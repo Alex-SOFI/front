@@ -178,7 +178,6 @@ const App = () => {
     />,
     <Route key='*' path='*' element={<Navigate to={routes.HOME} replace />} />,
   ]);
-
   const element = useRoutes(routesArray);
 
   return element;

@@ -7,25 +7,58 @@ import {
 } from 'react';
 
 import { Transak, TransakConfig } from '@transak/transak-sdk';
-import { Address } from 'viem';
+import { Address, encodeFunctionData, parseUnits } from 'viem';
+
+import addresses from 'constants/addresses';
+import SOFIabi from 'constants/sofiAbi';
+
+const getSupplyCalldata = (amount: number | null) => {
+  if (!amount) return;
+
+  return encodeFunctionData({
+    abi: SOFIabi,
+    functionName: 'estimateMint',
+    args: [parseUnits(amount.toString(), 18)],
+  });
+};
 
 const useTransak = (
   amount: number,
   address: Address,
   setInputValue: Dispatch<SetStateAction<string>>,
 ) => {
+  const calldata = getSupplyCalldata(amount);
+
   const transakConfig: TransakConfig = useMemo(() => {
     return {
       apiKey: '0fd102fe-4030-473a-b2d0-79cf6bcb3c97',
       environment: Transak.ENVIRONMENTS.STAGING,
-      network: 'Polygon',
-      fiatAmount: amount,
+      network: 'polygon',
+      /* fiatAmount: amount, */
       fiatCurrency: 'EUR',
       walletAddress: address,
       defaultPaymentMethod: 'credit_debit_card',
-      cryptoCurrencyCode: 'USDC',
+      /* cryptoCurrencyCode: 'USDC', */
+      disableWalletAddressForm: true,
+      smartContractAddress: addresses.TOKEN_MANAGER,
+      estimatedGasLimit: 70_000,
+      calldata,
+      sourceTokenData: [
+        {
+          sourceTokenCode: 'USDC',
+          sourceTokenAmount: amount,
+        },
+      ],
+      cryptoCurrencyData: [
+        {
+          cryptoCurrencyCode: 'SOFI',
+          cryptoCurrencyName: 'SOFI Token',
+          cryptoCurrencyImageURL: '',
+        },
+      ],
+      isTransakOne: true,
     };
-  }, [address, amount]);
+  }, [address, amount, calldata /* estimatedAmount */]);
 
   const transak = useMemo(() => new Transak(transakConfig), [transakConfig]);
 
@@ -43,6 +76,9 @@ const useTransak = (
         transak.close();
       });
     }
+    return () => {
+      transak.close();
+    };
   }, [setInputValue, transak]);
 
   return { openModal };

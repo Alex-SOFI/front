@@ -50,7 +50,9 @@ export const walletSlice = createSlice({
         payload: MagicLinkBalance;
       },
     ) {
-      state.magicLinkBalance = payload;
+      if (Object.keys(payload).length !== 0) {
+        state.magicLinkBalance = payload;
+      }
       state.isMagicLinkBalanceSet = true;
     },
     resetMagicLinkBalance(state) {

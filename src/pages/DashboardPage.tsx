@@ -52,43 +52,43 @@ const DashboardPage: FunctionComponent = () => {
 
   useEffect(() => {
     const getBalance = async () => {
-      if (contract) {
-        const results = await publicClient.multicall({
-          contracts: [
-            {
-              ...contract,
-              functionName: 'balanceOf',
-              args: [magicLinkAddress as Address],
-            },
-            {
-              ...tokenContract(addresses.USDC_MUMBAI),
-              functionName: 'balanceOf',
-              args: [magicLinkAddress as Address],
-            },
-            {
-              ...tokenContract(addresses.MATIC),
-              functionName: 'balanceOf',
-              args: [magicLinkAddress as Address],
-            },
-          ],
-        });
-        dispatch(
-          setMagicLinkBalance({
-            ...(results[0].status === 'success' &&
-              results[0].result !== 0n && {
-                SOFI: formatUnits(results[0].result as bigint, 18),
-              }),
-            ...(results[1].status === 'success' &&
-              results[1].result !== 0n && {
-                USDC: formatUnits(results[1].result as bigint, 18),
-              }),
-            ...(results[2].status === 'success' &&
-              results[2].result !== 0n && {
-                MATIC: formatUnits(results[2].result as bigint, 18),
-              }),
-          }),
-        );
-      }
+      /* if (contract) { */
+      const results = await publicClient.multicall({
+        contracts: [
+          {
+            ...tokenContract(addresses.SOFI_TOKEN),
+            functionName: 'balanceOf',
+            args: [magicLinkAddress as Address],
+          },
+          {
+            ...tokenContract(addresses.USDC_MUMBAI),
+            functionName: 'balanceOf',
+            args: [magicLinkAddress as Address],
+          },
+          {
+            ...tokenContract(addresses.MATIC),
+            functionName: 'balanceOf',
+            args: [magicLinkAddress as Address],
+          },
+        ],
+      });
+      dispatch(
+        setMagicLinkBalance({
+          ...(results[0].status === 'success' &&
+            results[0].result !== 0n && {
+              SOFI: formatUnits(results[0].result as bigint, 18),
+            }),
+          ...(results[1].status === 'success' &&
+            results[1].result !== 0n && {
+              USDC: formatUnits(results[1].result as bigint, 18),
+            }),
+          ...(results[2].status === 'success' &&
+            results[2].result !== 0n && {
+              MATIC: formatUnits(results[2].result as bigint, 18),
+            }),
+        }),
+      );
+      /* } */
     };
     getBalance();
   }, [contract, dispatch, magicLinkAddress]);
