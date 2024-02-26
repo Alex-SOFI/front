@@ -5,6 +5,8 @@ import Box from '@mui/material/Box';
 
 import { MagicLinkBalance } from 'interfaces/WalletInfoState';
 
+import { formatBalance } from 'tools';
+
 import { Button, Text } from 'components/basic';
 
 import { theme } from 'styles/theme';
@@ -74,10 +76,10 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
               SOPHIE
             </Text>
             <Text justifySelf='end' mr='1rem'>
-              {balance?.SOFI || '0'}
+              {balance?.SOFI ? formatBalance(balance?.SOFI, 5) : '0'}
             </Text>
             <Text justifySelf='end' mr='1rem'>
-              {balanceValue?.SOFI || '0'}$
+              {balance?.SOFI ? formatBalance(balance?.SOFI, 5) : '0'}$
             </Text>
           </GridBox>
 
@@ -86,10 +88,18 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
               USDC
             </Text>
             <Text justifySelf='end' mr='1rem'>
-              {balance?.USDC || '0'}
+              {balance?.USDC ? formatBalance(balance?.USDC, 5) : '0'}
             </Text>
             <Text justifySelf='end' mr='1rem'>
-              {Number(balance?.USDC) * Number(balanceValue?.USDC) || '0'}$
+              {balance?.USDC
+                ? formatBalance(
+                    (
+                      Number(balance?.USDC) * Number(balanceValue?.USDC)
+                    ).toString(),
+                    5,
+                  )
+                : '0'}
+              $
             </Text>
           </GridBox>
 
@@ -98,10 +108,18 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
               MATIC
             </Text>
             <Text justifySelf='end' mr='1rem'>
-              {balance?.MATIC || '0'}
+              {balance?.MATIC ? formatBalance(balance?.MATIC, 5) : '0'}
             </Text>
             <Text justifySelf='end' mr='1rem'>
-              {Number(balance?.MATIC) * Number(balanceValue?.MATIC) || '0'}$
+              {balance?.MATIC
+                ? formatBalance(
+                    (
+                      Number(balance?.MATIC) * Number(balanceValue?.MATIC)
+                    ).toString(),
+                    5,
+                  )
+                : '0'}
+              $
             </Text>
           </GridBox>
 

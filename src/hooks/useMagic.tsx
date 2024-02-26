@@ -97,6 +97,7 @@ const useMagic = (pathname: string) => {
         }
         getToken();
       } else {
+        removeLocalStorageItem('connectedWithMagicLink');
         dispatch(setUser({ isLoggedIn: false, email: null }));
       }
     } catch (err) {

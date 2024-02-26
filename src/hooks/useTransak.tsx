@@ -12,13 +12,13 @@ import { Address, encodeFunctionData, parseUnits } from 'viem';
 import addresses from 'constants/addresses';
 import SOFIabi from 'constants/sofiAbi';
 
-const getSupplyCalldata = (amount: number | null) => {
+const getSupplyCalldata = (address: Address, amount: number | null) => {
   if (!amount) return;
 
   return encodeFunctionData({
     abi: SOFIabi,
-    functionName: 'estimateMint',
-    args: [parseUnits(amount.toString(), 18)],
+    functionName: 'mint',
+    args: [address, parseUnits(amount.toString(), 18)],
   });
 };
 
@@ -27,18 +27,16 @@ const useTransak = (
   address: Address,
   setInputValue: Dispatch<SetStateAction<string>>,
 ) => {
-  const calldata = getSupplyCalldata(amount);
+  const calldata = getSupplyCalldata(address, amount);
 
   const transakConfig: TransakConfig = useMemo(() => {
     return {
       apiKey: '0fd102fe-4030-473a-b2d0-79cf6bcb3c97',
       environment: Transak.ENVIRONMENTS.STAGING,
       network: 'polygon',
-      /* fiatAmount: amount, */
       fiatCurrency: 'EUR',
       walletAddress: address,
       defaultPaymentMethod: 'credit_debit_card',
-      /* cryptoCurrencyCode: 'USDC', */
       disableWalletAddressForm: true,
       smartContractAddress: addresses.TOKEN_MANAGER,
       estimatedGasLimit: 70_000,
@@ -58,7 +56,7 @@ const useTransak = (
       ],
       isTransakOne: true,
     };
-  }, [address, amount, calldata /* estimatedAmount */]);
+  }, [address, amount, calldata]);
 
   const transak = useMemo(() => new Transak(transakConfig), [transakConfig]);
 

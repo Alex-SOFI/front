@@ -52,7 +52,6 @@ const DashboardPage: FunctionComponent = () => {
 
   useEffect(() => {
     const getBalance = async () => {
-      /* if (contract) { */
       const results = await publicClient.multicall({
         contracts: [
           {
@@ -88,7 +87,6 @@ const DashboardPage: FunctionComponent = () => {
             }),
         }),
       );
-      /* } */
     };
     getBalance();
   }, [contract, dispatch, magicLinkAddress]);
