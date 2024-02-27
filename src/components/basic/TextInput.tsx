@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChangeEventHandler, FunctionComponent } from 'react';
 
 import TextField from '@mui/material/TextField';
+
+import { theme } from 'styles/theme';
 
 interface TextInputProps {
   paddingLeft?: string | number;
@@ -18,6 +21,8 @@ interface TextInputProps {
     | 'center'
     | 'justify'
     | 'match-parent';
+  helperText?: string;
+  [x: string]: any;
 }
 
 const TextInput: FunctionComponent<TextInputProps> = ({
@@ -29,11 +34,13 @@ const TextInput: FunctionComponent<TextInputProps> = ({
   disabled,
   readOnly,
   textAlign,
+  helperText,
+  ...props
 }) => {
   return (
     <TextField
       size='small'
-      sx={{ paddingLeft, marginRight }}
+      sx={{ paddingLeft, marginRight, ...props }}
       placeholder={placeholder}
       value={value}
       onChange={onChange}
@@ -41,6 +48,8 @@ const TextInput: FunctionComponent<TextInputProps> = ({
       inputProps={{ readOnly, style: { textAlign: textAlign || 'right' } }}
       fullWidth
       autoComplete='off'
+      FormHelperTextProps={{ sx: { color: theme.colors.error } }}
+      {...(helperText ? { helperText } : {})}
     />
   );
 };

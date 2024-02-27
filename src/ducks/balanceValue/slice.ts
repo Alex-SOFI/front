@@ -14,9 +14,9 @@ export const balanceSlice = createSlice({
         payload,
       }: {
         payload: {
-          SOFI?: string;
-          USDC?: string;
-          MATIC?: string;
+          SOFI?: number;
+          USDC?: number;
+          MATIC?: number;
         };
       },
     ) {
@@ -26,21 +26,21 @@ export const balanceSlice = createSlice({
       state.isLoading = false;
       state.error = true;
     },
-    setSofiBalanceValue(state, { payload }: { payload: string }) {
+    setSofiBalanceValue(state, { payload }: { payload: number }) {
       state.sofiValue = payload;
       state.isLoading = false;
     },
-    setUsdcBalanceValue(state, { payload }: { payload: string }) {
+    setUsdcBalanceValue(state, { payload }: { payload: number }) {
       state.usdcValue = payload;
     },
-    setMaticBalanceValue(state, { payload }: { payload: string }) {
+    setMaticBalanceValue(state, { payload }: { payload: number }) {
       state.maticValue = payload;
     },
     resetBalanceValue(state) {
       state.isLoading = false;
-      state.sofiValue = '0';
-      state.usdcValue = '0';
-      state.maticValue = '0';
+      state.sofiValue = 0;
+      state.usdcValue = 0;
+      state.maticValue = 0;
       state.error = false;
     },
     resetIsLoading(state) {

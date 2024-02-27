@@ -291,7 +291,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
       ) {
         const float = event.target.value.split('.')?.[1];
         if (!float || (float && float?.length <= decimals)) {
-          setActiveInputValue(event.target.value);
+          setActiveInputValue(event.target.value.trim());
         }
       }
     },

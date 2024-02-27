@@ -35,6 +35,12 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
     }
   }, [navigate]);
 
+  const navigateToTransfertPage = useCallback(() => {
+    if (window.location.pathname !== routes.TRANSFERT) {
+      navigate(routes.TRANSFERT);
+    }
+  }, [navigate]);
+
   const { address, isConnected, magicLinkAddress } =
     useSelector(selectWalletInfo);
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
@@ -80,6 +86,7 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
       isWrongNetwork={isWrongNetwork}
       logoutUser={logout}
       navigateToBuyPage={navigateToBuyPage}
+      navigateToTransfertPage={navigateToTransfertPage}
       disconnectUser={disconnectUser}
     />
   );

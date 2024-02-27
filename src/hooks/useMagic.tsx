@@ -14,7 +14,7 @@ import { OAuthExtension } from '@magic-ext/oauth';
 import { InstanceWithExtensions, SDKBase } from '@magic-sdk/provider';
 import useIsUserConnected from 'hooks/useIsUserConnected';
 import { Magic } from 'magic-sdk';
-import { Client } from 'viem';
+import { WalletClient } from 'viem';
 
 import { walletClient } from 'constants/contracts';
 import routes from 'constants/routes';
@@ -39,7 +39,7 @@ const useMagic = (pathname: string) => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [client, setClient] = useState<Client | null>(null);
+  const [client, setClient] = useState<WalletClient | null>(null);
   const user = useSelector(selectUser);
   const { magicLinkAddress } = useSelector(selectWalletInfo);
 

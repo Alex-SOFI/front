@@ -27,7 +27,7 @@ const BuyPage: FunctionComponent = () => {
           (float &&
             float?.length <= /* decimals */ 18) /* TODO: get USDC(?) decimals */
         ) {
-          setInvestInputValue(event.target.value);
+          setInvestInputValue(event.target.value.trim());
         }
       }
     },

@@ -5,8 +5,6 @@ import Box from '@mui/material/Box';
 
 import { MagicLinkBalance } from 'interfaces/WalletInfoState';
 
-import { formatBalance } from 'tools';
-
 import { Button, Text } from 'components/basic';
 
 import { theme } from 'styles/theme';
@@ -34,9 +32,9 @@ const GridBox = styled(Box)`
 interface DashboardPageMainProps {
   balance: MagicLinkBalance | null;
   balanceValue: {
-    SOFI?: string | null;
-    USDC?: string | null;
-    MATIC?: string | null;
+    SOFI?: number | null;
+    USDC?: number | null;
+    MATIC?: number | null;
   };
   navigateToBuyPage: () => void;
 }
@@ -76,10 +74,10 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
               SOPHIE
             </Text>
             <Text justifySelf='end' mr='1rem'>
-              {balance?.SOFI ? formatBalance(balance?.SOFI, 5) : '0'}
+              {balance?.SOFI ? Number(balance?.SOFI.toFixed(5)) : '0'}
             </Text>
             <Text justifySelf='end' mr='1rem'>
-              {balance?.SOFI ? formatBalance(balance?.SOFI, 5) : '0'}$
+              {balance?.SOFI ? Number(balanceValue?.SOFI?.toFixed(5)) : 0}$
             </Text>
           </GridBox>
 
@@ -88,17 +86,12 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
               USDC
             </Text>
             <Text justifySelf='end' mr='1rem'>
-              {balance?.USDC ? formatBalance(balance?.USDC, 5) : '0'}
+              {balance?.USDC ? Number(balance?.USDC.toFixed(5)) : '0'}
             </Text>
             <Text justifySelf='end' mr='1rem'>
-              {balance?.USDC
-                ? formatBalance(
-                    (
-                      Number(balance?.USDC) * Number(balanceValue?.USDC)
-                    ).toString(),
-                    5,
-                  )
-                : '0'}
+              {balance?.USDC && balanceValue?.USDC
+                ? Number((balance?.USDC * balanceValue?.USDC).toFixed(5))
+                : 0}
               $
             </Text>
           </GridBox>
@@ -108,16 +101,11 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
               MATIC
             </Text>
             <Text justifySelf='end' mr='1rem'>
-              {balance?.MATIC ? formatBalance(balance?.MATIC, 5) : '0'}
+              {balance?.MATIC ? Number(balance?.MATIC.toFixed(5)) : '0'}
             </Text>
             <Text justifySelf='end' mr='1rem'>
-              {balance?.MATIC
-                ? formatBalance(
-                    (
-                      Number(balance?.MATIC) * Number(balanceValue?.MATIC)
-                    ).toString(),
-                    5,
-                  )
+              {balance?.MATIC && balanceValue?.MATIC
+                ? Number((balance?.MATIC * balanceValue?.MATIC).toFixed(5))
                 : '0'}
               $
             </Text>

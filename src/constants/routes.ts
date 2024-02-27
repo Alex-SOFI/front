@@ -5,6 +5,7 @@ const routes = {
   OAUTH: '/oauth',
   MAIN: '/main',
   BUY: '/buy',
+  TRANSFERT: '/transfert',
 };
 
 export default routes;

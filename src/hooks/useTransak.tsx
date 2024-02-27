@@ -39,7 +39,7 @@ const useTransak = (
       defaultPaymentMethod: 'credit_debit_card',
       disableWalletAddressForm: true,
       smartContractAddress: addresses.TOKEN_MANAGER,
-      estimatedGasLimit: 70_000,
+      estimatedGasLimit: 300_000,
       calldata,
       sourceTokenData: [
         {
