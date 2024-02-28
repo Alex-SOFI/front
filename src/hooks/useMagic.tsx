@@ -145,7 +145,7 @@ const useMagic = (pathname: string) => {
 
       const getAddress = async () => {
         const [address] = await client.getAddresses();
-        if (magicLinkAddress === '0x') {
+        if (magicLinkAddress === '0x' && address) {
           dispatch(storeMagicLinkAddress(address));
         }
       };
