@@ -3,6 +3,7 @@ import ButtonWithIcon from './ButtonWithIcon';
 import Link from './Link';
 import LoadingSpinner from './LoadingSpinner';
 import Picture from './Picture';
+import Select from './Select';
 import Text from './Text';
 import TextInput from './TextInput';
 
@@ -14,4 +15,5 @@ export {
   Link,
   LoadingSpinner,
   Picture,
+  Select,
 };
