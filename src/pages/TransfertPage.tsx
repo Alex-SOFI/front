@@ -19,11 +19,7 @@ import {
 import { polygonMumbai } from 'viem/chains';
 
 import addresses from 'constants/addresses';
-import {
-  publicClient,
-  tokenContract,
-  tokenManagerContract,
-} from 'constants/contracts';
+import { publicClient, tokenContract } from 'constants/contracts';
 import { TOKEN_NAMES } from 'constants/textConstants';
 
 import { selectWalletInfo } from 'ducks/wallet';
@@ -76,7 +72,7 @@ const TransfertPage: FunctionComponent = () => {
     const decimals =
       tokenInputValue === TOKEN_NAMES.SOFI
         ? await publicClient.readContract({
-            ...tokenManagerContract,
+            ...tokenContract(addresses.SOFI_TOKEN),
             functionName: 'decimals',
           })
         : await publicClient.readContract({
@@ -84,7 +80,7 @@ const TransfertPage: FunctionComponent = () => {
             functionName: 'decimals',
           });
 
-    await walletClient?.sendTransaction({
+    const hash = await walletClient?.sendTransaction({
       account: magicLinkAddress,
       chain: polygonMumbai,
       to:
@@ -100,6 +96,11 @@ const TransfertPage: FunctionComponent = () => {
         ],
       }),
     });
+    if (hash) {
+      setTokenInputValue(TOKEN_NAMES.SOFI);
+      setAddressInputValue('');
+      setAmountInputValue('');
+    } // temporary
   }, [
     addressInputValue,
     amountInputValue,
