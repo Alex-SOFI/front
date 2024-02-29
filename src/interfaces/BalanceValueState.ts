@@ -1,7 +1,7 @@
 interface BalanceValueState {
-  sofiValue: string;
-  usdcValue: string;
-  maticValue: string;
+  sofiValue: number;
+  usdcValue: number;
+  maticValue: number;
   isLoading: boolean;
   error: boolean;
 }

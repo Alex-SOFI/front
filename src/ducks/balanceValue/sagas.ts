@@ -16,15 +16,15 @@ import {
 function* getBalanceValueSaga({ payload }: ReturnType<typeof getBalanceValue>) {
   try {
     if (payload?.SOFI) {
-      const estimateBalance = async (sofi: string) => {
+      const estimateBalance = async (sofi: number) => {
         const data = await publicClient.readContract({
           ...tokenManagerContract,
           functionName: 'estimateRedeem',
-          args: [parseUnits(sofi, 18)],
+          args: [parseUnits(sofi.toString(), 18)],
         });
-        return formatUnits(data as bigint, 18);
+        return Number(formatUnits(data as bigint, 18));
       };
-      const balance: string = yield call(estimateBalance, payload?.SOFI);
+      const balance: number = yield call(estimateBalance, payload?.SOFI);
       yield put(setSofiBalanceValue(balance));
     }
     if (payload?.USDC) {

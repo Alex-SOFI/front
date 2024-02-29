@@ -34,12 +34,11 @@ const useTransak = (
       apiKey: '0fd102fe-4030-473a-b2d0-79cf6bcb3c97',
       environment: Transak.ENVIRONMENTS.STAGING,
       network: 'polygon',
-      fiatCurrency: 'EUR',
       walletAddress: address,
       defaultPaymentMethod: 'credit_debit_card',
       disableWalletAddressForm: true,
       smartContractAddress: addresses.TOKEN_MANAGER,
-      estimatedGasLimit: 70_000,
+      estimatedGasLimit: 300_000,
       calldata,
       sourceTokenData: [
         {

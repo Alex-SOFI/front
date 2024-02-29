@@ -16,8 +16,8 @@ import { theme } from 'styles/theme';
 
 const StyledHeader = styled.header`
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 5rem;
+  flex-direction: column;
+  margin-bottom: ${() => window.location.pathname === routes.EXPERT && '2rem'};
   padding: ${muiTheme.spacing(1)};
 
   @media (max-width: ${theme.breakpoints.sm}) {
@@ -34,6 +34,7 @@ interface HeaderProps {
   isWrongNetwork: boolean;
   logoutUser: () => Promise<void>;
   navigateToBuyPage: () => void;
+  navigateToTransfertPage: () => void;
   disconnectUser: () => void;
 }
 
@@ -46,9 +47,15 @@ const Header: FunctionComponent<HeaderProps> = ({
   isWrongNetwork,
   logoutUser,
   navigateToBuyPage,
+  navigateToTransfertPage,
   disconnectUser,
 }) => {
   const { open } = useWeb3Modal();
+
+  const isExpertPage = useMemo(
+    () => window.location.pathname === routes.EXPERT,
+    [],
+  );
 
   const addressButton = useMemo(
     () => (
@@ -81,11 +88,7 @@ const Header: FunctionComponent<HeaderProps> = ({
   const disconnectButton = useMemo(
     () => (
       <ButtonWithIcon
-        onClick={
-          window.location.pathname === routes.EXPERT
-            ? disconnectUser
-            : logoutUser
-        }
+        onClick={isExpertPage ? disconnectUser : logoutUser}
         maxHeight='2.719rem'
         color='black'
         ariaLabel='disconnect'
@@ -93,14 +96,14 @@ const Header: FunctionComponent<HeaderProps> = ({
         <LogoutIcon aria-label='disconnect' fontSize='large' />
       </ButtonWithIcon>
     ),
-    [disconnectUser, logoutUser],
+    [disconnectUser, isExpertPage, logoutUser],
   );
 
   const render = useCallback(() => {
     if (isLinkOnly) {
       return null;
     } else {
-      if (window.location.pathname === routes.EXPERT) {
+      if (isExpertPage) {
         return (
           <>
             <Picture
@@ -137,7 +140,6 @@ const Header: FunctionComponent<HeaderProps> = ({
         return (
           <>
             {addressButton}
-            <Button onClick={navigateToBuyPage}>Buy SOFI</Button>
             {disconnectButton}
           </>
         );
@@ -148,23 +150,33 @@ const Header: FunctionComponent<HeaderProps> = ({
     disconnectButton,
     handleSwitchButtonClick,
     isConnected,
+    isExpertPage,
     isLinkOnly,
     isWrongNetwork,
-    navigateToBuyPage,
     open,
   ]);
 
   return (
     <StyledHeader>
-      <Box display='flex' alignItems='center'>
-        <Link
-          href='https://www.sophie.fi/'
-          ariaLabel='Visit sophie.fi main page which opens in a new window.'
-        >
-          sophie.fi
-        </Link>
+      <Box display='flex' justifyContent='space-between' width='100%'>
+        <Box display='flex' alignItems='center'>
+          <Link
+            href='https://www.sophie.fi/'
+            ariaLabel='Visit sophie.fi main page which opens in a new window.'
+          >
+            sophie.fi
+          </Link>
+        </Box>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>{render()}</Box>
       </Box>
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>{render()}</Box>
+      {!isExpertPage && !isLinkOnly && (
+        <Box display='flex' justifyContent='center' mt='2dvh'>
+          <Button onClick={navigateToBuyPage} marginRight='2dvh'>
+            Buy SOFI
+          </Button>
+          <Button onClick={navigateToTransfertPage}>Transfert</Button>
+        </Box>
+      )}
     </StyledHeader>
   );
 };

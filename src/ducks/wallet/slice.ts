@@ -56,11 +56,7 @@ export const walletSlice = createSlice({
       state.isMagicLinkBalanceSet = true;
     },
     resetMagicLinkBalance(state) {
-      state.magicLinkBalance = {
-        SOFI: null,
-        USDC: null,
-        MATIC: null,
-      };
+      state.magicLinkBalance = null;
       state.isMagicLinkBalanceSet = false;
     },
   },

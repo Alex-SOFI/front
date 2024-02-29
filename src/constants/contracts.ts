@@ -13,6 +13,8 @@ import { polygonMumbai } from 'viem/chains';
 import addresses from './addresses';
 import SOFIabi from './sofiAbi';
 
+// TODO: change to mainnet
+
 export const tokenManagerContract = {
   address: addresses.TOKEN_MANAGER,
   abi: SOFIabi,
