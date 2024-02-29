@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { useIsUserConnected, useMagic } from 'hooks';
 import { useDisconnect, useSwitchChain } from 'wagmi';
 
-import chainIds from 'constants/chainIds';
 import routes from 'constants/routes';
 
 import { selectIsWrongNetwork, selectWalletInfo } from 'ducks/wallet';
@@ -55,7 +54,7 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
   const { switchChain } = useSwitchChain();
 
   const handleSwitchButtonClick = useCallback(() => {
-    switchChain({ chainId: chainIds.TESTNET });
+    switchChain({ chainId: Number(import.meta.env.VITE_POLYGON_CHAIN_ID) });
   }, [switchChain]);
 
   const copyAddress = useCallback(

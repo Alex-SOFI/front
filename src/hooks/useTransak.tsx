@@ -31,7 +31,7 @@ const useTransak = (
 
   const transakConfig: TransakConfig = useMemo(() => {
     return {
-      apiKey: '0fd102fe-4030-473a-b2d0-79cf6bcb3c97',
+      apiKey: import.meta.env.VITE_TRANSAK_API_KEY,
       environment: Transak.ENVIRONMENTS.STAGING,
       network: 'polygon',
       walletAddress: address,

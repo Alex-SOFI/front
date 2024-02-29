@@ -44,7 +44,7 @@ const DashboardPage: FunctionComponent = () => {
             args: [magicLinkAddress as Address],
           },
           {
-            ...tokenContract(addresses.USDC_MUMBAI), // TODO: change to USDC
+            ...tokenContract(addresses.USDC),
             functionName: 'balanceOf',
             args: [magicLinkAddress as Address],
           },

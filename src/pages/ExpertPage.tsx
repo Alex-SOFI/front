@@ -23,7 +23,6 @@ import wagmiConfig from 'configs/wagmiConfig';
 import { UserState } from 'interfaces';
 
 import addresses from 'constants/addresses';
-import chainIds from 'constants/chainIds';
 import { tokenContract, tokenManagerContract } from 'constants/contracts';
 
 import {
@@ -299,7 +298,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
   );
 
   const handleSwitchButtonClick = useCallback(() => {
-    switchChain({ chainId: chainIds.TESTNET });
+    switchChain({ chainId: Number(import.meta.env.VITE_POLYGON_CHAIN_ID) });
   }, [switchChain]);
 
   const setMaxActiveValue = useCallback(() => {
