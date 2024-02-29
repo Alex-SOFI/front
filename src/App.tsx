@@ -15,7 +15,6 @@ import { useAccount, useConnect, useReadContracts } from 'wagmi';
 import { UserState } from 'interfaces';
 
 import addresses from 'constants/addresses';
-import chainIds from 'constants/chainIds';
 import { tokenContract } from 'constants/contracts';
 import routes from 'constants/routes';
 
@@ -60,15 +59,10 @@ const App = () => {
   const { address, isConnected, chain } = useAccount();
   const { error, isPending: isLoading } = useConnect();
 
-  const tokenAddress = useMemo(() => {
-    if (isMintSelected) {
-      return chain?.id === chainIds.TESTNET
-        ? addresses.USDC_MUMBAI
-        : addresses.USDC;
-    } else {
-      return addresses.SOFI_TOKEN;
-    }
-  }, [chain?.id, isMintSelected]);
+  const tokenAddress = useMemo(
+    () => (isMintSelected ? addresses.USDC : addresses.SOFI_TOKEN),
+    [isMintSelected],
+  );
 
   const balance = useReadContracts({
     allowFailure: false,

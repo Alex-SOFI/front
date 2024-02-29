@@ -76,7 +76,7 @@ const TransfertPage: FunctionComponent = () => {
             functionName: 'decimals',
           })
         : await publicClient.readContract({
-            ...tokenContract(addresses.USDC_MUMBAI),
+            ...tokenContract(addresses.USDC),
             functionName: 'decimals',
           });
 
@@ -86,7 +86,7 @@ const TransfertPage: FunctionComponent = () => {
       to:
         tokenInputValue === TOKEN_NAMES.SOFI
           ? addresses.SOFI_TOKEN
-          : addresses.USDC_MUMBAI, // TODO: change to USDC
+          : addresses.USDC,
       data: encodeFunctionData({
         abi: erc20Abi,
         functionName: 'transfer',
