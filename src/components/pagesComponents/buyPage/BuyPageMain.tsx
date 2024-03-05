@@ -23,28 +23,32 @@ const StyledBox = styled(Box)`
 interface BuyPageMainProps {
   handleBuyButtonClick: () => void;
   handleInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  investInputValue: string;
+  inputValue: string;
+  isSellPage: boolean;
 }
 
 const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
   handleBuyButtonClick,
-  investInputValue,
+  inputValue,
   handleInputChange,
+  isSellPage,
 }) => {
   return (
     <StyledBox>
       <TextInput
-        placeholder='Amount to invest'
+        placeholder={
+          isSellPage ? 'SOFI Amount to Sell' : 'USD Amount to Invest'
+        }
         textAlign='left'
-        value={investInputValue}
+        value={inputValue}
         onChange={handleInputChange}
       />
       <Button
         marginTop='5dvh'
-        disabled={Number(investInputValue) <= 0 || investInputValue === '.'}
+        disabled={Number(inputValue) <= 0 || inputValue === '.'}
         onClick={handleBuyButtonClick}
       >
-        Buy SOFI
+        {isSellPage ? 'Sell SOFI' : 'Buy SOFI'}
       </Button>
     </StyledBox>
   );

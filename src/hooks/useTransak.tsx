@@ -12,7 +12,7 @@ import { Address, encodeFunctionData, parseUnits } from 'viem';
 import addresses from 'constants/addresses';
 import SOFIabi from 'constants/sofiAbi';
 
-const getSupplyCalldata = (address: Address, amount: number | null) => {
+const getMintCalldata = (address: Address, amount: number) => {
   if (!amount) return;
 
   return encodeFunctionData({
@@ -22,21 +22,42 @@ const getSupplyCalldata = (address: Address, amount: number | null) => {
   });
 };
 
-const useTransak = (
-  amount: number,
-  address: Address,
-  setInputValue: Dispatch<SetStateAction<string>>,
-) => {
-  const calldata = getSupplyCalldata(address, amount);
+const getRedeemCalldata = (amount: number) => {
+  if (!amount) return;
+
+  return encodeFunctionData({
+    abi: SOFIabi,
+    functionName: 'redeem',
+    args: [parseUnits(amount.toString(), 18)],
+  });
+};
+
+const useTransak = ({
+  amount,
+  address,
+  setInputValue,
+  productsAvailed,
+}: {
+  amount: number;
+  address?: Address;
+  setInputValue: Dispatch<SetStateAction<string>>;
+  productsAvailed: 'BUY' | 'SELL';
+}) => {
+  const calldata =
+    productsAvailed === 'BUY'
+      ? getMintCalldata(address!, amount)
+      : getRedeemCalldata(amount);
 
   const transakConfig: TransakConfig = useMemo(() => {
     return {
       apiKey: import.meta.env.VITE_TRANSAK_API_KEY,
       environment: Transak.ENVIRONMENTS.STAGING,
       network: 'polygon',
-      walletAddress: address,
+      ...(productsAvailed === 'BUY' && {
+        walletAddress: address,
+        disableWalletAddressForm: true,
+      }),
       defaultPaymentMethod: 'credit_debit_card',
-      disableWalletAddressForm: true,
       smartContractAddress: addresses.TOKEN_MANAGER,
       estimatedGasLimit: 300_000,
       calldata,
@@ -54,8 +75,9 @@ const useTransak = (
         },
       ],
       isTransakOne: true,
+      productsAvailed,
     };
-  }, [address, amount, calldata]);
+  }, [address, amount, calldata, productsAvailed]);
 
   const transak = useMemo(() => new Transak(transakConfig), [transakConfig]);
 
