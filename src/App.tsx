@@ -48,12 +48,7 @@ const App = () => {
     [dispatch],
   );
 
-  /* const { checkUserLoggedIn } =  */ useMagic(window.location.pathname);
-
-  /* useEffect(() => {
-    console.log(123);
-    checkUserLoggedIn();
-  }, [checkUserLoggedIn]); */
+  useMagic(window.location.pathname);
 
   const isMintSelected = !!useSelector(selectIsMintSelected);
 

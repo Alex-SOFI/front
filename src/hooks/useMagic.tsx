@@ -21,7 +21,7 @@ import { walletClient } from 'constants/contracts';
 import routes from 'constants/routes';
 
 import { selectUser } from 'ducks/user';
-import { setUser } from 'ducks/user/slice';
+import { setIsUserLoading, setUser } from 'ducks/user/slice';
 import { selectWalletInfo } from 'ducks/wallet';
 import { storeMagicLinkAddress } from 'ducks/wallet/slice';
 
@@ -72,9 +72,11 @@ const useMagic = (pathname: string) => {
 
   const logoutUser = useCallback(async () => {
     try {
+      dispatch(setIsUserLoading(true));
       await magic.current?.user.logout();
       dispatch(setUser({ isLoggedIn: false, email: null }));
       removeLocalStorageItem('connectedWithMagicLink');
+      dispatch(setIsUserLoading(false));
       navigate(routes.HOME);
     } catch (error) {
       throw new Error('User logout failed');

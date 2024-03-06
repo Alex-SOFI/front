@@ -14,11 +14,14 @@ export const userSlice = createSlice({
       state.isLoggedIn = payload.isLoggedIn;
       state.email = payload.email;
     },
+    setIsUserLoading(state, { payload }: { payload: boolean }) {
+      state.isLoading = payload;
+    },
   },
 });
 
 const { actions, reducer } = userSlice;
 
-export const { setUser } = actions;
+export const { setUser, setIsUserLoading } = actions;
 
 export default reducer;

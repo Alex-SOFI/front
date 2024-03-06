@@ -7,6 +7,7 @@ import { useDisconnect, useSwitchChain } from 'wagmi';
 
 import routes from 'constants/routes';
 
+import { setIsUserLoading } from 'ducks/user/slice';
 import { selectIsWrongNetwork, selectWalletInfo } from 'ducks/wallet';
 import { resetMagicLinkAddress } from 'ducks/wallet/slice';
 
@@ -26,7 +27,7 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
 
   const navigate = useNavigate();
 
-  const { disconnect } = useDisconnect();
+  const { disconnectAsync } = useDisconnect();
 
   const navigateToBuyPage = useCallback(() => {
     if (window.location.pathname !== routes.BUY) {
@@ -69,11 +70,13 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
     dispatch(resetMagicLinkAddress());
   }, [dispatch, logoutUser]);
 
-  const disconnectUser = useCallback(() => {
-    disconnect();
+  const disconnectUser = useCallback(async () => {
+    dispatch(setIsUserLoading(true));
+    await disconnectAsync();
+    dispatch(setIsUserLoading(false));
     removeLocalStorageItem('connectedWithWallet');
     navigate(routes.HOME);
-  }, [disconnect, navigate]);
+  }, [disconnectAsync, dispatch, navigate]);
 
   return (
     <Header
