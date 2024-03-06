@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FunctionComponent, PropsWithChildren } from 'react';
+import { FunctionComponent, MouseEvent, PropsWithChildren } from 'react';
 
 import { default as BasicButton } from '@mui/material/Button';
 
 interface ButtonProps extends PropsWithChildren {
   onClick: () => void;
+  onClickWithEvent?: (event: MouseEvent<HTMLElement>) => void;
   type?: 'submit' | 'reset' | undefined;
   variant?: 'text';
   isPrimaryColor?: boolean;
@@ -32,6 +33,7 @@ const Button: FunctionComponent<ButtonProps> = ({
   fullWidth,
   minHeight,
   textColor,
+  onClickWithEvent,
   ...props
 }) => {
   return (
@@ -51,7 +53,7 @@ const Button: FunctionComponent<ButtonProps> = ({
         ...(textColor ? { color: textColor } : {}),
         ...props,
       }}
-      onClick={onClick}
+      onClick={onClickWithEvent || onClick}
       disabled={disabled || false}
       aria-label={ariaLabel}
       fullWidth={fullWidth}

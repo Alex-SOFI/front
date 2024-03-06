@@ -48,11 +48,12 @@ const App = () => {
     [dispatch],
   );
 
-  const { checkUserLoggedIn } = useMagic(window.location.pathname);
+  /* const { checkUserLoggedIn } =  */ useMagic(window.location.pathname);
 
-  useEffect(() => {
+  /* useEffect(() => {
+    console.log(123);
     checkUserLoggedIn();
-  }, [checkUserLoggedIn]);
+  }, [checkUserLoggedIn]); */
 
   const isMintSelected = !!useSelector(selectIsMintSelected);
 
@@ -166,18 +167,18 @@ const App = () => {
       key={routes.BUY}
       path={routes.BUY}
       element={
-        // <PrivateRoute isLoggedIn={isLoggedIn}>
-        <BuyOrSellPage isSellPage={false} />
-        // </PrivateRoute>
+        <PrivateRoute isLoggedIn={isLoggedIn}>
+          <BuyOrSellPage isSellPage={false} />
+        </PrivateRoute>
       }
     />,
     <Route
       key={routes.SELL}
       path={routes.SELL}
       element={
-        // <PrivateRoute isLoggedIn={isLoggedIn}>
-        <BuyOrSellPage isSellPage />
-        // </PrivateRoute>
+        <PrivateRoute isLoggedIn={isLoggedIn}>
+          <BuyOrSellPage isSellPage />
+        </PrivateRoute>
       }
     />,
     <Route

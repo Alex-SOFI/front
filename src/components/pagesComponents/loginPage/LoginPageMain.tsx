@@ -1,6 +1,8 @@
-import { Dispatch, FunctionComponent, SetStateAction } from 'react';
+import { Dispatch, FunctionComponent, MouseEvent, SetStateAction } from 'react';
 
 import Box from '@mui/material/Box';
+
+import { noop } from 'tools';
 
 import { Button, Text, TextInput } from 'components/basic';
 
@@ -10,7 +12,7 @@ interface LoginPageMainProps {
   emailInputValue: string;
   setEmailInputValue: Dispatch<SetStateAction<string>>;
   login: () => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
+  loginWithGoogle: (event: MouseEvent<HTMLElement>) => Promise<void>;
   error: string | null;
 }
 
@@ -53,7 +55,13 @@ const LoginPageMain: FunctionComponent<LoginPageMainProps> = ({
       >
         Signup / Login
       </Button>
-      <Button fullWidth onClick={() => loginWithGoogle()}>
+      <Button
+        fullWidth
+        onClickWithEvent={(event: MouseEvent<HTMLElement>) =>
+          loginWithGoogle(event)
+        }
+        onClick={noop}
+      >
         Continue with Google
       </Button>
       <Box

@@ -1,4 +1,10 @@
-import { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import {
+  FunctionComponent,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 
 import { useMagic } from 'hooks';
 
@@ -33,14 +39,17 @@ const LoginPage: FunctionComponent<LoginPageProps> = () => {
     await loginUser(emailInputValue, setError);
   }, [emailInputValue, loginUser]);
 
-  const loginUserWithGoogle = useCallback(async () => {
-    try {
-      await oauthLogin();
-    } catch (error) {
-      setError('Unable to log in');
-      console.error(error);
-    }
-  }, [oauthLogin]);
+  const loginUserWithGoogle = useCallback(
+    async (event: MouseEvent<HTMLElement>) => {
+      try {
+        await oauthLogin(event);
+      } catch (error) {
+        setError('Unable to log in');
+        console.error(error);
+      }
+    },
+    [oauthLogin],
+  );
 
   return (
     <Layout

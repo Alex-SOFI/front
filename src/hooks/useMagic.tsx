@@ -1,5 +1,6 @@
 import {
   Dispatch,
+  MouseEvent,
   SetStateAction,
   useCallback,
   useEffect,
@@ -80,7 +81,8 @@ const useMagic = (pathname: string) => {
     }
   }, [dispatch, navigate]);
 
-  const oauthLogin = useCallback(async () => {
+  const oauthLogin = useCallback(async (event: MouseEvent<HTMLElement>) => {
+    event.preventDefault();
     await magic.current?.oauth.loginWithRedirect({
       provider: 'google',
       redirectURI: `${window.location.origin}/oauth`,
@@ -124,10 +126,14 @@ const useMagic = (pathname: string) => {
     const render = async () => {
       if (pathname === routes.OAUTH) {
         try {
-          await magic.current?.oauth.getRedirectResult();
-          setLocalStorageItem('connectedWithMagicLink', 'true');
-          navigate(routes.MAIN, { replace: true });
-        } catch {
+          const result = await magic.current?.oauth.getRedirectResult();
+          const profile = result?.oauth.userInfo;
+          if (profile?.email) {
+            setUser({ email: profile.email });
+            setLocalStorageItem('connectedWithMagicLink', 'true');
+            navigate(routes.MAIN, { replace: true });
+          }
+        } catch (error) {
           throw new Error('Oauth login failed');
         }
       }
