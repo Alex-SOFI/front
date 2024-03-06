@@ -30,9 +30,8 @@ const BuyOrSellPage: FunctionComponent<BuyPageProps> = ({ isSellPage }) => {
 
   const { openModal } = useTransak({
     amount: Number(inputValue) || 0,
-    ...(!isSellPage && { address: magicLinkAddress as Address }),
+    address: magicLinkAddress as Address,
     setInputValue,
-    productsAvailed: isSellPage ? 'SELL' : 'BUY',
   });
 
   return (
