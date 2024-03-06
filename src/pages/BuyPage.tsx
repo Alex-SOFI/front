@@ -12,11 +12,7 @@ import { BuyPageMain } from 'components/pagesComponents/buyPage';
 
 import { Layout } from 'components';
 
-interface BuyPageProps {
-  isSellPage: boolean;
-}
-
-const BuyOrSellPage: FunctionComponent<BuyPageProps> = ({ isSellPage }) => {
+const BuyPage: FunctionComponent = () => {
   const { magicLinkAddress } = useSelector(selectWalletInfo);
 
   const [inputValue, setInputValue] = useState<string>('');
@@ -39,10 +35,10 @@ const BuyOrSellPage: FunctionComponent<BuyPageProps> = ({ isSellPage }) => {
       <Layout
         main={
           <BuyPageMain
-            handleBuyButtonClick={openModal}
+            handleButtonClick={openModal}
             inputValue={inputValue}
             handleInputChange={handleInvestInputChange}
-            isSellPage={isSellPage}
+            isSellPage={false}
           />
         }
       />
@@ -50,4 +46,4 @@ const BuyOrSellPage: FunctionComponent<BuyPageProps> = ({ isSellPage }) => {
   );
 };
 
-export default BuyOrSellPage;
+export default BuyPage;

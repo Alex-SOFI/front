@@ -39,12 +39,14 @@ const useTransak = ({
 
   useEffect(() => {
     const estimateBalance = async () => {
-      const data = await publicClient.readContract({
-        ...tokenManagerContract,
-        functionName: 'estimateMint',
-        args: [parseUnits(amount.toString(), 18)],
-      });
-      setEstimatedAmount(Number(formatUnits(data as bigint, 18)));
+      if (amount) {
+        const data = await publicClient.readContract({
+          ...tokenManagerContract,
+          functionName: 'estimateMint',
+          args: [parseUnits(amount.toString(), 18)],
+        });
+        setEstimatedAmount(Number(formatUnits(data as bigint, 18)));
+      }
     };
     estimateBalance();
   }, [amount]);

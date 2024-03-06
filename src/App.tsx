@@ -34,7 +34,8 @@ const LoginPage = lazyWithRetry(() => import('pages/LoginPage'));
 const OauthPage = lazyWithRetry(() => import('pages/OauthPage'));
 const DashboardPage = lazyWithRetry(() => import('pages/DashboardPage'));
 const HomePage = lazyWithRetry(() => import('pages/HomePage'));
-const BuyOrSellPage = lazyWithRetry(() => import('pages/BuyOrSellPage'));
+const BuyPage = lazyWithRetry(() => import('pages/BuyPage'));
+const SellPage = lazyWithRetry(() => import('pages/SellPage'));
 const TransfertPage = lazyWithRetry(() => import('pages/TransfertPage'));
 
 const App = () => {
@@ -163,7 +164,7 @@ const App = () => {
       path={routes.BUY}
       element={
         <PrivateRoute isLoggedIn={isLoggedIn}>
-          <BuyOrSellPage isSellPage={false} />
+          <BuyPage />
         </PrivateRoute>
       }
     />,
@@ -172,7 +173,7 @@ const App = () => {
       path={routes.SELL}
       element={
         <PrivateRoute isLoggedIn={isLoggedIn}>
-          <BuyOrSellPage isSellPage />
+          <SellPage />
         </PrivateRoute>
       }
     />,

@@ -21,14 +21,14 @@ const StyledBox = styled(Box)`
 `;
 
 interface BuyPageMainProps {
-  handleBuyButtonClick: () => void;
+  handleButtonClick: () => void;
   handleInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
   inputValue: string;
   isSellPage: boolean;
 }
 
 const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
-  handleBuyButtonClick,
+  handleButtonClick,
   inputValue,
   handleInputChange,
   isSellPage,
@@ -46,7 +46,7 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
       <Button
         marginTop='5dvh'
         disabled={Number(inputValue) <= 0 || inputValue === '.'}
-        onClick={handleBuyButtonClick}
+        onClick={handleButtonClick}
       >
         {isSellPage ? 'Sell SOFI' : 'Buy SOFI'}
       </Button>
