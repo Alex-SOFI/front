@@ -1,8 +1,14 @@
-import { ChangeEvent, FunctionComponent, useCallback, useState } from 'react';
+import {
+  ChangeEvent,
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 
 import { useMagic } from 'hooks';
-import { encodeFunctionData, parseUnits } from 'viem';
+import { Address, encodeFunctionData, formatUnits, parseUnits } from 'viem';
 import { polygonMumbai } from 'viem/chains';
 
 import addresses from 'constants/addresses';
@@ -16,11 +22,36 @@ import { handleInputChange } from 'tools';
 import { BuyPageMain } from 'components/pagesComponents/buyPage';
 
 import { Layout } from 'components';
+import { LoadingSpinner } from 'components/basic';
 
 const SellPage: FunctionComponent = () => {
   const { magicLinkAddress } = useSelector(selectWalletInfo);
 
   const [inputValue, setInputValue] = useState<string>('');
+
+  const [balance, setBalance] = useState<string>('');
+
+  const [isMaxValueError, setIsMaxValueError] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (Number(inputValue) > Number(balance)) {
+      setIsMaxValueError(true);
+    } else {
+      setIsMaxValueError(false);
+    }
+  }, [inputValue, balance]);
+
+  useEffect(() => {
+    const getBalance = async () => {
+      const result = await publicClient.readContract({
+        ...tokenContract(addresses.SOFI_TOKEN),
+        functionName: 'balanceOf',
+        args: [magicLinkAddress as Address],
+      });
+      setBalance(formatUnits(result as bigint, 18));
+    };
+    getBalance();
+  }, [magicLinkAddress]);
 
   const handleInvestInputChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -49,16 +80,27 @@ const SellPage: FunctionComponent = () => {
     console.log(hash);
   }, [inputValue, magicLinkAddress, walletClient]);
 
+  const setMaxValue = useCallback(() => {
+    setInputValue(balance!);
+  }, [balance]);
+
   return (
     <>
       <Layout
         main={
-          <BuyPageMain
-            handleButtonClick={handleSellButtonClick}
-            inputValue={inputValue}
-            handleInputChange={handleInvestInputChange}
-            isSellPage
-          />
+          !balance ? (
+            <LoadingSpinner position='relative' />
+          ) : (
+            <BuyPageMain
+              handleButtonClick={handleSellButtonClick}
+              inputValue={inputValue}
+              handleInputChange={handleInvestInputChange}
+              isSellPage
+              balance={Number(balance)}
+              setMaxValue={setMaxValue}
+              isMaxValueError={isMaxValueError}
+            />
+          )
         }
       />
     </>

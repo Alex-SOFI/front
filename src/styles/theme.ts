@@ -59,7 +59,9 @@ export const theme = {
   },
 
   breakpoints: {
+    xs: '23.5em',
     sm: '40em',
     xl: '64em',
+    xxl: '85em',
   },
 };
