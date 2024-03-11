@@ -1,11 +1,11 @@
-import { ChangeEvent, FunctionComponent } from 'react';
+import { ChangeEvent, FunctionComponent, useMemo } from 'react';
 
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 
 import statusTexts from 'constants/statusTexts';
 
-import { Button, Text, TextInput } from 'components/basic';
+import { Button, LoadingSpinner, Text, TextInput } from 'components/basic';
 
 import { theme } from 'styles/theme';
 
@@ -30,6 +30,10 @@ interface BuyPageMainProps {
   balance?: number;
   setMaxValue?: () => void;
   isMaxValueError?: boolean;
+  hasAllownace?: boolean;
+  isTransactionLoading?: boolean;
+  isTransactionError?: boolean;
+  transactionErrorText?: string;
 }
 
 const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
@@ -40,7 +44,22 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
   balance,
   setMaxValue,
   isMaxValueError,
+  hasAllownace,
+  isTransactionLoading,
+  isTransactionError,
+  transactionErrorText,
 }) => {
+  const buttonText = useMemo(() => {
+    if (isSellPage) {
+      if (hasAllownace) {
+        return 'Sell SOFI';
+      } else {
+        return 'Approve SOFI';
+      }
+    } else {
+      return 'Buy SOFI';
+    }
+  }, [hasAllownace, isSellPage]);
   return (
     <StyledBox>
       <TextInput
@@ -50,6 +69,7 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
         textAlign='left'
         value={inputValue}
         onChange={handleInputChange}
+        readOnly={isTransactionLoading}
       />
       {isSellPage && (
         <>
@@ -82,17 +102,36 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
                 {statusTexts.MAX_SOFI_VALUE}
               </Text>
             )}
+            {isTransactionError && (
+              <Text
+                sx={{ gridColumn: 2 }}
+                variant='body2'
+                color={theme.colors.error}
+              >
+                {transactionErrorText}
+              </Text>
+            )}
           </Box>
         </>
       )}
       <Button
         marginTop={isSellPage ? '1dvh' : '10dvh'}
         disabled={
-          Number(inputValue) <= 0 || inputValue === '.' || isMaxValueError
+          Number(inputValue) <= 0 ||
+          inputValue === '.' ||
+          isMaxValueError ||
+          isTransactionLoading
         }
         onClick={handleButtonClick}
       >
-        {isSellPage ? 'Sell SOFI' : 'Buy SOFI'}
+        <Box display='flex' justifyContent='space-between' alignItems='center'>
+          <Text color='inherit' fontWeight={500} mr='0.15rem'>
+            {buttonText}
+          </Text>
+          {isTransactionLoading && (
+            <LoadingSpinner position='relative' size='22' />
+          )}
+        </Box>
       </Button>
     </StyledBox>
   );

@@ -41,12 +41,14 @@ interface DashboardPageMainProps {
     MATIC?: number | null;
   };
   navigateToBuyPage: () => void;
+  navigateToSellPage: () => void;
 }
 
 const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
   balance,
   balanceValue,
   navigateToBuyPage,
+  navigateToSellPage,
 }) => {
   const width = useWindowWidth();
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 640);
@@ -151,7 +153,10 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
           </Box>
         </>
       )}
-      <Button margin='0 auto'>Sell{`${isMobile ? ' SOPHIE' : ''}`}</Button>
+      <Button onClick={navigateToSellPage} margin='5dvh auto 0 auto'>
+        {/* temporary */}
+        Sell{' SOPHIE' /* `${isMobile ? ' SOPHIE' : ''}` */}
+      </Button>
     </StyledBox>
   );
 };
