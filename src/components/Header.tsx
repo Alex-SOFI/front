@@ -170,7 +170,7 @@ const Header: FunctionComponent<HeaderProps> = ({
         <Box sx={{ display: 'flex', alignItems: 'center' }}>{render()}</Box>
       </Box>
       {!isExpertPage && !isLinkOnly && (
-        <Box display='flex' justifyContent='center' mt='2dvh'>
+        <Box display='flex' justifyContent='center' mt='5dvh'>
           <Button onClick={navigateToBuyPage} marginRight='2dvh'>
             Buy SOFI
           </Button>

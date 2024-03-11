@@ -4,15 +4,17 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useState,
 } from 'react';
 
 import { Transak, TransakConfig } from '@transak/transak-sdk';
-import { Address, encodeFunctionData, parseUnits } from 'viem';
+import { Address, encodeFunctionData, formatUnits, parseUnits } from 'viem';
 
 import addresses from 'constants/addresses';
+import { publicClient, tokenManagerContract } from 'constants/contracts';
 import SOFIabi from 'constants/sofiAbi';
 
-const getSupplyCalldata = (address: Address, amount: number | null) => {
+const getMintCalldata = (address: Address, amount: number) => {
   if (!amount) return;
 
   return encodeFunctionData({
@@ -22,12 +24,36 @@ const getSupplyCalldata = (address: Address, amount: number | null) => {
   });
 };
 
-const useTransak = (
-  amount: number,
-  address: Address,
-  setInputValue: Dispatch<SetStateAction<string>>,
-) => {
-  const calldata = getSupplyCalldata(address, amount);
+const useTransak = ({
+  amount,
+  address,
+  setInputValue,
+}: {
+  amount: number;
+  address?: Address;
+  setInputValue: Dispatch<SetStateAction<string>>;
+}) => {
+  const [estimatedAmount, setEstimatedAmount] = useState<number | undefined>(
+    undefined,
+  );
+
+  useEffect(() => {
+    const estimateBalance = async () => {
+      if (amount) {
+        const data = await publicClient.readContract({
+          ...tokenManagerContract,
+          functionName: 'estimateMint',
+          args: [parseUnits(amount.toString(), 18)],
+        });
+        setEstimatedAmount(Number(formatUnits(data as bigint, 18)));
+      }
+    };
+    estimateBalance();
+  }, [amount]);
+
+  const calldata = useMemo(() => {
+    return getMintCalldata(address!, estimatedAmount!);
+  }, [address, estimatedAmount]);
 
   const transakConfig: TransakConfig = useMemo(() => {
     return {
@@ -35,15 +61,17 @@ const useTransak = (
       environment: Transak.ENVIRONMENTS.STAGING,
       network: 'polygon',
       walletAddress: address,
-      defaultPaymentMethod: 'credit_debit_card',
       disableWalletAddressForm: true,
+      defaultPaymentMethod: 'credit_debit_card',
       smartContractAddress: addresses.TOKEN_MANAGER,
       estimatedGasLimit: 300_000,
+      fiatAmount: amount,
+      fiatCurrency: 'USD',
       calldata,
       sourceTokenData: [
         {
           sourceTokenCode: 'USDC',
-          sourceTokenAmount: amount,
+          sourceTokenAmount: estimatedAmount!,
         },
       ],
       cryptoCurrencyData: [
@@ -55,7 +83,7 @@ const useTransak = (
       ],
       isTransakOne: true,
     };
-  }, [address, amount, calldata]);
+  }, [address, amount, calldata, estimatedAmount]);
 
   const transak = useMemo(() => new Transak(transakConfig), [transakConfig]);
 

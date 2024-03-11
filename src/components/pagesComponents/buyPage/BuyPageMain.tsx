@@ -1,9 +1,11 @@
-import { ChangeEvent, FunctionComponent } from 'react';
+import { ChangeEvent, FunctionComponent, useMemo } from 'react';
 
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 
-import { Button, TextInput } from 'components/basic';
+import statusTexts from 'constants/statusTexts';
+
+import { Button, LoadingSpinner, Text, TextInput } from 'components/basic';
 
 import { theme } from 'styles/theme';
 
@@ -21,30 +23,115 @@ const StyledBox = styled(Box)`
 `;
 
 interface BuyPageMainProps {
-  handleBuyButtonClick: () => void;
+  handleButtonClick: () => void;
   handleInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  investInputValue: string;
+  inputValue: string;
+  isSellPage: boolean;
+  balance?: number;
+  setMaxValue?: () => void;
+  isMaxValueError?: boolean;
+  hasAllownace?: boolean;
+  isTransactionLoading?: boolean;
+  isTransactionError?: boolean;
+  transactionErrorText?: string;
 }
 
 const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
-  handleBuyButtonClick,
-  investInputValue,
+  handleButtonClick,
+  inputValue,
   handleInputChange,
+  isSellPage,
+  balance,
+  setMaxValue,
+  isMaxValueError,
+  hasAllownace,
+  isTransactionLoading,
+  isTransactionError,
+  transactionErrorText,
 }) => {
+  const buttonText = useMemo(() => {
+    if (isSellPage) {
+      if (hasAllownace) {
+        return 'Sell SOFI';
+      } else {
+        return 'Approve SOFI';
+      }
+    } else {
+      return 'Buy SOFI';
+    }
+  }, [hasAllownace, isSellPage]);
   return (
     <StyledBox>
       <TextInput
-        placeholder='Amount to invest'
+        placeholder={
+          isSellPage ? 'SOFI Amount to Sell' : 'USD Amount to Invest'
+        }
         textAlign='left'
-        value={investInputValue}
+        value={inputValue}
         onChange={handleInputChange}
+        readOnly={isTransactionLoading}
       />
+      {isSellPage && (
+        <>
+          <Button
+            variant='text'
+            onClick={setMaxValue!}
+            fontSize='14px'
+            textColor={theme.colors.grayMedium}
+            minHeight='0rem'
+            lineHeight={1.5}
+            alignSelf='end'
+            textAlign='right'
+            minWidth='0'
+          >
+            Max: {Number(balance?.toFixed(5))}
+          </Button>
+          <Box
+            sx={{
+              marginTop: '1dvh',
+              minHeight: 'clamp(3rem, 6.4dvh, 4rem)',
+              alignSelf: 'start',
+            }}
+          >
+            {isMaxValueError && (
+              <Text
+                sx={{ gridColumn: 2 }}
+                variant='body2'
+                color={theme.colors.error}
+              >
+                {statusTexts.MAX_SOFI_VALUE}
+              </Text>
+            )}
+            {isTransactionError && (
+              <Text
+                sx={{ gridColumn: 2 }}
+                variant='body2'
+                color={theme.colors.error}
+              >
+                {transactionErrorText}
+              </Text>
+            )}
+          </Box>
+        </>
+      )}
       <Button
-        marginTop='5dvh'
-        disabled={Number(investInputValue) <= 0 || investInputValue === '.'}
-        onClick={handleBuyButtonClick}
+        marginTop={isSellPage ? '1dvh' : '10dvh'}
+        disabled={
+          Number(inputValue) <= 0 ||
+          inputValue === '.' ||
+          isMaxValueError ||
+          isTransactionLoading
+        }
+        onClick={handleButtonClick}
       >
-        Buy SOFI
+        <Box display='flex' justifyContent='space-between' alignItems='center'>
+          <Text color='inherit' fontWeight={500} mr='0.15rem'>
+            {buttonText}
+          </Text>
+          {isTransactionLoading && (
+            <LoadingSpinner position='relative' size='22' />
+          )}
+        </Box>
       </Button>
     </StyledBox>
   );

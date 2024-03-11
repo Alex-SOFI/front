@@ -35,6 +35,7 @@ const OauthPage = lazyWithRetry(() => import('pages/OauthPage'));
 const DashboardPage = lazyWithRetry(() => import('pages/DashboardPage'));
 const HomePage = lazyWithRetry(() => import('pages/HomePage'));
 const BuyPage = lazyWithRetry(() => import('pages/BuyPage'));
+const SellPage = lazyWithRetry(() => import('pages/SellPage'));
 const TransfertPage = lazyWithRetry(() => import('pages/TransfertPage'));
 
 const App = () => {
@@ -48,11 +49,7 @@ const App = () => {
     [dispatch],
   );
 
-  const { checkUserLoggedIn } = useMagic(window.location.pathname);
-
-  useEffect(() => {
-    checkUserLoggedIn();
-  }, [checkUserLoggedIn]);
+  useMagic(window.location.pathname);
 
   const isMintSelected = !!useSelector(selectIsMintSelected);
 
@@ -168,6 +165,15 @@ const App = () => {
       element={
         <PrivateRoute isLoggedIn={isLoggedIn}>
           <BuyPage />
+        </PrivateRoute>
+      }
+    />,
+    <Route
+      key={routes.SELL}
+      path={routes.SELL}
+      element={
+        <PrivateRoute isLoggedIn={isLoggedIn}>
+          <SellPage />
         </PrivateRoute>
       }
     />,

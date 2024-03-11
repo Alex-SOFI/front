@@ -1,5 +1,6 @@
 import {
   Dispatch,
+  MouseEvent,
   SetStateAction,
   useCallback,
   useEffect,
@@ -20,7 +21,7 @@ import { walletClient } from 'constants/contracts';
 import routes from 'constants/routes';
 
 import { selectUser } from 'ducks/user';
-import { setUser } from 'ducks/user/slice';
+import { setIsUserLoading, setUser } from 'ducks/user/slice';
 import { selectWalletInfo } from 'ducks/wallet';
 import { storeMagicLinkAddress } from 'ducks/wallet/slice';
 
@@ -71,16 +72,19 @@ const useMagic = (pathname: string) => {
 
   const logoutUser = useCallback(async () => {
     try {
+      dispatch(setIsUserLoading(true));
       await magic.current?.user.logout();
       dispatch(setUser({ isLoggedIn: false, email: null }));
       removeLocalStorageItem('connectedWithMagicLink');
+      dispatch(setIsUserLoading(false));
       navigate(routes.HOME);
     } catch (error) {
       throw new Error('User logout failed');
     }
   }, [dispatch, navigate]);
 
-  const oauthLogin = useCallback(async () => {
+  const oauthLogin = useCallback(async (event: MouseEvent<HTMLElement>) => {
+    event.preventDefault();
     await magic.current?.oauth.loginWithRedirect({
       provider: 'google',
       redirectURI: `${window.location.origin}/oauth`,
@@ -124,10 +128,14 @@ const useMagic = (pathname: string) => {
     const render = async () => {
       if (pathname === routes.OAUTH) {
         try {
-          await magic.current?.oauth.getRedirectResult();
-          setLocalStorageItem('connectedWithMagicLink', 'true');
-          navigate(routes.MAIN, { replace: true });
-        } catch {
+          const result = await magic.current?.oauth.getRedirectResult();
+          const profile = result?.oauth.userInfo;
+          if (profile?.email) {
+            setUser({ email: profile.email });
+            setLocalStorageItem('connectedWithMagicLink', 'true');
+            navigate(routes.MAIN, { replace: true });
+          }
+        } catch (error) {
           throw new Error('Oauth login failed');
         }
       }

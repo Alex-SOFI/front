@@ -11,6 +11,7 @@ import { useIsUserConnected } from 'hooks';
 
 import routes from 'constants/routes';
 
+import { selectIsUserLoading } from 'ducks/user';
 import { selectWalletInfo } from 'ducks/wallet';
 
 import { LoadingSpinner } from 'components/basic';
@@ -43,6 +44,7 @@ export const PrivateRoute: FunctionComponent<LayoutProps> = ({
   isLoggedIn,
   children,
 }) => {
+  const isUserLoading = useSelector(selectIsUserLoading);
   const { magicLinkAddress } = useSelector(selectWalletInfo);
   const { userConnectedWithMagicLink, userConnectedWithWallet } =
     useIsUserConnected();
@@ -53,6 +55,7 @@ export const PrivateRoute: FunctionComponent<LayoutProps> = ({
     case userConnectedWithMagicLink &&
       (isLoggedIn === undefined || isLoggedIn === null):
     case userConnectedWithMagicLink && isLoggedIn && magicLinkAddress === '0x':
+    case isUserLoading:
       return <LoadingSpinner />;
 
     case userConnectedWithMagicLink && isLoggedIn:
@@ -70,6 +73,7 @@ export const PublicRoute: FunctionComponent<LayoutProps> = ({
   isLoggedIn,
   children,
 }) => {
+  const isUserLoading = useSelector(selectIsUserLoading);
   const { userConnectedWithMagicLink, userConnectedWithWallet } =
     useIsUserConnected();
   switch (true) {
@@ -78,6 +82,7 @@ export const PublicRoute: FunctionComponent<LayoutProps> = ({
 
     case userConnectedWithMagicLink &&
       (isLoggedIn === undefined || isLoggedIn === null):
+    case isUserLoading:
       return <LoadingSpinner />;
 
     case isLoggedIn:

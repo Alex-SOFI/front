@@ -134,10 +134,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
         setIsApproveButtonVisible(false);
       }
     }
-    if (!allowance) {
-      setIsApproveButtonVisible(true);
-    }
-    if (allowance === 0n) {
+    if (!allowance || allowance === 0n) {
       setIsApproveButtonVisible(true);
     }
     if (success) {

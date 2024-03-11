@@ -6,6 +6,8 @@ import { Address } from 'viem';
 
 import { selectWalletInfo } from 'ducks/wallet';
 
+import { handleInputChange } from 'tools';
+
 import { BuyPageMain } from 'components/pagesComponents/buyPage';
 
 import { Layout } from 'components';
@@ -13,41 +15,30 @@ import { Layout } from 'components';
 const BuyPage: FunctionComponent = () => {
   const { magicLinkAddress } = useSelector(selectWalletInfo);
 
-  const [investInputValue, setInvestInputValue] = useState<string>('');
+  const [inputValue, setInputValue] = useState<string>('');
 
-  const handleInputChange = useCallback(
+  const handleInvestInputChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      if (
-        (event.target.value.length === 1 && event.target.value === '.') ||
-        (!isNaN(Number(event.target.value)) && Number(event.target.value) >= 0)
-      ) {
-        const float = event.target.value.split('.')?.[1];
-        if (
-          !float ||
-          (float &&
-            float?.length <= /* decimals */ 18) /* TODO: get USDC(?) decimals */
-        ) {
-          setInvestInputValue(event.target.value.trim());
-        }
-      }
+      handleInputChange(event, setInputValue);
     },
     [],
   );
 
-  const { openModal } = useTransak(
-    Number(investInputValue) || 0,
-    magicLinkAddress as Address,
-    setInvestInputValue,
-  );
+  const { openModal } = useTransak({
+    amount: Number(inputValue) || 0,
+    address: magicLinkAddress as Address,
+    setInputValue,
+  });
 
   return (
     <>
       <Layout
         main={
           <BuyPageMain
-            handleBuyButtonClick={openModal}
-            investInputValue={investInputValue}
-            handleInputChange={handleInputChange}
+            handleButtonClick={openModal}
+            inputValue={inputValue}
+            handleInputChange={handleInvestInputChange}
+            isSellPage={false}
           />
         }
       />

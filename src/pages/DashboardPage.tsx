@@ -34,6 +34,10 @@ const DashboardPage: FunctionComponent = () => {
     navigate(routes.BUY);
   }, [navigate]);
 
+  const navigateToSellPage = useCallback(() => {
+    navigate(routes.SELL);
+  }, [navigate]);
+
   useEffect(() => {
     const getBalance = async () => {
       const results = await publicClient.multicall({
@@ -117,6 +121,7 @@ const DashboardPage: FunctionComponent = () => {
               MATIC: maticValue,
             }}
             navigateToBuyPage={navigateToBuyPage}
+            navigateToSellPage={navigateToSellPage}
           />
         ) : (
           <LoadingSpinner position='relative' />
