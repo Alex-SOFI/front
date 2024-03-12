@@ -9,29 +9,29 @@ import {
   getValue,
   resetIsLoading,
   setMaticBalanceValue,
-  setSofiBalanceValue,
-  setUsdcBalanceValue,
+  setSophieBalanceValue,
+  setUsdtBalanceValue,
 } from 'ducks/balanceValue';
 
 function* getBalanceValueSaga({ payload }: ReturnType<typeof getBalanceValue>) {
   try {
-    if (payload?.SOFI) {
-      const estimateBalance = async (sofi: number) => {
+    if (payload?.SOPHIE) {
+      const estimateBalance = async (sophie: number) => {
         const data = await publicClient.readContract({
           ...tokenManagerContract,
           functionName: 'estimateRedeem',
-          args: [parseUnits(sofi.toString(), 18)],
+          args: [parseUnits(sophie.toString(), 18)],
         });
         return Number(formatUnits(data as bigint, 18));
       };
-      const balance: number = yield call(estimateBalance, payload?.SOFI);
-      yield put(setSofiBalanceValue(balance));
+      const balance: number = yield call(estimateBalance, payload?.SOPHIE);
+      yield put(setSophieBalanceValue(balance));
     }
-    if (payload?.USDC) {
+    if (payload?.USDT) {
       const {
-        usdCoin: { usd },
-      } = yield call(getValue, 'usd-coin', 'USD');
-      yield put(setUsdcBalanceValue(usd));
+        tether: { usd },
+      } = yield call(getValue, 'tether', 'USD');
+      yield put(setUsdtBalanceValue(usd));
     }
     if (payload?.MATIC) {
       const {

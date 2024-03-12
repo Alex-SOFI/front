@@ -52,19 +52,19 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
   const buttonText = useMemo(() => {
     if (isSellPage) {
       if (hasAllownace) {
-        return 'Sell SOFI';
+        return 'Sell SOPHIE';
       } else {
-        return 'Approve SOFI';
+        return 'Approve SOPHIE';
       }
     } else {
-      return 'Buy SOFI';
+      return 'Buy SOPHIE';
     }
   }, [hasAllownace, isSellPage]);
   return (
     <StyledBox>
       <TextInput
         placeholder={
-          isSellPage ? 'SOFI Amount to Sell' : 'USD Amount to Invest'
+          isSellPage ? 'SOPHIE Amount to Sell' : 'USD Amount to Invest'
         }
         textAlign='left'
         value={inputValue}
@@ -99,7 +99,7 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
                 variant='body2'
                 color={theme.colors.error}
               >
-                {statusTexts.MAX_SOFI_VALUE}
+                {statusTexts.MAX_SOPHIE_VALUE}
               </Text>
             )}
             {isTransactionError && (

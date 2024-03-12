@@ -7,6 +7,7 @@ interface LinkProps extends PropsWithChildren {
   href: string;
   margin?: string | number;
   ariaLabel?: string;
+  withoutTarget?: boolean;
 }
 
 const Link: FunctionComponent<LinkProps> = ({
@@ -15,6 +16,7 @@ const Link: FunctionComponent<LinkProps> = ({
   margin,
   ariaLabel,
   children,
+  withoutTarget,
 }) => {
   return (
     <BasicLink
@@ -24,7 +26,7 @@ const Link: FunctionComponent<LinkProps> = ({
       margin={margin}
       fontSize={20}
       href={href}
-      target='_blank'
+      {...(withoutTarget ? {} : { target: '_blank' })}
       aria-label={ariaLabel}
     >
       {children}

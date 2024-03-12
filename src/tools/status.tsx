@@ -121,13 +121,13 @@ const status = ({
       return {
         text: isMintSelected ? (
           <TextWithHash
-            text={statusTexts.MAX_USDC_VALUE}
+            text={statusTexts.MAX_USDT_VALUE}
             color={theme.colors.error}
             hash={hash}
           />
         ) : (
           <TextWithHash
-            text={statusTexts.MAX_SOFI_VALUE}
+            text={statusTexts.MAX_SOPHIE_VALUE}
             color={theme.colors.error}
             hash={hash}
           />

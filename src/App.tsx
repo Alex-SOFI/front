@@ -57,7 +57,7 @@ const App = () => {
   const { error, isPending: isLoading } = useConnect();
 
   const tokenAddress = useMemo(
-    () => (isMintSelected ? addresses.USDC : addresses.SOFI_TOKEN),
+    () => (isMintSelected ? addresses.USDT : addresses.SOPHIE_TOKEN),
     [isMintSelected],
   );
 

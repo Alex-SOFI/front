@@ -53,12 +53,13 @@ export const muiTheme = createTheme({
     },
   },
   breakpoints: {
+    unit: 'em',
     values: {
-      xs: 300,
-      sm: 640,
-      md: 900,
-      lg: 1200,
-      xl: 1536,
+      xs: 23.5,
+      sm: 40,
+      md: 56.25,
+      lg: 64,
+      xl: 85,
     },
   },
 });

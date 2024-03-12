@@ -190,10 +190,10 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
   useEffect(() => {
     const timeoutId = setTimeout(async () => {
       if (!isMaxValueError && activeValue) {
-        const SOFIValue = await estimate(activeValue);
+        const SOPHIEValue = await estimate(activeValue);
 
-        if (Number(SOFIValue) > 0) {
-          setCalculatedInputValue(SOFIValue);
+        if (Number(SOPHIEValue) > 0) {
+          setCalculatedInputValue(SOPHIEValue);
         }
       } else {
         setCalculatedInputValue('');

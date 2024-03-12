@@ -33,7 +33,7 @@ const TransfertPage: FunctionComponent = () => {
   const { walletClient } = useMagic(window.location.pathname);
 
   const [tokenInputValue, setTokenInputValue] = useState<string>(
-    TOKEN_NAMES.SOFI,
+    TOKEN_NAMES.SOPHIE,
   );
   const [addressInputValue, setAddressInputValue] = useState<string>('');
   const [amountInputValue, setAmountInputValue] = useState<string>('');
@@ -59,7 +59,7 @@ const TransfertPage: FunctionComponent = () => {
         if (
           !float ||
           (float &&
-            float?.length <= /* decimals */ 18) /* TODO: get USDC(?) decimals */
+            float?.length <= /* decimals */ 18) /* TODO: get USDT(?) decimals */
         ) {
           setAmountInputValue(event.target.value.trim());
         }
@@ -70,13 +70,13 @@ const TransfertPage: FunctionComponent = () => {
   // TODO: change to mainnet
   const handleSendButtonClick = useCallback(async () => {
     const decimals =
-      tokenInputValue === TOKEN_NAMES.SOFI
+      tokenInputValue === TOKEN_NAMES.SOPHIE
         ? await publicClient.readContract({
-            ...tokenContract(addresses.SOFI_TOKEN),
+            ...tokenContract(addresses.SOPHIE_TOKEN),
             functionName: 'decimals',
           })
         : await publicClient.readContract({
-            ...tokenContract(addresses.USDC),
+            ...tokenContract(addresses.USDT),
             functionName: 'decimals',
           });
 
@@ -84,9 +84,9 @@ const TransfertPage: FunctionComponent = () => {
       account: magicLinkAddress,
       chain: polygonMumbai,
       to:
-        tokenInputValue === TOKEN_NAMES.SOFI
-          ? addresses.SOFI_TOKEN
-          : addresses.USDC,
+        tokenInputValue === TOKEN_NAMES.SOPHIE
+          ? addresses.SOPHIE_TOKEN
+          : addresses.USDT,
       data: encodeFunctionData({
         abi: erc20Abi,
         functionName: 'transfer',
@@ -97,7 +97,7 @@ const TransfertPage: FunctionComponent = () => {
       }),
     });
     if (hash) {
-      setTokenInputValue(TOKEN_NAMES.SOFI);
+      setTokenInputValue(TOKEN_NAMES.SOPHIE);
       setAddressInputValue('');
       setAmountInputValue('');
     } // temporary

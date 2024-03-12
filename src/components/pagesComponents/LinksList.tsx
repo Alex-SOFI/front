@@ -50,7 +50,7 @@ const LinksList: FunctionComponent = () => {
         {listItemLink(
           <Link
             href='#'
-            ariaLabel='Link opens SOFI&#039;s Github repository in a new window.'
+            ariaLabel='Link opens SOPHIE&#039;s Github repository in a new window.'
           >
             Github
           </Link>,
@@ -74,7 +74,7 @@ const LinksList: FunctionComponent = () => {
         {listItemLink(
           <Link
             href='https://discord.com/invite/kXp55tyk'
-            ariaLabel='Link opens invitation to SOFI&#039;s Discord server in a new window.'
+            ariaLabel='Link opens invitation to SOPHIE&#039;s Discord server in a new window.'
           >
             Discord
           </Link>,
@@ -90,7 +90,7 @@ const LinksList: FunctionComponent = () => {
         {listItemLink(
           <Link
             href='https://t.me/+sYuFM9QSvxhhYzA8'
-            ariaLabel='Link opens invitation to SOFI&#039;s Telegram group in a new window.'
+            ariaLabel='Link opens invitation to SOPHIE&#039;s Telegram group in a new window.'
           >
             Telegram
           </Link>,

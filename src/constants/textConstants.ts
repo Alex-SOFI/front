@@ -1,4 +1,4 @@
 export const TOKEN_NAMES = {
-  USDC: 'USDC',
-  SOFI: 'SOFI',
+  USDT: 'USDT',
+  SOPHIE: 'SOPHIE',
 };

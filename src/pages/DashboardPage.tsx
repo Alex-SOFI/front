@@ -27,7 +27,7 @@ const DashboardPage: FunctionComponent = () => {
   const { magicLinkAddress, magicLinkBalance, isMagicLinkBalanceSet } =
     useSelector(selectWalletInfo);
 
-  const { isLoading, sofiValue, usdcValue, maticValue } =
+  const { isLoading, sophieValue, usdtValue, maticValue } =
     useSelector(selectBalanceValue);
 
   const navigateToBuyPage = useCallback(() => {
@@ -43,12 +43,12 @@ const DashboardPage: FunctionComponent = () => {
       const results = await publicClient.multicall({
         contracts: [
           {
-            ...tokenContract(addresses.SOFI_TOKEN),
+            ...tokenContract(addresses.SOPHIE_TOKEN),
             functionName: 'balanceOf',
             args: [magicLinkAddress as Address],
           },
           {
-            ...tokenContract(addresses.USDC),
+            ...tokenContract(addresses.USDT),
             functionName: 'balanceOf',
             args: [magicLinkAddress as Address],
           },
@@ -63,11 +63,11 @@ const DashboardPage: FunctionComponent = () => {
         setMagicLinkBalance({
           ...(results[0].status === 'success' &&
             results[0].result !== 0n && {
-              SOFI: Number(formatUnits(results[0].result as bigint, 18)),
+              SOPHIE: Number(formatUnits(results[0].result as bigint, 18)),
             }),
           ...(results[1].status === 'success' &&
             results[1].result !== 0n && {
-              USDC: Number(formatUnits(results[1].result as bigint, 18)),
+              USDT: Number(formatUnits(results[1].result as bigint, 18)),
             }),
           ...(results[2].status === 'success' &&
             results[2].result !== 0n && {
@@ -82,14 +82,14 @@ const DashboardPage: FunctionComponent = () => {
   useEffect(() => {
     if (
       isMagicLinkBalanceSet &&
-      (magicLinkBalance?.SOFI ||
-        magicLinkBalance?.USDC ||
+      (magicLinkBalance?.SOPHIE ||
+        magicLinkBalance?.USDT ||
         magicLinkBalance?.MATIC)
     ) {
       dispatch(
         getBalanceValue({
-          ...(magicLinkBalance?.SOFI && { SOFI: magicLinkBalance?.SOFI }),
-          ...(magicLinkBalance?.USDC && { USDC: magicLinkBalance?.USDC }),
+          ...(magicLinkBalance?.SOPHIE && { SOPHIE: magicLinkBalance?.SOPHIE }),
+          ...(magicLinkBalance?.USDT && { USDT: magicLinkBalance?.USDT }),
           ...(magicLinkBalance?.MATIC && { MATIC: magicLinkBalance?.MATIC }),
         }),
       );
@@ -98,8 +98,8 @@ const DashboardPage: FunctionComponent = () => {
     dispatch,
     isMagicLinkBalanceSet,
     magicLinkBalance?.MATIC,
-    magicLinkBalance?.SOFI,
-    magicLinkBalance?.USDC,
+    magicLinkBalance?.SOPHIE,
+    magicLinkBalance?.USDT,
   ]);
 
   useEffect(() => {
@@ -116,8 +116,8 @@ const DashboardPage: FunctionComponent = () => {
           <DashboardPageMain
             balance={magicLinkBalance}
             balanceValue={{
-              SOFI: sofiValue,
-              USDC: usdcValue,
+              SOPHIE: sophieValue,
+              USDT: usdtValue,
               MATIC: maticValue,
             }}
             navigateToBuyPage={navigateToBuyPage}

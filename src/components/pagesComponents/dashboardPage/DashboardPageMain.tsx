@@ -36,8 +36,8 @@ const GridBox = styled(Box)`
 interface DashboardPageMainProps {
   balance: MagicLinkBalance | null;
   balanceValue: {
-    SOFI?: number | null;
-    USDC?: number | null;
+    SOPHIE?: number | null;
+    USDT?: number | null;
     MATIC?: number | null;
   };
   navigateToBuyPage: () => void;
@@ -88,23 +88,23 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
               SOPHIE
             </Text>
             <Text justifySelf='end' mr='1rem'>
-              {balance?.SOFI ? Number(balance?.SOFI.toFixed(4)) : '0'}
+              {balance?.SOPHIE ? Number(balance?.SOPHIE.toFixed(4)) : '0'}
             </Text>
             <Text justifySelf='end' mr='1rem'>
-              {balance?.SOFI ? Number(balanceValue?.SOFI?.toFixed(4)) : 0}$
+              {balance?.SOPHIE ? Number(balanceValue?.SOPHIE?.toFixed(4)) : 0}$
             </Text>
           </GridBox>
 
           <GridBox marginTop='1dvh'>
             <Text justifySelf='start' ml='1rem'>
-              USDC
+              USDT
             </Text>
             <Text justifySelf='end' mr='1rem'>
-              {balance?.USDC ? Number(balance?.USDC.toFixed(4)) : '0'}
+              {balance?.USDT ? Number(balance?.USDT.toFixed(4)) : '0'}
             </Text>
             <Text justifySelf='end' mr='1rem'>
-              {balance?.USDC && balanceValue?.USDC
-                ? Number((balance?.USDC * balanceValue?.USDC).toFixed(4))
+              {balance?.USDT && balanceValue?.USDT
+                ? Number((balance?.USDT * balanceValue?.USDT).toFixed(4))
                 : 0}
               $
             </Text>
@@ -132,7 +132,7 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
               textAlign: 'center',
             }}
           >
-            (*) we just display SOPHIE, USDC and MATIC Tokens
+            (*) we just display SOPHIE, USDT and MATIC Tokens
           </Text>
         </>
       ) : (
@@ -149,7 +149,7 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
             }}
           >
             <Text>You don&#39;t have any Tokens</Text>
-            <Button onClick={navigateToBuyPage}>Buy SOFI</Button>
+            <Button onClick={navigateToBuyPage}>Buy SOPHIE</Button>
           </Box>
         </>
       )}

@@ -59,12 +59,7 @@ const Header: FunctionComponent<HeaderProps> = ({
 
   const addressButton = useMemo(
     () => (
-      <Button
-        onClick={copyAddress}
-        variant='text'
-        maxWidth='11rem'
-        width='25dvw'
-      >
+      <Button onClick={copyAddress} variant='text' maxWidth='11rem'>
         <Text
           sx={{
             textOverflow: 'ellipsis',
@@ -161,10 +156,16 @@ const Header: FunctionComponent<HeaderProps> = ({
       <Box display='flex' justifyContent='space-between' width='100%'>
         <Box display='flex' alignItems='center'>
           <Link
-            href='https://www.sophie.fi/'
-            ariaLabel='Visit sophie.fi main page which opens in a new window.'
+            href={routes.HOME}
+            ariaLabel='Open sophie.fi main page.'
+            withoutTarget
           >
-            sophie.fi
+            <Picture
+              src={`${PUBLIC_URL}/icons/logo_sophie.png`}
+              alt='SOPHIE logo'
+              width={40}
+              height={40}
+            />
           </Link>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>{render()}</Box>
@@ -172,7 +173,7 @@ const Header: FunctionComponent<HeaderProps> = ({
       {!isExpertPage && !isLinkOnly && (
         <Box display='flex' justifyContent='center' mt='5dvh'>
           <Button onClick={navigateToBuyPage} marginRight='2dvh'>
-            Buy SOFI
+            Buy SOPHIE
           </Button>
           <Button onClick={navigateToTransfertPage}>Transfert</Button>
         </Box>

@@ -11,11 +11,11 @@ import {
 import { polygonMumbai } from 'viem/chains';
 
 import addresses from './addresses';
-import SOFIabi from './sofiAbi';
+import sophieAbi from './sophieAbi';
 
 export const tokenManagerContract = {
   address: addresses.TOKEN_MANAGER,
-  abi: SOFIabi,
+  abi: sophieAbi,
 };
 
 export const tokenContract = (address: Address) => ({

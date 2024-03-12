@@ -13,7 +13,7 @@ const handleInputChange = (
     if (
       !float ||
       (float &&
-        float?.length <= /* decimals */ 18) /* TODO: get USDC(?) decimals */
+        float?.length <= /* decimals */ 18) /* TODO: get USDT(?) decimals */
     ) {
       setValue(event.target.value.trim());
     }

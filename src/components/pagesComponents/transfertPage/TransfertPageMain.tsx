@@ -71,8 +71,8 @@ const TransfertPageMain: FunctionComponent<TransfertPageMainProps> = ({
           value={tokenInputValue}
           onChange={handleTokenInputChange}
         >
-          <MenuItem value={TOKEN_NAMES.SOFI}>SOFI</MenuItem>
-          <MenuItem value={TOKEN_NAMES.USDC}>USDC</MenuItem>
+          <MenuItem value={TOKEN_NAMES.SOPHIE}>SOPHIE</MenuItem>
+          <MenuItem value={TOKEN_NAMES.USDT}>USDT</MenuItem>
         </Select>
       </InputBox>
       <InputBox>

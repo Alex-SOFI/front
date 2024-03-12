@@ -32,14 +32,14 @@ interface InputGridBoxProps {
 
 const InputGridBox = styled(Box)<InputGridBoxProps>`
   display: grid;
-  grid-template-columns: 0.25fr 0.75fr 1.5fr 1fr;
+  grid-template-columns: 1fr 1.5fr 1fr;
   width: 100%;
   ${(props) => props.mb && `margin-bottom: ${props.mb};`}
   align-items: center;
   ${(props) => props.justifyItems && `justify-items: ${props.justifyItems};`}
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    grid-template-columns: 0.25fr 0.75fr 2fr 1fr;
+    grid-template-columns: 1fr 1.5fr 0.5fr;
   }
 `;
 
@@ -119,7 +119,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
                 alignItems='center'
               >
                 <Text color='inherit' fontWeight={500} mr='0.15rem'>
-                  Approve {isMintSelected ? 'USDC' : 'SOFI'}
+                  Approve {isMintSelected ? 'USDT' : 'SOPHIE'}
                 </Text>
                 {isLoading && <LoadingSpinner position='relative' size='22' />}
               </Box>
@@ -137,7 +137,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
               }
             >
               <Text color='inherit' fontWeight={500} mr='0.15rem'>
-                {isMintSelected ? 'Mint SOFI' : 'Redeem SOFI'}
+                {isMintSelected ? 'Mint SOPHIE' : 'Redeem SOPHIE'}
               </Text>
               {isLoading && <LoadingSpinner position='relative' size='22' />}
             </Button>
@@ -163,24 +163,27 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
     open,
   ]);
 
-  const USDC = useMemo(
+  const USDT = useMemo(
     () => (
       <>
-        <Picture src={`${PUBLIC_URL}/icons/logo_usdc.png`} alt='USDC logo' />
+        <Picture src={`${PUBLIC_URL}/icons/logo_usdt.svg`} alt='USDT logo' />
         <Text pl='0.5rem' pr='1rem' variant='body1'>
-          USDC
+          USDT
         </Text>
       </>
     ),
     [],
   );
 
-  const SOFI = useMemo(
+  const SOPHIE = useMemo(
     () => (
       <>
-        <Picture src={`${PUBLIC_URL}/icons/logo_sofi.webp`} alt='SOFI logo' />
+        <Picture
+          src={`${PUBLIC_URL}/icons/logo_sophie.png`}
+          alt='SOPHIE logo'
+        />
         <Text pl='0.5rem' pr='1rem' variant='body1'>
-          SOFI
+          SOPHIE
         </Text>
       </>
     ),
@@ -227,14 +230,16 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
       </Box>
       <InputGridBox>
         <Box
-          sx={{
-            gridColumn: 2,
+          sx={(theme) => ({
             display: 'flex',
-            marginLeft: '1rem',
-            width: '6rem',
-          }}
+            alignItems: 'center',
+            marginLeft: '3rem',
+            [theme.breakpoints.down('sm')]: {
+              marginLeft: '1rem',
+            },
+          })}
         >
-          {isMintSelected ? USDC : SOFI}
+          {isMintSelected ? USDT : SOPHIE}
         </Box>
         <TextInput
           placeholder='0'
@@ -252,7 +257,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         <Button
           variant='text'
           onClick={setMaxActiveValue}
-          gridColumn={3}
+          gridColumn={2}
           fontSize='14px'
           textColor={theme.colors.grayMedium}
           minHeight='0rem'
@@ -263,7 +268,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         </Button>
       </InputGridBox>
       <InputGridBox mb='1rem' justifyItems='center'>
-        <Box sx={{ gridColumn: 2, width: '6rem' }} />
+        <Box sx={{ width: '6rem' }} />
         <ButtonWithIcon
           onClick={() => {
             setIsMintSelected(!isMintSelected);
@@ -278,14 +283,16 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
       </InputGridBox>
       <InputGridBox mb='1rem'>
         <Box
-          sx={{
-            gridColumn: 2,
+          sx={(theme) => ({
             display: 'flex',
-            marginLeft: '1rem',
-            width: '6rem',
-          }}
+            alignItems: 'center',
+            marginLeft: '3rem',
+            [theme.breakpoints.down('sm')]: {
+              marginLeft: '1rem',
+            },
+          })}
         >
-          {isMintSelected ? SOFI : USDC}
+          {isMintSelected ? SOPHIE : USDT}
         </Box>
 
         <TextInput

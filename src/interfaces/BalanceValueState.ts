@@ -1,6 +1,6 @@
 interface BalanceValueState {
-  sofiValue: number;
-  usdcValue: number;
+  sophieValue: number;
+  usdtValue: number;
   maticValue: number;
   isLoading: boolean;
   error: boolean;
