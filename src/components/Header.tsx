@@ -36,6 +36,7 @@ interface HeaderProps {
   navigateToBuyPage: () => void;
   navigateToTransfertPage: () => void;
   disconnectUser: () => void;
+  userConnectedWithMagicLink: boolean | null;
 }
 
 const Header: FunctionComponent<HeaderProps> = ({
@@ -49,6 +50,7 @@ const Header: FunctionComponent<HeaderProps> = ({
   navigateToBuyPage,
   navigateToTransfertPage,
   disconnectUser,
+  userConnectedWithMagicLink,
 }) => {
   const { open } = useWeb3Modal();
 
@@ -59,7 +61,7 @@ const Header: FunctionComponent<HeaderProps> = ({
 
   const addressButton = useMemo(
     () => (
-      <Button onClick={copyAddress} variant='text' maxWidth='11rem'>
+      <Button onClick={copyAddress} variant='text' maxWidth='10rem'>
         <Text
           sx={{
             textOverflow: 'ellipsis',
@@ -113,19 +115,20 @@ const Header: FunctionComponent<HeaderProps> = ({
                 <>
                   <Button
                     onClick={() => handleSwitchButtonClick()}
-                    minWidth='11rem'
+                    width='10rem'
+                    padding='0px'
                   >
                     Switch Network
                   </Button>
                 </>
               ) : (
-                <Box display='flex' maxWidth='11rem'>
+                <Box display='flex' maxWidth='10rem'>
                   {addressButton}
                   {disconnectButton}
                 </Box>
               )
             ) : (
-              <Button onClick={() => open()} minWidth='11rem'>
+              <Button onClick={() => open()} minWidth='10rem'>
                 Connect Wallet
               </Button>
             )}
@@ -156,7 +159,7 @@ const Header: FunctionComponent<HeaderProps> = ({
       <Box display='flex' justifyContent='space-between' width='100%'>
         <Box display='flex' alignItems='center'>
           <Link
-            href={routes.HOME}
+            href={userConnectedWithMagicLink ? routes.MAIN : routes.HOME}
             ariaLabel='Open sophie.fi main page.'
             withoutTarget
           >
@@ -175,7 +178,13 @@ const Header: FunctionComponent<HeaderProps> = ({
           <Button onClick={navigateToBuyPage} marginRight='2dvh'>
             Buy SOPHIE
           </Button>
-          <Button onClick={navigateToTransfertPage}>Transfert</Button>
+          <Button
+            onClick={navigateToTransfertPage}
+            variant='outlined'
+            isPrimaryColor
+          >
+            Transfert
+          </Button>
         </Box>
       )}
     </StyledHeader>

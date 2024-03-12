@@ -45,7 +45,8 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
     useSelector(selectWalletInfo);
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
-  const { userConnectedWithWallet } = useIsUserConnected();
+  const { userConnectedWithMagicLink, userConnectedWithWallet } =
+    useIsUserConnected();
 
   const walletAddress = useMemo(
     () => (userConnectedWithWallet ? address : magicLinkAddress),
@@ -90,6 +91,7 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
       navigateToBuyPage={navigateToBuyPage}
       navigateToTransfertPage={navigateToTransfertPage}
       disconnectUser={disconnectUser}
+      userConnectedWithMagicLink={userConnectedWithMagicLink}
     />
   );
 };

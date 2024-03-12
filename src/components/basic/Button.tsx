@@ -7,7 +7,7 @@ interface ButtonProps extends PropsWithChildren {
   onClick?: () => void;
   onClickWithEvent?: (event: MouseEvent<HTMLElement>) => void;
   type?: 'submit' | 'reset' | undefined;
-  variant?: 'text';
+  variant?: 'text' | 'outlined';
   isPrimaryColor?: boolean;
   disabled?: boolean;
   maxWidth?: string;
@@ -48,7 +48,7 @@ const Button: FunctionComponent<ButtonProps> = ({
         boxShadow: 0,
         minHeight: minHeight || '2.719rem',
         textAlign: 'right',
-        ...(variant
+        ...(variant === 'text'
           ? { fontWeight: isPrimaryColor ? 500 : 400, padding: '0px' }
           : {}),
         ...(maxWidth ? { maxWidth } : {}),

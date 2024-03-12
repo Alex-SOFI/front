@@ -31,7 +31,7 @@ const Footer = styled.footer`
   max-width: ${theme.breakpoints.sm};
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: ${theme.space.lg};
+  margin-bottom: ${theme.space.sm};
   width: 100%;
 
   @media (max-width: ${theme.breakpoints.sm}) {

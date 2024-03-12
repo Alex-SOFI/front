@@ -39,7 +39,7 @@ const InputGridBox = styled(Box)<InputGridBoxProps>`
   ${(props) => props.justifyItems && `justify-items: ${props.justifyItems};`}
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    grid-template-columns: 1fr 1.5fr 0.5fr;
+    grid-template-columns: 1fr 1.8fr 0.2fr;
   }
 `;
 

@@ -1,4 +1,4 @@
-import { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent, useEffect, useMemo, useState } from 'react';
 
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
@@ -14,6 +14,7 @@ const StyledBox = styled(Box)`
   max-width: ${theme.breakpoints.sm};
   margin: 10dvh auto 0 auto;
   width: 70%;
+  height: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -59,6 +60,19 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
       setIsMobile(false);
     }
   }, [width]);
+
+  const sellButton = useMemo(
+    () => (
+      <Button
+        onClick={navigateToSellPage}
+        margin={isMobile ? '5dvh auto 0 auto' : '0'}
+      >
+        Sell{`${isMobile ? ' SOPHIE' : ''}`}
+      </Button>
+    ),
+    [isMobile, navigateToSellPage],
+  );
+
   return (
     <StyledBox>
       <Text
@@ -143,9 +157,9 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
               alignItems: 'center',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              margin: 'auto',
+              marginTop: '10dvh',
               width: '100%',
-              height: '40%',
+              height: '20%',
             }}
           >
             <Text>You don&#39;t have any Tokens</Text>
@@ -153,10 +167,7 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
           </Box>
         </>
       )}
-      <Button onClick={navigateToSellPage} margin='5dvh auto 0 auto'>
-        {/* temporary */}
-        Sell{' SOPHIE' /* `${isMobile ? ' SOPHIE' : ''}` */}
-      </Button>
+      {isMobile && balance !== null && sellButton}
     </StyledBox>
   );
 };
