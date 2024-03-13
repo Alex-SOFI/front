@@ -107,10 +107,8 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
             <Button
               onClick={approveToken}
               disabled={
-                isMaxValueError ||
-                isLoading ||
-                !activeInputValue ||
-                !calculatedInputValue
+                isMaxValueError || isLoading || !activeInputValue /* ||
+                !calculatedInputValue */ // TODO: return calculatedInputValue
               }
             >
               <Box
@@ -130,10 +128,8 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
             <Button
               onClick={mint}
               disabled={
-                status?.error ||
-                isLoading ||
-                !activeInputValue ||
-                !calculatedInputValue
+                status?.error || isLoading || !activeInputValue /* ||
+                !calculatedInputValue */ // TODO: return calculatedInputValue
               }
             >
               <Text color='inherit' fontWeight={500} mr='0.15rem'>
@@ -156,7 +152,6 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
     isMaxValueError,
     isLoading,
     activeInputValue,
-    calculatedInputValue,
     isMintSelected,
     mint,
     status?.error,
