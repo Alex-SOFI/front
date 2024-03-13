@@ -2,10 +2,17 @@ import { ChangeEvent, FunctionComponent, useMemo } from 'react';
 
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
+import { PUBLIC_URL } from 'config';
 
 import statusTexts from 'constants/statusTexts';
 
-import { Button, LoadingSpinner, Text, TextInput } from 'components/basic';
+import {
+  Button,
+  LoadingSpinner,
+  Picture,
+  Text,
+  TextInput,
+} from 'components/basic';
 
 import { theme } from 'styles/theme';
 
@@ -133,6 +140,18 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
           )}
         </Box>
       </Button>
+      {!isSellPage && (
+        <Box display='flex' alignItems='center' mt='0.3rem'>
+          <Text mr='0.5rem' fontSize='16px'>
+            With
+          </Text>
+          <Picture
+            src={`${PUBLIC_URL}/icons/logo_transak.svg`}
+            alt='MATIC logo'
+            width={100}
+          />
+        </Box>
+      )}
     </StyledBox>
   );
 };

@@ -1,12 +1,13 @@
-import { FunctionComponent, useEffect, useMemo, useState } from 'react';
+import { FunctionComponent, useMemo } from 'react';
 
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
-import { useWindowWidth } from 'hooks';
+import { PUBLIC_URL } from 'config';
+import { useIsMobile } from 'hooks';
 
 import { MagicLinkBalance } from 'interfaces/WalletInfoState';
 
-import { Button, Text } from 'components/basic';
+import { Button, Picture, Text } from 'components/basic';
 
 import { theme } from 'styles/theme';
 
@@ -27,10 +28,31 @@ const StyledBox = styled(Box)`
   }
 `;
 
-const GridBox = styled(Box)`
+interface GridBoxProps {
+  gridTemplateColumns?: string;
+  width?: string;
+}
+
+const GridBox = styled(Box)<GridBoxProps>`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  width: 100%;
+  grid-template-columns: ${(props) =>
+    props.gridTemplateColumns || 'repeat(3, 1fr)'};
+  width: ${(props) => props.width || '100%'};
+  align-items: center;
+  justify-content: center;
+`;
+
+const BalanceText = styled(Text)`
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-align: right;
+  width: 90%;
+  justify-self: end;
+`;
+
+const TokenBox = styled(Box)`
+  display: flex;
   align-items: center;
 `;
 
@@ -51,21 +73,26 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
   navigateToBuyPage,
   navigateToSellPage,
 }) => {
-  const width = useWindowWidth();
-  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 640);
-  useEffect(() => {
-    if (width < 640) {
-      setIsMobile(true);
-    } else {
-      setIsMobile(false);
-    }
-  }, [width]);
+  const isMobile = useIsMobile();
 
   const sellButton = useMemo(
     () => (
       <Button
         onClick={navigateToSellPage}
         margin={isMobile ? '5dvh auto 0 auto' : '0'}
+        {...(!isMobile
+          ? {
+              minHeight: '0rem',
+              padding: 0,
+              justifySelf: 'start',
+              marginLeft: '1rem',
+              color: 'inherit',
+              textColor: theme.colors.grayMedium,
+              height: '120%',
+              fontSize: '16px',
+              lineHeight: 'inherit',
+            }
+          : {})}
       >
         Sell{`${isMobile ? ' SOPHIE' : ''}`}
       </Button>
@@ -79,64 +106,81 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
         fontWeight={500}
         color={theme.colors.primary}
         alignSelf='start'
-        ml='1rem'
         mb='1rem'
       >
         Balance
       </Text>
       <GridBox>
-        <Text fontWeight={500} justifySelf='start' ml='1rem'>
-          Tokens*
-        </Text>
-        <Text fontWeight={500} justifySelf='end' mr='1rem'>
+        <Text fontWeight={500}>Tokens*</Text>
+        <Text fontWeight={500} justifySelf='end'>
           Qty
         </Text>
-        <Text fontWeight={500} justifySelf='end' mr='1rem'>
+        <Text fontWeight={500} justifySelf='end'>
           Value
         </Text>
       </GridBox>
       {balance !== null ? (
         <>
-          <GridBox marginTop='3dvh'>
-            <Text justifySelf='start' ml='1rem'>
-              SOPHIE
-            </Text>
-            <Text justifySelf='end' mr='1rem'>
+          <GridBox
+            marginTop='3dvh'
+            {...(!isMobile && {
+              marginLeft: 'auto',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              width: '133.5%',
+            })}
+          >
+            <TokenBox>
+              <Picture
+                src={`${PUBLIC_URL}/icons/logo_sophie.png`}
+                alt='SOPHIE logo'
+              />
+              <Text pl='0.5rem'>SOPHIE</Text>
+            </TokenBox>
+            <BalanceText>
               {balance?.SOPHIE ? Number(balance?.SOPHIE.toFixed(4)) : '0'}
-            </Text>
-            <Text justifySelf='end' mr='1rem'>
+            </BalanceText>
+            <BalanceText>
               {balance?.SOPHIE ? Number(balanceValue?.SOPHIE?.toFixed(4)) : 0}$
-            </Text>
+            </BalanceText>
+            {!isMobile && sellButton}
           </GridBox>
 
           <GridBox marginTop='1dvh'>
-            <Text justifySelf='start' ml='1rem'>
-              USDT
-            </Text>
-            <Text justifySelf='end' mr='1rem'>
+            <TokenBox>
+              <Picture
+                src={`${PUBLIC_URL}/icons/logo_usdt.svg`}
+                alt='USDT logo'
+              />
+              <Text pl='0.5rem'>USDT</Text>
+            </TokenBox>
+            <BalanceText>
               {balance?.USDT ? Number(balance?.USDT.toFixed(4)) : '0'}
-            </Text>
-            <Text justifySelf='end' mr='1rem'>
+            </BalanceText>
+            <BalanceText>
               {balance?.USDT && balanceValue?.USDT
                 ? Number((balance?.USDT * balanceValue?.USDT).toFixed(4))
                 : 0}
               $
-            </Text>
+            </BalanceText>
           </GridBox>
 
           <GridBox marginTop='1dvh'>
-            <Text justifySelf='start' ml='1rem'>
-              MATIC
-            </Text>
-            <Text justifySelf='end' mr='1rem'>
+            <TokenBox>
+              <Picture
+                src={`${PUBLIC_URL}/icons/logo_matic.svg`}
+                alt='MATIC logo'
+              />
+              <Text pl='0.5rem'>MATIC</Text>
+            </TokenBox>
+            <BalanceText>
               {balance?.MATIC ? Number(balance?.MATIC.toFixed(4)) : '0'}
-            </Text>
-            <Text justifySelf='end' mr='1rem'>
+            </BalanceText>
+            <BalanceText>
               {balance?.MATIC && balanceValue?.MATIC
                 ? Number((balance?.MATIC * balanceValue?.MATIC).toFixed(4))
                 : '0'}
               $
-            </Text>
+            </BalanceText>
           </GridBox>
 
           <Text

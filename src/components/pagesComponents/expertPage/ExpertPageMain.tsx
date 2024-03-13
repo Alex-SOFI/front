@@ -298,22 +298,20 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           readOnly
         />
       </InputGridBox>
-      <Text
-        variant='body2'
-        color={theme.colors.grayMedium}
-        mb='clamp(0, 3.2dvh, 2rem)'
-      >
+      <Text variant='body2' color={theme.colors.grayMedium} mb='3dvh'>
         Fees | 0.00%
       </Text>
 
       <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: '0.25fr 3.25fr',
+        sx={(theme) => ({
           width: '100%',
           lineHeight: '1.2em',
           minHeight: 'clamp(3rem, 6.4dvh, 4rem)',
-        }}
+          marginLeft: '3rem',
+          [theme.breakpoints.down('sm')]: {
+            marginLeft: '0',
+          },
+        })}
       >
         {status && status?.text}
       </Box>

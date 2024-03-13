@@ -18,6 +18,7 @@ interface ButtonProps extends PropsWithChildren {
   gridColumn?: number;
   textColor?: string;
   href?: string;
+  color?: 'inherit';
   [x: string]: any;
 }
 
@@ -36,11 +37,13 @@ const Button: FunctionComponent<ButtonProps> = ({
   textColor,
   onClickWithEvent,
   href,
+  color,
   ...props
 }) => {
   return (
     <BasicButton
       {...(variant ? { color: isPrimaryColor ? 'primary' : 'inherit' } : {})}
+      {...(color && !variant ? { color } : {})}
       {...(href ? { href } : {})}
       variant={variant || 'contained'}
       type={type || 'button'}
