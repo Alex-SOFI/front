@@ -154,9 +154,9 @@ const App = () => {
       key={routes.MAIN}
       path={routes.MAIN}
       element={
-        // <PrivateRoute isLoggedIn={isLoggedIn}>
-        <DashboardPage />
-        // </PrivateRoute>
+        <PrivateRoute isLoggedIn={isLoggedIn}>
+          <DashboardPage />
+        </PrivateRoute>
       }
     />,
     <Route

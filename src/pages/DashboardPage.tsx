@@ -24,11 +24,8 @@ import { LoadingSpinner } from 'components/basic';
 const DashboardPage: FunctionComponent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {
-    address: magicLinkAddress,
-    magicLinkBalance,
-    isMagicLinkBalanceSet,
-  } = useSelector(selectWalletInfo);
+  const { magicLinkAddress, magicLinkBalance, isMagicLinkBalanceSet } =
+    useSelector(selectWalletInfo);
 
   const { isLoading, sophieValue, usdtValue, maticValue } =
     useSelector(selectBalanceValue);
