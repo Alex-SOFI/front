@@ -209,6 +209,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     isMintSelected,
   ]);
 
+  // TODO: change activeValue to calculatedInputValue
   const approveToken = useCallback(() => {
     if (address) {
       setIsApproveButtonClicked(true);
@@ -220,27 +221,22 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     }
   }, [activeValue, address, decimals, tokenAddress, writeContract]);
 
+  // TODO: change activeValue to calculatedInputValue
   const mintOrRedeem = useCallback(async () => {
     setHash(undefined);
     setIsFunctionCalled(true);
-    if (address && calculatedInputValue) {
+    if (address /* && calculatedInputValue */) {
       setIsApproveButtonClicked(false);
       await writeContractAsync({
         ...tokenManagerContract,
         functionName: isMintSelected ? 'mint' : 'redeem',
         args: [
           ...(isMintSelected ? [address] : []),
-          parseUnits(calculatedInputValue, decimals),
+          parseUnits(activeValue, decimals),
         ],
       });
     }
-  }, [
-    address,
-    calculatedInputValue,
-    writeContractAsync,
-    isMintSelected,
-    decimals,
-  ]);
+  }, [address, activeValue, writeContractAsync, isMintSelected, decimals]);
 
   const transactionStatus = useMemo(
     () =>
