@@ -186,8 +186,8 @@ const Header: FunctionComponent<HeaderProps> = ({
             sx={{
               display: 'flex',
               gridTemplateColumns: 'repeat(2, 1fr)',
-              width: theme.breakpoints.sm,
-              justifyContent: 'center',
+              maxWidth: theme.breakpoints.sm,
+              width: '100%',
               margin: '5dvh auto 0 auto',
             }}
           >
