@@ -21,7 +21,7 @@ import { polygonMumbai } from 'viem/chains';
 import addresses from 'constants/addresses';
 import { publicClient, tokenContract } from 'constants/contracts';
 import routes from 'constants/routes';
-import SOFIabi from 'constants/sofiAbi';
+import sophieAbi from 'constants/sophieAbi';
 
 import { selectWalletInfo } from 'ducks/wallet';
 
@@ -62,7 +62,7 @@ const SellPage: FunctionComponent = () => {
   useEffect(() => {
     const getAllowance = async () => {
       const allowance = await publicClient.readContract({
-        ...tokenContract(addresses.SOFI_TOKEN),
+        ...tokenContract(addresses.SOPHIE_TOKEN),
         functionName: 'allowance',
         args: [magicLinkAddress, addresses.TOKEN_MANAGER],
       });
@@ -83,7 +83,7 @@ const SellPage: FunctionComponent = () => {
   useEffect(() => {
     const getBalance = async () => {
       const result = await publicClient.readContract({
-        ...tokenContract(addresses.SOFI_TOKEN),
+        ...tokenContract(addresses.SOPHIE_TOKEN),
         functionName: 'balanceOf',
         args: [magicLinkAddress as Address],
       });
@@ -105,17 +105,17 @@ const SellPage: FunctionComponent = () => {
   const handleSellButtonClick = useCallback(async () => {
     setIsTransactionLoading(true);
     const decimals = await publicClient.readContract({
-      ...tokenContract(addresses.SOFI_TOKEN),
+      ...tokenContract(addresses.SOPHIE_TOKEN),
       functionName: 'decimals',
     });
     const hash = await walletClient
       ?.sendTransaction({
         account: magicLinkAddress,
         chain: polygonMumbai,
-        to: hasAllownace ? addresses.TOKEN_MANAGER : addresses.SOFI_TOKEN,
+        to: hasAllownace ? addresses.TOKEN_MANAGER : addresses.SOPHIE_TOKEN,
         data: hasAllownace
           ? encodeFunctionData({
-              abi: SOFIabi,
+              abi: sophieAbi,
               functionName: 'redeem',
               args: [parseUnits(inputValue, decimals)],
             })
@@ -152,6 +152,7 @@ const SellPage: FunctionComponent = () => {
   return (
     <>
       <Layout
+        alwaysShowMarketingClaim
         main={
           !balance ? (
             <LoadingSpinner position='relative' />

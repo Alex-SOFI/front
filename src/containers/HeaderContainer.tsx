@@ -18,10 +18,16 @@ import Header from 'components/Header';
 
 interface HeaderContainerProps {
   isLinkOnly?: boolean;
+  isMintSelected?: boolean;
+  setIsMintSelected?: (state: boolean) => void;
+  isTransactionLoading?: boolean;
 }
 
 const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
   isLinkOnly,
+  isMintSelected,
+  setIsMintSelected,
+  isTransactionLoading,
 }) => {
   const dispatch = useDispatch();
 
@@ -29,23 +35,21 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
 
   const { disconnectAsync } = useDisconnect();
 
-  const navigateToBuyPage = useCallback(() => {
-    if (window.location.pathname !== routes.BUY) {
-      navigate(routes.BUY);
-    }
-  }, [navigate]);
-
-  const navigateToTransfertPage = useCallback(() => {
-    if (window.location.pathname !== routes.TRANSFERT) {
-      navigate(routes.TRANSFERT);
-    }
-  }, [navigate]);
+  const navigateToPage = useCallback(
+    (page: string) => {
+      if (window.location.pathname !== page) {
+        navigate(page);
+      }
+    },
+    [navigate],
+  );
 
   const { address, isConnected, magicLinkAddress } =
     useSelector(selectWalletInfo);
   const isWrongNetwork = useSelector(selectIsWrongNetwork);
 
-  const { userConnectedWithWallet } = useIsUserConnected();
+  const { userConnectedWithMagicLink, userConnectedWithWallet } =
+    useIsUserConnected();
 
   const walletAddress = useMemo(
     () => (userConnectedWithWallet ? address : magicLinkAddress),
@@ -87,9 +91,12 @@ const HeaderContainer: FunctionComponent<HeaderContainerProps> = ({
       handleSwitchButtonClick={handleSwitchButtonClick}
       isWrongNetwork={isWrongNetwork}
       logoutUser={logout}
-      navigateToBuyPage={navigateToBuyPage}
-      navigateToTransfertPage={navigateToTransfertPage}
+      navigateToPage={navigateToPage}
       disconnectUser={disconnectUser}
+      userConnectedWithMagicLink={userConnectedWithMagicLink}
+      isMintSelected={isMintSelected}
+      setIsMintSelected={setIsMintSelected}
+      isTransactionLoading={isTransactionLoading}
     />
   );
 };

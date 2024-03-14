@@ -1,12 +1,15 @@
 import { FunctionComponent, ReactNode } from 'react';
 
 import styled from '@emotion/styled';
+import { useIsMobile } from 'hooks';
 
 import LinksList from './pagesComponents/LinksList';
 
 import HeaderContainer from 'containers/HeaderContainer';
 
 import { theme } from 'styles/theme';
+
+import MarketingClaim from './MarketingClaim';
 
 const Section = styled.section`
   min-height: 100vh;
@@ -31,7 +34,7 @@ const Footer = styled.footer`
   max-width: ${theme.breakpoints.sm};
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: ${theme.space.lg};
+  margin-bottom: ${theme.space.sm};
   width: 100%;
 
   @media (max-width: ${theme.breakpoints.sm}) {
@@ -42,13 +45,34 @@ const Footer = styled.footer`
 interface LayoutProps {
   main: ReactNode;
   isLinkOnly?: boolean;
+  alwaysShowMarketingClaim?: boolean;
+  isMintSelected?: boolean;
+  setIsMintSelected?: (state: boolean) => void;
+  isTransactionLoading?: boolean;
 }
 
-const Layout: FunctionComponent<LayoutProps> = ({ main, isLinkOnly }) => {
+const Layout: FunctionComponent<LayoutProps> = ({
+  main,
+  isLinkOnly,
+  alwaysShowMarketingClaim,
+  isMintSelected,
+  setIsMintSelected,
+  isTransactionLoading,
+}) => {
+  const isMobile = useIsMobile();
+
   return (
     <Section>
-      <HeaderContainer isLinkOnly={isLinkOnly} />
-      <Main>{main}</Main>
+      <HeaderContainer
+        isLinkOnly={isLinkOnly}
+        isMintSelected={isMintSelected}
+        setIsMintSelected={setIsMintSelected}
+        isTransactionLoading={isTransactionLoading}
+      />
+      <Main>
+        {(alwaysShowMarketingClaim || !isMobile) && <MarketingClaim />}
+        {main}
+      </Main>
       <Footer>
         <LinksList />
       </Footer>

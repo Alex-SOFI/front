@@ -11,11 +11,17 @@ const StyledBox = styled(Box)`
   display: flex;
   flex-direction: column;
   width: 40%;
-  height: 100%;
+  height: 60%;
   justify-content: space-evenly;
-  margin: auto;
+  margin: 0 auto;
   @media (max-width: ${theme.breakpoints.sm}) {
     width: 60%;
+    margin: 0 auto;
+  }
+  @media (max-width: ${theme.breakpoints.xs}) {
+    width: 60%;
+    margin: auto;
+    height: 100%;
   }
 `;
 
@@ -30,9 +36,7 @@ const HomePageMain: FunctionComponent<HomePageMainProps> = ({
 }) => {
   return (
     <StyledBox>
-      <Button marginTop='20%' onClick={handleEmailButtonClick}>
-        E-mail signup / signin
-      </Button>
+      <Button onClick={handleEmailButtonClick}>E-mail signup / signin</Button>
       <Button marginBottom='20%' onClick={handleWalletButtonClick}>
         I use my own wallet
       </Button>

@@ -33,6 +33,7 @@ const BuyPage: FunctionComponent = () => {
   return (
     <>
       <Layout
+        alwaysShowMarketingClaim
         main={
           <BuyPageMain
             handleButtonClick={openModal}

@@ -2,10 +2,17 @@ import { ChangeEvent, FunctionComponent, useMemo } from 'react';
 
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
+import { PUBLIC_URL } from 'config';
 
 import statusTexts from 'constants/statusTexts';
 
-import { Button, LoadingSpinner, Text, TextInput } from 'components/basic';
+import {
+  Button,
+  LoadingSpinner,
+  Picture,
+  Text,
+  TextInput,
+} from 'components/basic';
 
 import { theme } from 'styles/theme';
 
@@ -13,10 +20,9 @@ const StyledBox = styled(Box)`
   display: flex;
   flex-direction: column;
   width: 40%;
-  height: 100%;
   align-items: center;
   justify-content: center;
-  margin: auto;
+  margin: 5dvh auto 0 auto;
   @media (max-width: ${theme.breakpoints.sm}) {
     width: 60%;
   }
@@ -52,19 +58,19 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
   const buttonText = useMemo(() => {
     if (isSellPage) {
       if (hasAllownace) {
-        return 'Sell SOFI';
+        return 'Sell SOPHIE';
       } else {
-        return 'Approve SOFI';
+        return 'Approve SOPHIE';
       }
     } else {
-      return 'Buy SOFI';
+      return 'Buy SOPHIE';
     }
   }, [hasAllownace, isSellPage]);
   return (
     <StyledBox>
       <TextInput
         placeholder={
-          isSellPage ? 'SOFI Amount to Sell' : 'USD Amount to Invest'
+          isSellPage ? 'SOPHIE Amount to Sell' : 'USD Amount to Invest'
         }
         textAlign='left'
         value={inputValue}
@@ -99,7 +105,7 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
                 variant='body2'
                 color={theme.colors.error}
               >
-                {statusTexts.MAX_SOFI_VALUE}
+                {statusTexts.MAX_SOPHIE_VALUE}
               </Text>
             )}
             {isTransactionError && (
@@ -133,6 +139,19 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
           )}
         </Box>
       </Button>
+      {!isSellPage && (
+        <Box display='flex' alignItems='center' mt='0.3rem'>
+          <Text mr='0.5rem' fontSize='16px'>
+            With
+          </Text>
+          <Picture
+            src={`${PUBLIC_URL}/icons/logo_transak.svg`}
+            alt='MATIC logo'
+            width={90}
+            height={30}
+          />
+        </Box>
+      )}
     </StyledBox>
   );
 };

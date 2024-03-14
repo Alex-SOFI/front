@@ -9,7 +9,6 @@ import { Link } from 'components/basic';
 import { theme } from 'styles/theme';
 
 const LinksList: FunctionComponent = () => {
-  /* TODO: Add hrefs */
   const listItemLink = useCallback(
     (link: JSX.Element) => <ListItem disablePadding>{link}</ListItem>,
     [],
@@ -27,18 +26,16 @@ const LinksList: FunctionComponent = () => {
         sx={{
           maxWidth: theme.breakpoints.sm,
           display: 'grid',
-          gridTemplateRows: 'repeat(4, 1fr)',
+          gridTemplateRows: 'repeat(3, 1fr)',
           alignItems: 'center',
           marginLeft: '1rem',
         }}
       >
         {listItemLink(
-          <Link href='#' ariaLabel='Link opens Docs in a new window.'>
-            Docs
-          </Link>,
-        )}
-        {listItemLink(
-          <Link href='#' ariaLabel='Link opens WhitePaper in a new window.'>
+          <Link
+            href='https://www.notion.so/Sophie-Whitepaper-1ad05c0d6720475aaaaa500fd89af777'
+            ariaLabel='Link opens SOPHIE&#039;s WhitePaper in a new window.'
+          >
             WhitePaper
           </Link>,
         )}
@@ -49,8 +46,8 @@ const LinksList: FunctionComponent = () => {
         )}
         {listItemLink(
           <Link
-            href='#'
-            ariaLabel='Link opens SOFI&#039;s Github repository in a new window.'
+            href='https://github.com/Alex-SOFI'
+            ariaLabel='Link opens SOPHIE&#039;s Github repository in a new window.'
           >
             Github
           </Link>,
@@ -60,37 +57,32 @@ const LinksList: FunctionComponent = () => {
         sx={{
           maxWidth: theme.breakpoints.sm,
           display: 'grid',
-          gridTemplateRows: 'repeat(4, 1fr)',
+          gridTemplateRows: 'repeat(3, 1fr)',
           alignItems: 'center',
           justifyContent: 'end',
           marginRight: '1rem',
         }}
       >
         {listItemLink(
-          <Link href='#' ariaLabel='Link opens Linkedin in a new window..'>
-            Linkedin
-          </Link>,
-        )}
-        {listItemLink(
           <Link
-            href='https://discord.com/invite/kXp55tyk'
-            ariaLabel='Link opens invitation to SOFI&#039;s Discord server in a new window.'
+            href='https://discord.gg/8W3Qb8XzPJ'
+            ariaLabel='Link opens invitation to SOPHIE&#039;s Discord server in a new window.'
           >
             Discord
           </Link>,
         )}
         {listItemLink(
           <Link
-            href='https://twitter.com/alex_borene'
-            ariaLabel='Link opens to Alex Borene&#039;s Twitter in a new window.'
+            href='https://twitter.com/SophieCryp72198'
+            ariaLabel='Link opens to SophieCryp72198&#039;s Twitter in a new window.'
           >
             Twitter
           </Link>,
         )}
         {listItemLink(
           <Link
-            href='https://t.me/+sYuFM9QSvxhhYzA8'
-            ariaLabel='Link opens invitation to SOFI&#039;s Telegram group in a new window.'
+            href='https://t.me/sophietoken'
+            ariaLabel='Link opens invitation to SOPHIE&#039;s Telegram group in a new window.'
           >
             Telegram
           </Link>,

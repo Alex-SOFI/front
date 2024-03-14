@@ -1,7 +1,7 @@
-const SOFIabi = [
+const sophieAbi = [
   {
     inputs: [
-      { internalType: 'contract IERC20', name: '_usdcToken', type: 'address' },
+      { internalType: 'contract IERC20', name: '_usdtToken', type: 'address' },
       {
         internalType: 'contract ISwapRouter',
         name: '_swapRouter',
@@ -200,4 +200,4 @@ const SOFIabi = [
   },
 ];
 
-export default SOFIabi;
+export default sophieAbi;

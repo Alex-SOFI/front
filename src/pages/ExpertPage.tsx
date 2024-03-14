@@ -302,6 +302,9 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
 
   return (
     <Layout
+      isMintSelected={isMintSelected}
+      setIsMintSelected={setIsMintSelected}
+      isTransactionLoading={isTransactionLoading}
       main={
         <ExpertPageMain
           isConnected={isConnected}

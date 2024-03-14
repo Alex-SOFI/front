@@ -54,6 +54,7 @@ const LoginPage: FunctionComponent<LoginPageProps> = () => {
   return (
     <Layout
       isLinkOnly
+      alwaysShowMarketingClaim
       main={
         <LoginPageMain
           emailInputValue={emailInputValue}

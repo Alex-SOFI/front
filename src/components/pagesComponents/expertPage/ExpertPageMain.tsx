@@ -12,8 +12,6 @@ import Box from '@mui/material/Box';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { PUBLIC_URL } from 'config';
 
-import statusTexts from 'constants/statusTexts';
-
 import {
   Button,
   ButtonWithIcon,
@@ -32,14 +30,13 @@ interface InputGridBoxProps {
 
 const InputGridBox = styled(Box)<InputGridBoxProps>`
   display: grid;
-  grid-template-columns: 0.25fr 0.75fr 1.5fr 1fr;
+  grid-template-columns: 1fr 1.5fr 1fr;
   width: 100%;
   ${(props) => props.mb && `margin-bottom: ${props.mb};`}
   align-items: center;
   ${(props) => props.justifyItems && `justify-items: ${props.justifyItems};`}
-
   @media (max-width: ${theme.breakpoints.sm}) {
-    grid-template-columns: 0.25fr 0.75fr 2fr 1fr;
+    grid-template-columns: 1fr 1.8fr 0.2fr;
   }
 `;
 
@@ -47,7 +44,7 @@ interface ExpertPageMainProps {
   isConnected: boolean;
   balance: string | number | undefined;
   status: {
-    text: string | JSX.Element;
+    text: JSX.Element;
     error: boolean;
   } | null;
   isWrongNetwork: boolean;
@@ -88,11 +85,6 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   setMaxActiveValue,
 }) => {
   const { open } = useWeb3Modal();
-  const isTransactionLoading = useMemo(
-    () =>
-      status?.text === (statusTexts.MINT_LOADING || statusTexts.REDEEM_LOADING),
-    [status?.text],
-  );
   const renderButton = useMemo(() => {
     if (isConnected) {
       if (isWrongNetwork) {
@@ -117,7 +109,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
                 alignItems='center'
               >
                 <Text color='inherit' fontWeight={500} mr='0.15rem'>
-                  Approve {isMintSelected ? 'USDC' : 'SOFI'}
+                  Approve {isMintSelected ? 'USDT' : 'SOPHIE'}
                 </Text>
                 {isLoading && <LoadingSpinner position='relative' size='22' />}
               </Box>
@@ -133,7 +125,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
               }
             >
               <Text color='inherit' fontWeight={500} mr='0.15rem'>
-                {isMintSelected ? 'Mint SOFI' : 'Redeem SOFI'}
+                {isMintSelected ? 'Mint SOPHIE' : 'Redeem SOPHIE'}
               </Text>
               {isLoading && <LoadingSpinner position='relative' size='22' />}
             </Button>
@@ -158,24 +150,27 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
     open,
   ]);
 
-  const USDC = useMemo(
+  const USDT = useMemo(
     () => (
       <>
-        <Picture src={`${PUBLIC_URL}/icons/logo_usdc.png`} alt='USDC logo' />
+        <Picture src={`${PUBLIC_URL}/icons/logo_usdt.svg`} alt='USDT logo' />
         <Text pl='0.5rem' pr='1rem' variant='body1'>
-          USDC
+          USDT
         </Text>
       </>
     ),
     [],
   );
 
-  const SOFI = useMemo(
+  const SOPHIE = useMemo(
     () => (
       <>
-        <Picture src={`${PUBLIC_URL}/icons/logo_sofi.webp`} alt='SOFI logo' />
+        <Picture
+          src={`${PUBLIC_URL}/icons/logo_sophie.png`}
+          alt='SOPHIE logo'
+        />
         <Text pl='0.5rem' pr='1rem' variant='body1'>
-          SOFI
+          SOPHIE
         </Text>
       </>
     ),
@@ -193,43 +188,21 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         alignItems: 'center',
         flexDirection: 'column',
         justifyContent: 'center',
+        margin: '5dvh auto 0 auto',
       }}
     >
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          width: '100%',
-          marginBottom: 'clamp(0.5rem, 8dvh, 5rem)',
-        }}
-      >
-        <Button
-          isPrimaryColor={isMintSelected}
-          onClick={() => setIsMintSelected(true)}
-          disabled={isTransactionLoading}
-          variant='text'
-        >
-          Mint
-        </Button>
-        <Button
-          isPrimaryColor={!isMintSelected}
-          onClick={() => setIsMintSelected(false)}
-          disabled={isTransactionLoading}
-          variant='text'
-        >
-          Redeem
-        </Button>
-      </Box>
       <InputGridBox>
         <Box
-          sx={{
-            gridColumn: 2,
+          sx={(theme) => ({
             display: 'flex',
-            marginLeft: '1rem',
-            width: '6rem',
-          }}
+            alignItems: 'center',
+            marginLeft: '3rem',
+            [theme.breakpoints.down('sm')]: {
+              marginLeft: '1rem',
+            },
+          })}
         >
-          {isMintSelected ? USDC : SOFI}
+          {isMintSelected ? USDT : SOPHIE}
         </Box>
         <TextInput
           placeholder='0'
@@ -247,7 +220,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         <Button
           variant='text'
           onClick={setMaxActiveValue}
-          gridColumn={3}
+          gridColumn={2}
           fontSize='14px'
           textColor={theme.colors.grayMedium}
           minHeight='0rem'
@@ -258,7 +231,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         </Button>
       </InputGridBox>
       <InputGridBox mb='1rem' justifyItems='center'>
-        <Box sx={{ gridColumn: 2, width: '6rem' }} />
+        <Box sx={{ width: '6rem' }} />
         <ButtonWithIcon
           onClick={() => {
             setIsMintSelected(!isMintSelected);
@@ -266,21 +239,23 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           ariaLabel={
             isMintSelected ? 'Switch to redeem state' : 'Switch to mint state'
           }
-          disabled={isTransactionLoading}
+          disabled={isLoading}
         >
           <ArrowDownwardIcon aria-label='mint' fontSize='large' />
         </ButtonWithIcon>
       </InputGridBox>
       <InputGridBox mb='1rem'>
         <Box
-          sx={{
-            gridColumn: 2,
+          sx={(theme) => ({
             display: 'flex',
-            marginLeft: '1rem',
-            width: '6rem',
-          }}
+            alignItems: 'center',
+            marginLeft: '3rem',
+            [theme.breakpoints.down('sm')]: {
+              marginLeft: '1rem',
+            },
+          })}
         >
-          {isMintSelected ? SOFI : USDC}
+          {isMintSelected ? SOPHIE : USDT}
         </Box>
 
         <TextInput
@@ -291,22 +266,20 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           readOnly
         />
       </InputGridBox>
-      <Text
-        variant='body2'
-        color={theme.colors.grayMedium}
-        mb='clamp(0, 3.2dvh, 2rem)'
-      >
+      <Text variant='body2' color={theme.colors.grayMedium} mb='3dvh'>
         Fees | 0.00%
       </Text>
 
       <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: '0.25fr 3.25fr',
+        sx={(theme) => ({
           width: '100%',
           lineHeight: '1.2em',
           minHeight: 'clamp(3rem, 6.4dvh, 4rem)',
-        }}
+          marginLeft: '3rem',
+          [theme.breakpoints.down('sm')]: {
+            marginLeft: '0',
+          },
+        })}
       >
         {status && status?.text}
       </Box>

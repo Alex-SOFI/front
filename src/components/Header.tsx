@@ -9,7 +9,7 @@ import { PUBLIC_URL } from 'config';
 
 import routes from 'constants/routes';
 
-import { Button, ButtonWithIcon, Link, Picture, Text } from 'components/basic';
+import { Button, ButtonWithIcon, Picture, Text } from 'components/basic';
 
 import { muiTheme } from 'styles/globalStyle';
 import { theme } from 'styles/theme';
@@ -17,7 +17,6 @@ import { theme } from 'styles/theme';
 const StyledHeader = styled.header`
   display: flex;
   flex-direction: column;
-  margin-bottom: ${() => window.location.pathname === routes.EXPERT && '2rem'};
   padding: ${muiTheme.spacing(1)};
 
   @media (max-width: ${theme.breakpoints.sm}) {
@@ -33,9 +32,12 @@ interface HeaderProps {
   handleSwitchButtonClick: (chainId_?: number | undefined) => void;
   isWrongNetwork: boolean;
   logoutUser: () => Promise<void>;
-  navigateToBuyPage: () => void;
-  navigateToTransfertPage: () => void;
+  navigateToPage: (page: string) => void;
   disconnectUser: () => void;
+  userConnectedWithMagicLink: boolean | null;
+  isMintSelected?: boolean;
+  setIsMintSelected?: (state: boolean) => void;
+  isTransactionLoading?: boolean;
 }
 
 const Header: FunctionComponent<HeaderProps> = ({
@@ -46,9 +48,12 @@ const Header: FunctionComponent<HeaderProps> = ({
   handleSwitchButtonClick,
   isWrongNetwork,
   logoutUser,
-  navigateToBuyPage,
-  navigateToTransfertPage,
   disconnectUser,
+  userConnectedWithMagicLink,
+  navigateToPage,
+  isMintSelected,
+  setIsMintSelected,
+  isTransactionLoading,
 }) => {
   const { open } = useWeb3Modal();
 
@@ -59,12 +64,7 @@ const Header: FunctionComponent<HeaderProps> = ({
 
   const addressButton = useMemo(
     () => (
-      <Button
-        onClick={copyAddress}
-        variant='text'
-        maxWidth='11rem'
-        width='25dvw'
-      >
+      <Button onClick={copyAddress} variant='text' maxWidth='10rem'>
         <Text
           sx={{
             textOverflow: 'ellipsis',
@@ -118,19 +118,20 @@ const Header: FunctionComponent<HeaderProps> = ({
                 <>
                   <Button
                     onClick={() => handleSwitchButtonClick()}
-                    minWidth='11rem'
+                    width='10rem'
+                    padding='0px'
                   >
                     Switch Network
                   </Button>
                 </>
               ) : (
-                <Box display='flex' maxWidth='11rem'>
+                <Box display='flex' maxWidth='10rem'>
                   {addressButton}
                   {disconnectButton}
                 </Box>
               )
             ) : (
-              <Button onClick={() => open()} minWidth='11rem'>
+              <Button onClick={() => open()} minWidth='10rem'>
                 Connect Wallet
               </Button>
             )}
@@ -160,23 +161,72 @@ const Header: FunctionComponent<HeaderProps> = ({
     <StyledHeader>
       <Box display='flex' justifyContent='space-between' width='100%'>
         <Box display='flex' alignItems='center'>
-          <Link
-            href='https://www.sophie.fi/'
-            ariaLabel='Visit sophie.fi main page which opens in a new window.'
+          <Button
+            variant='text'
+            onClick={
+              userConnectedWithMagicLink
+                ? () => navigateToPage(routes.MAIN)
+                : () => navigateToPage(routes.HOME)
+            }
+            minWidth={'0'}
           >
-            sophie.fi
-          </Link>
+            <Picture
+              src={`${PUBLIC_URL}/icons/logo_sophie.png`}
+              alt='SOPHIE logo'
+              width={40}
+              height={40}
+            />
+          </Button>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>{render()}</Box>
       </Box>
-      {!isExpertPage && !isLinkOnly && (
-        <Box display='flex' justifyContent='center' mt='5dvh'>
-          <Button onClick={navigateToBuyPage} marginRight='2dvh'>
-            Buy SOFI
-          </Button>
-          <Button onClick={navigateToTransfertPage}>Transfert</Button>
-        </Box>
-      )}
+      {!isLinkOnly &&
+        (isExpertPage ? (
+          <Box
+            sx={{
+              display: 'flex',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              width: theme.breakpoints.sm,
+              justifyContent: 'center',
+              margin: '5dvh auto 0 auto',
+            }}
+          >
+            <Button
+              isPrimaryColor={isMintSelected}
+              onClick={() => setIsMintSelected!(true)}
+              disabled={isTransactionLoading}
+              variant='text'
+              fullWidth
+            >
+              Mint
+            </Button>
+            <Button
+              isPrimaryColor={!isMintSelected}
+              onClick={() => setIsMintSelected!(false)}
+              disabled={isTransactionLoading}
+              variant='text'
+              fullWidth
+            >
+              Redeem
+            </Button>
+          </Box>
+        ) : (
+          <Box display='flex' justifyContent='center' mt='5dvh'>
+            <Button
+              onClick={() => navigateToPage(routes.BUY)}
+              marginRight='2dvh'
+            >
+              Buy SOPHIE
+            </Button>
+            <Button
+              onClick={() => navigateToPage(routes.TRANSFERT)}
+              variant='outlined'
+              isPrimaryColor
+            >
+              Transfert
+            </Button>
+          </Box>
+        ))}
     </StyledHeader>
   );
 };

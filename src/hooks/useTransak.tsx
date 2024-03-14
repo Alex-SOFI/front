@@ -12,13 +12,13 @@ import { Address, encodeFunctionData, formatUnits, parseUnits } from 'viem';
 
 import addresses from 'constants/addresses';
 import { publicClient, tokenManagerContract } from 'constants/contracts';
-import SOFIabi from 'constants/sofiAbi';
+import sophieAbi from 'constants/sophieAbi';
 
 const getMintCalldata = (address: Address, amount: number) => {
   if (!amount) return;
 
   return encodeFunctionData({
-    abi: SOFIabi,
+    abi: sophieAbi,
     functionName: 'mint',
     args: [address, parseUnits(amount.toString(), 18)],
   });
@@ -70,14 +70,14 @@ const useTransak = ({
       calldata,
       sourceTokenData: [
         {
-          sourceTokenCode: 'USDC',
+          sourceTokenCode: 'USDT',
           sourceTokenAmount: estimatedAmount!,
         },
       ],
       cryptoCurrencyData: [
         {
-          cryptoCurrencyCode: 'SOFI',
-          cryptoCurrencyName: 'SOFI Token',
+          cryptoCurrencyCode: 'SOPHIE',
+          cryptoCurrencyName: 'SOPHIE Token',
           cryptoCurrencyImageURL: '',
         },
       ],

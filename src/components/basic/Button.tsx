@@ -7,7 +7,7 @@ interface ButtonProps extends PropsWithChildren {
   onClick?: () => void;
   onClickWithEvent?: (event: MouseEvent<HTMLElement>) => void;
   type?: 'submit' | 'reset' | undefined;
-  variant?: 'text';
+  variant?: 'text' | 'outlined';
   isPrimaryColor?: boolean;
   disabled?: boolean;
   maxWidth?: string;
@@ -18,6 +18,7 @@ interface ButtonProps extends PropsWithChildren {
   gridColumn?: number;
   textColor?: string;
   href?: string;
+  color?: 'inherit';
   [x: string]: any;
 }
 
@@ -36,11 +37,13 @@ const Button: FunctionComponent<ButtonProps> = ({
   textColor,
   onClickWithEvent,
   href,
+  color,
   ...props
 }) => {
   return (
     <BasicButton
       {...(variant ? { color: isPrimaryColor ? 'primary' : 'inherit' } : {})}
+      {...(color && !variant ? { color } : {})}
       {...(href ? { href } : {})}
       variant={variant || 'contained'}
       type={type || 'button'}
@@ -48,7 +51,7 @@ const Button: FunctionComponent<ButtonProps> = ({
         boxShadow: 0,
         minHeight: minHeight || '2.719rem',
         textAlign: 'right',
-        ...(variant
+        ...(variant === 'text'
           ? { fontWeight: isPrimaryColor ? 500 : 400, padding: '0px' }
           : {}),
         ...(maxWidth ? { maxWidth } : {}),

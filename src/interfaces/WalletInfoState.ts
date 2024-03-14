@@ -1,8 +1,8 @@
 import { Address } from 'viem';
 
 export interface MagicLinkBalance {
-  SOFI?: number | null;
-  USDC?: number | null;
+  SOPHIE?: number | null;
+  USDT?: number | null;
   MATIC?: number | null;
 }
 
