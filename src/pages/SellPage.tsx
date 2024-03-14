@@ -152,6 +152,7 @@ const SellPage: FunctionComponent = () => {
   return (
     <>
       <Layout
+        alwaysShowMarketingClaim
         main={
           !balance ? (
             <LoadingSpinner position='relative' />

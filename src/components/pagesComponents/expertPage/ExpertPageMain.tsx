@@ -12,8 +12,6 @@ import Box from '@mui/material/Box';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { PUBLIC_URL } from 'config';
 
-import statusTexts from 'constants/statusTexts';
-
 import {
   Button,
   ButtonWithIcon,
@@ -37,7 +35,6 @@ const InputGridBox = styled(Box)<InputGridBoxProps>`
   ${(props) => props.mb && `margin-bottom: ${props.mb};`}
   align-items: center;
   ${(props) => props.justifyItems && `justify-items: ${props.justifyItems};`}
-
   @media (max-width: ${theme.breakpoints.sm}) {
     grid-template-columns: 1fr 1.8fr 0.2fr;
   }
@@ -47,7 +44,7 @@ interface ExpertPageMainProps {
   isConnected: boolean;
   balance: string | number | undefined;
   status: {
-    text: string | JSX.Element;
+    text: JSX.Element;
     error: boolean;
   } | null;
   isWrongNetwork: boolean;
@@ -88,11 +85,6 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   setMaxActiveValue,
 }) => {
   const { open } = useWeb3Modal();
-  const isTransactionLoading = useMemo(
-    () =>
-      status?.text === (statusTexts.MINT_LOADING || statusTexts.REDEEM_LOADING),
-    [status?.text],
-  );
   const renderButton = useMemo(() => {
     if (isConnected) {
       if (isWrongNetwork) {
@@ -196,33 +188,9 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         alignItems: 'center',
         flexDirection: 'column',
         justifyContent: 'center',
+        margin: '5dvh auto 0 auto',
       }}
     >
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          width: '100%',
-          marginBottom: 'clamp(0.5rem, 8dvh, 5rem)',
-        }}
-      >
-        <Button
-          isPrimaryColor={isMintSelected}
-          onClick={() => setIsMintSelected(true)}
-          disabled={isTransactionLoading}
-          variant='text'
-        >
-          Mint
-        </Button>
-        <Button
-          isPrimaryColor={!isMintSelected}
-          onClick={() => setIsMintSelected(false)}
-          disabled={isTransactionLoading}
-          variant='text'
-        >
-          Redeem
-        </Button>
-      </Box>
       <InputGridBox>
         <Box
           sx={(theme) => ({
@@ -271,7 +239,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           ariaLabel={
             isMintSelected ? 'Switch to redeem state' : 'Switch to mint state'
           }
-          disabled={isTransactionLoading}
+          disabled={isLoading}
         >
           <ArrowDownwardIcon aria-label='mint' fontSize='large' />
         </ButtonWithIcon>

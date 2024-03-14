@@ -21,6 +21,7 @@ const DashboardPage: FunctionComponent = () => {
   return (
     <Layout
       isLinkOnly
+      alwaysShowMarketingClaim
       main={
         <HomePageMain
           handleEmailButtonClick={handleEmailButtonClick}

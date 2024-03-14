@@ -9,7 +9,7 @@ import { PUBLIC_URL } from 'config';
 
 import routes from 'constants/routes';
 
-import { Button, ButtonWithIcon, Link, Picture, Text } from 'components/basic';
+import { Button, ButtonWithIcon, Picture, Text } from 'components/basic';
 
 import { muiTheme } from 'styles/globalStyle';
 import { theme } from 'styles/theme';
@@ -17,7 +17,6 @@ import { theme } from 'styles/theme';
 const StyledHeader = styled.header`
   display: flex;
   flex-direction: column;
-  margin-bottom: ${() => window.location.pathname === routes.EXPERT && '2rem'};
   padding: ${muiTheme.spacing(1)};
 
   @media (max-width: ${theme.breakpoints.sm}) {
@@ -33,10 +32,12 @@ interface HeaderProps {
   handleSwitchButtonClick: (chainId_?: number | undefined) => void;
   isWrongNetwork: boolean;
   logoutUser: () => Promise<void>;
-  navigateToBuyPage: () => void;
-  navigateToTransfertPage: () => void;
+  navigateToPage: (page: string) => void;
   disconnectUser: () => void;
   userConnectedWithMagicLink: boolean | null;
+  isMintSelected?: boolean;
+  setIsMintSelected?: (state: boolean) => void;
+  isTransactionLoading?: boolean;
 }
 
 const Header: FunctionComponent<HeaderProps> = ({
@@ -47,10 +48,12 @@ const Header: FunctionComponent<HeaderProps> = ({
   handleSwitchButtonClick,
   isWrongNetwork,
   logoutUser,
-  navigateToBuyPage,
-  navigateToTransfertPage,
   disconnectUser,
   userConnectedWithMagicLink,
+  navigateToPage,
+  isMintSelected,
+  setIsMintSelected,
+  isTransactionLoading,
 }) => {
   const { open } = useWeb3Modal();
 
@@ -158,10 +161,14 @@ const Header: FunctionComponent<HeaderProps> = ({
     <StyledHeader>
       <Box display='flex' justifyContent='space-between' width='100%'>
         <Box display='flex' alignItems='center'>
-          <Link
-            href={userConnectedWithMagicLink ? routes.MAIN : routes.HOME}
-            ariaLabel='Open sophie.fi main page.'
-            withoutTarget
+          <Button
+            variant='text'
+            onClick={
+              userConnectedWithMagicLink
+                ? () => navigateToPage(routes.MAIN)
+                : () => navigateToPage(routes.HOME)
+            }
+            minWidth={'0'}
           >
             <Picture
               src={`${PUBLIC_URL}/icons/logo_sophie.png`}
@@ -169,24 +176,57 @@ const Header: FunctionComponent<HeaderProps> = ({
               width={40}
               height={40}
             />
-          </Link>
+          </Button>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>{render()}</Box>
       </Box>
-      {!isExpertPage && !isLinkOnly && (
-        <Box display='flex' justifyContent='center' mt='5dvh'>
-          <Button onClick={navigateToBuyPage} marginRight='2dvh'>
-            Buy SOPHIE
-          </Button>
-          <Button
-            onClick={navigateToTransfertPage}
-            variant='outlined'
-            isPrimaryColor
+      {!isLinkOnly &&
+        (isExpertPage ? (
+          <Box
+            sx={{
+              display: 'flex',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              width: theme.breakpoints.sm,
+              justifyContent: 'center',
+              margin: '5dvh auto 0 auto',
+            }}
           >
-            Transfert
-          </Button>
-        </Box>
-      )}
+            <Button
+              isPrimaryColor={isMintSelected}
+              onClick={() => setIsMintSelected!(true)}
+              disabled={isTransactionLoading}
+              variant='text'
+              fullWidth
+            >
+              Mint
+            </Button>
+            <Button
+              isPrimaryColor={!isMintSelected}
+              onClick={() => setIsMintSelected!(false)}
+              disabled={isTransactionLoading}
+              variant='text'
+              fullWidth
+            >
+              Redeem
+            </Button>
+          </Box>
+        ) : (
+          <Box display='flex' justifyContent='center' mt='5dvh'>
+            <Button
+              onClick={() => navigateToPage(routes.BUY)}
+              marginRight='2dvh'
+            >
+              Buy SOPHIE
+            </Button>
+            <Button
+              onClick={() => navigateToPage(routes.TRANSFERT)}
+              variant='outlined'
+              isPrimaryColor
+            >
+              Transfert
+            </Button>
+          </Box>
+        ))}
     </StyledHeader>
   );
 };

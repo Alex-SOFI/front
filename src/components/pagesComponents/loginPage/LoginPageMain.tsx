@@ -25,18 +25,21 @@ const LoginPageMain: FunctionComponent<LoginPageMainProps> = ({
 }) => {
   return (
     <Box
-      sx={{
+      sx={(muiTheme) => ({
         maxWidth: theme.breakpoints.sm,
         paddingTop: theme.space.sm,
         paddingVottom: theme.space.sm,
-        width: '50%',
         display: 'flex',
         alignItems: 'center',
         flexDirection: 'column',
         justifyContent: 'center',
         gap: 'clamp(0.5rem, 1.6dvh, 1rem)',
-        margin: '10% auto 0 auto',
-      }}
+        margin: '5dvh auto 0 auto',
+        width: '50%',
+        [muiTheme.breakpoints.down('sm')]: {
+          width: '70%',
+        },
+      })}
     >
       <Text color='primary' fontWeight={500} alignSelf='start'>
         Login

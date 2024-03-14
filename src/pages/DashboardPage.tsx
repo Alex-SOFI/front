@@ -2,6 +2,7 @@ import { FunctionComponent, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { useIsMobile } from 'hooks';
 import { Address, formatUnits } from 'viem';
 
 import addresses from 'constants/addresses';
@@ -24,6 +25,9 @@ import { LoadingSpinner } from 'components/basic';
 const DashboardPage: FunctionComponent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const isMobile = useIsMobile();
+
   const { magicLinkAddress, magicLinkBalance, isMagicLinkBalanceSet } =
     useSelector(selectWalletInfo);
 
@@ -122,6 +126,7 @@ const DashboardPage: FunctionComponent = () => {
             }}
             navigateToBuyPage={navigateToBuyPage}
             navigateToSellPage={navigateToSellPage}
+            isMobile={isMobile}
           />
         ) : (
           <LoadingSpinner position='relative' />

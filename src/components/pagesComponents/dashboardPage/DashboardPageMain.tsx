@@ -3,7 +3,6 @@ import { FunctionComponent, useMemo } from 'react';
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 import { PUBLIC_URL } from 'config';
-import { useIsMobile } from 'hooks';
 
 import { MagicLinkBalance } from 'interfaces/WalletInfoState';
 
@@ -13,7 +12,7 @@ import { theme } from 'styles/theme';
 
 const StyledBox = styled(Box)`
   max-width: ${theme.breakpoints.sm};
-  margin: 10dvh auto 0 auto;
+  margin: 5dvh auto 0 auto;
   width: 70%;
   height: 100%;
   display: flex;
@@ -65,6 +64,7 @@ interface DashboardPageMainProps {
   };
   navigateToBuyPage: () => void;
   navigateToSellPage: () => void;
+  isMobile: boolean;
 }
 
 const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
@@ -72,9 +72,8 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
   balanceValue,
   navigateToBuyPage,
   navigateToSellPage,
+  isMobile,
 }) => {
-  const isMobile = useIsMobile();
-
   const sellButton = useMemo(
     () => (
       <Button

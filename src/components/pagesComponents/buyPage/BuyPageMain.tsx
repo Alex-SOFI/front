@@ -20,10 +20,9 @@ const StyledBox = styled(Box)`
   display: flex;
   flex-direction: column;
   width: 40%;
-  height: 100%;
   align-items: center;
   justify-content: center;
-  margin: auto;
+  margin: 5dvh auto 0 auto;
   @media (max-width: ${theme.breakpoints.sm}) {
     width: 60%;
   }
@@ -148,7 +147,8 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
           <Picture
             src={`${PUBLIC_URL}/icons/logo_transak.svg`}
             alt='MATIC logo'
-            width={100}
+            width={90}
+            height={30}
           />
         </Box>
       )}
