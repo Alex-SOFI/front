@@ -40,6 +40,7 @@ interface BuyPageMainProps {
   isTransactionLoading?: boolean;
   isTransactionError?: boolean;
   transactionErrorText?: string;
+  isTransactionSuccess?: boolean;
 }
 
 const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
@@ -54,6 +55,7 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
   isTransactionLoading,
   isTransactionError,
   transactionErrorText,
+  isTransactionSuccess,
 }) => {
   const buttonText = useMemo(() => {
     if (isSellPage) {
@@ -77,24 +79,26 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
         onChange={handleInputChange}
         readOnly={isTransactionLoading}
       />
-      {isSellPage && (
+      {
         <>
-          <Button
-            variant='text'
-            onClick={setMaxValue!}
-            fontSize='14px'
-            textColor={theme.colors.grayMedium}
-            minHeight='0rem'
-            lineHeight={1.5}
-            alignSelf='end'
-            textAlign='right'
-            minWidth='0'
-          >
-            Max: {Number(balance?.toFixed(5))}
-          </Button>
+          {isSellPage && (
+            <Button
+              variant='text'
+              onClick={setMaxValue!}
+              fontSize='14px'
+              textColor={theme.colors.grayMedium}
+              minHeight='0rem'
+              lineHeight={1.5}
+              alignSelf='end'
+              textAlign='right'
+              minWidth='0'
+            >
+              Max: {Number(balance?.toFixed(5))}
+            </Button>
+          )}
           <Box
             sx={{
-              marginTop: '1dvh',
+              marginTop: isSellPage ? '0dvh' : '1dvh',
               minHeight: 'clamp(3rem, 6.4dvh, 4rem)',
               alignSelf: 'start',
             }}
@@ -117,11 +121,19 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
                 {transactionErrorText}
               </Text>
             )}
+            {isTransactionSuccess && (
+              <Text
+                sx={{ gridColumn: 2 }}
+                variant='body2'
+                color={theme.colors.success}
+              >
+                {statusTexts.TRANSACTION_SUCCESSFUL}
+              </Text>
+            )}
           </Box>
         </>
-      )}
+      }
       <Button
-        marginTop={isSellPage ? '1dvh' : '10dvh'}
         disabled={
           Number(inputValue) <= 0 ||
           inputValue === '.' ||

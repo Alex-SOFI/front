@@ -4,14 +4,12 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useState,
 } from 'react';
 
 import { Transak, TransakConfig } from '@transak/transak-sdk';
-import { Address, encodeFunctionData, formatUnits, parseUnits } from 'viem';
+import { Address, encodeFunctionData, parseUnits } from 'viem';
 
 import addresses from 'constants/addresses';
-import { publicClient, tokenManagerContract } from 'constants/contracts';
 import sophieAbi from 'constants/sophieAbi';
 
 const getMintCalldata = (address: Address, amount: number) => {
@@ -28,32 +26,16 @@ const useTransak = ({
   amount,
   address,
   setInputValue,
+  setIsTransactionSuccessful,
 }: {
   amount: number;
   address?: Address;
   setInputValue: Dispatch<SetStateAction<string>>;
+  setIsTransactionSuccessful: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const [estimatedAmount, setEstimatedAmount] = useState<number | undefined>(
-    undefined,
-  );
-
-  useEffect(() => {
-    const estimateBalance = async () => {
-      if (amount) {
-        const data = await publicClient.readContract({
-          ...tokenManagerContract,
-          functionName: 'estimateMint',
-          args: [parseUnits(amount.toString(), 18)],
-        });
-        setEstimatedAmount(Number(formatUnits(data as bigint, 18)));
-      }
-    };
-    estimateBalance();
-  }, [amount]);
-
   const calldata = useMemo(() => {
-    return getMintCalldata(address!, estimatedAmount!);
-  }, [address, estimatedAmount]);
+    return getMintCalldata(address!, amount);
+  }, [address, amount]);
 
   const transakConfig: TransakConfig = useMemo(() => {
     return {
@@ -65,25 +47,24 @@ const useTransak = ({
       defaultPaymentMethod: 'credit_debit_card',
       smartContractAddress: addresses.TOKEN_MANAGER,
       estimatedGasLimit: 300_000,
-      fiatAmount: amount,
-      fiatCurrency: 'USD',
       calldata,
       sourceTokenData: [
         {
           sourceTokenCode: 'USDT',
-          sourceTokenAmount: estimatedAmount!,
+          sourceTokenAmount: amount,
         },
       ],
       cryptoCurrencyData: [
         {
           cryptoCurrencyCode: 'SOPHIE',
           cryptoCurrencyName: 'SOPHIE Token',
-          cryptoCurrencyImageURL: '',
+          cryptoCurrencyImageURL:
+            'https://sofi-t-1823e8891b19.herokuapp.com/icons/logo_sophie.png', // TODO: change
         },
       ],
       isTransakOne: true,
     };
-  }, [address, amount, calldata, estimatedAmount]);
+  }, [address, amount, calldata]);
 
   const transak = useMemo(() => new Transak(transakConfig), [transakConfig]);
 
@@ -98,13 +79,14 @@ const useTransak = ({
       });
       Transak.on(Transak.EVENTS.TRANSAK_ORDER_SUCCESSFUL, () => {
         setInputValue('');
+        setIsTransactionSuccessful(true);
         transak.close();
       });
     }
     return () => {
       transak.close();
     };
-  }, [setInputValue, transak]);
+  }, [setInputValue, setIsTransactionSuccessful, transak]);
 
   return { openModal };
 };

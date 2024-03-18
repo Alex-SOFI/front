@@ -188,7 +188,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
   }, [isMintSelected]);
 
   useEffect(() => {
-    const timeoutId = setTimeout(async () => {
+    const timeout = setTimeout(async () => {
       if (!isMaxValueError && activeValue) {
         const SOPHIEValue = await estimate(activeValue);
 
@@ -199,7 +199,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
         setCalculatedInputValue('');
       }
     }, 200);
-    return () => clearTimeout(timeoutId);
+    return () => clearTimeout(timeout);
   }, [
     activeValue,
     estimate,
