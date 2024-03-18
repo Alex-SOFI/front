@@ -1,4 +1,4 @@
-import { ChangeEvent, FunctionComponent, useMemo } from 'react';
+import { ChangeEvent, FunctionComponent } from 'react';
 
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
@@ -6,13 +6,7 @@ import { PUBLIC_URL } from 'config';
 
 import statusTexts from 'constants/statusTexts';
 
-import {
-  Button,
-  LoadingSpinner,
-  Picture,
-  Text,
-  TextInput,
-} from 'components/basic';
+import { Button, Picture, Text, TextInput } from 'components/basic';
 
 import { theme } from 'styles/theme';
 
@@ -30,97 +24,44 @@ const StyledBox = styled(Box)`
 
 interface BuyPageMainProps {
   handleButtonClick: () => void;
-  handleInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  inputValue: string;
-  isSellPage: boolean;
-  balance?: number;
-  setMaxValue?: () => void;
-  isMaxValueError?: boolean;
-  hasAllownace?: boolean;
-  isTransactionLoading?: boolean;
-  isTransactionError?: boolean;
-  transactionErrorText?: string;
-  isTransactionSuccess?: boolean;
+  usdtInputValue: string;
+  handleUsdtInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  sophieInputValue: string;
+  handleSophieInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  isTransactionSuccess: boolean;
 }
 
 const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
   handleButtonClick,
-  inputValue,
-  handleInputChange,
-  isSellPage,
-  balance,
-  setMaxValue,
-  isMaxValueError,
-  hasAllownace,
-  isTransactionLoading,
-  isTransactionError,
-  transactionErrorText,
+  usdtInputValue,
+  handleUsdtInputChange,
+  sophieInputValue,
+  handleSophieInputChange,
   isTransactionSuccess,
 }) => {
-  const buttonText = useMemo(() => {
-    if (isSellPage) {
-      if (hasAllownace) {
-        return 'Sell SOPHIE';
-      } else {
-        return 'Approve SOPHIE';
-      }
-    } else {
-      return 'Buy SOPHIE';
-    }
-  }, [hasAllownace, isSellPage]);
   return (
     <StyledBox>
       <TextInput
-        placeholder={
-          isSellPage ? 'SOPHIE Amount to Sell' : 'USD Amount to Invest'
-        }
+        placeholder={'SOPHIE Shares'}
         textAlign='left'
-        value={inputValue}
-        onChange={handleInputChange}
-        readOnly={isTransactionLoading}
+        value={sophieInputValue}
+        onChange={handleSophieInputChange}
+      />
+      <TextInput
+        placeholder={'Amount to Invest'}
+        textAlign='left'
+        value={usdtInputValue}
+        onChange={handleUsdtInputChange}
       />
       {
         <>
-          {isSellPage && (
-            <Button
-              variant='text'
-              onClick={setMaxValue!}
-              fontSize='14px'
-              textColor={theme.colors.grayMedium}
-              minHeight='0rem'
-              lineHeight={1.5}
-              alignSelf='end'
-              textAlign='right'
-              minWidth='0'
-            >
-              Max: {Number(balance?.toFixed(5))}
-            </Button>
-          )}
           <Box
             sx={{
-              marginTop: isSellPage ? '0dvh' : '1dvh',
+              marginTop: '1dvh',
               minHeight: 'clamp(3rem, 6.4dvh, 4rem)',
               alignSelf: 'start',
             }}
           >
-            {isMaxValueError && (
-              <Text
-                sx={{ gridColumn: 2 }}
-                variant='body2'
-                color={theme.colors.error}
-              >
-                {statusTexts.MAX_SOPHIE_VALUE}
-              </Text>
-            )}
-            {isTransactionError && (
-              <Text
-                sx={{ gridColumn: 2 }}
-                variant='body2'
-                color={theme.colors.error}
-              >
-                {transactionErrorText}
-              </Text>
-            )}
             {isTransactionSuccess && (
               <Text
                 sx={{ gridColumn: 2 }}
@@ -134,24 +75,16 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
         </>
       }
       <Button
-        disabled={
-          Number(inputValue) <= 0 ||
-          inputValue === '.' ||
-          isMaxValueError ||
-          isTransactionLoading
-        }
+        disabled={Number(usdtInputValue) <= 0 || usdtInputValue === '.'}
         onClick={handleButtonClick}
       >
         <Box display='flex' justifyContent='space-between' alignItems='center'>
           <Text color='inherit' fontWeight={500} mr='0.15rem'>
-            {buttonText}
+            Buy SOPHIE
           </Text>
-          {isTransactionLoading && (
-            <LoadingSpinner position='relative' size='22' />
-          )}
         </Box>
       </Button>
-      {!isSellPage && (
+      {
         <Box display='flex' alignItems='center' mt='0.3rem'>
           <Text mr='0.5rem' fontSize='16px'>
             With
@@ -163,7 +96,7 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
             height={30}
           />
         </Box>
-      )}
+      }
     </StyledBox>
   );
 };

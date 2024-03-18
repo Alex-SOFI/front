@@ -27,7 +27,7 @@ import { selectWalletInfo } from 'ducks/wallet';
 
 import { handleInputChange } from 'tools';
 
-import { BuyPageMain } from 'components/pagesComponents/buyPage';
+import { SellPageMain } from 'components/pagesComponents/sellPage';
 
 import { Layout } from 'components';
 import { LoadingSpinner } from 'components/basic';
@@ -157,11 +157,10 @@ const SellPage: FunctionComponent = () => {
           !balance ? (
             <LoadingSpinner position='relative' />
           ) : (
-            <BuyPageMain
+            <SellPageMain
               handleButtonClick={handleSellButtonClick}
               inputValue={inputValue}
               handleInputChange={handleInvestInputChange}
-              isSellPage
               balance={Number(balance)}
               setMaxValue={setMaxValue}
               isMaxValueError={isMaxValueError}

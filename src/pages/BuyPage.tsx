@@ -26,7 +26,9 @@ const BuyPage: FunctionComponent = () => {
 
   const navigate = useNavigate();
 
-  const [inputValue, setInputValue] = useState<string>('');
+  const [usdtInputValue, setUsdtInputValue] = useState<string>('');
+  const [sophieInputValue, setSophieInputValue] = useState<string>('');
+
   const [isTransactionSuccess, setIsTransactionSuccessful] =
     useState<boolean>(false);
 
@@ -39,17 +41,24 @@ const BuyPage: FunctionComponent = () => {
     return () => clearTimeout(timeout);
   }, [isTransactionSuccess, navigate]);
 
-  const handleInvestInputChange = useCallback(
+  const handleUsdtInputChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      handleInputChange(event, setInputValue);
+      handleInputChange(event, setUsdtInputValue);
+    },
+    [],
+  );
+
+  const handleSophieInputChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      handleInputChange(event, setSophieInputValue);
     },
     [],
   );
 
   const { openModal } = useTransak({
-    amount: Number(inputValue) || 0,
+    amount: Number(usdtInputValue) || 0,
     address: magicLinkAddress as Address,
-    setInputValue,
+    setInputValue: setUsdtInputValue,
     setIsTransactionSuccessful,
   });
 
@@ -59,9 +68,10 @@ const BuyPage: FunctionComponent = () => {
         main={
           <BuyPageMain
             handleButtonClick={openModal}
-            inputValue={inputValue}
-            handleInputChange={handleInvestInputChange}
-            isSellPage={false}
+            usdtInputValue={usdtInputValue}
+            handleUsdtInputChange={handleUsdtInputChange}
+            sophieInputValue={sophieInputValue}
+            handleSophieInputChange={handleSophieInputChange}
             isTransactionSuccess={isTransactionSuccess}
           />
         }
