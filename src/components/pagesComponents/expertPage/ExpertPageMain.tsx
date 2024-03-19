@@ -267,7 +267,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
         />
       </InputGridBox>
       <Text variant='body2' color={theme.colors.grayMedium} mb='3dvh'>
-        Fees | 0.00%
+        Fees | {activeInputValue ? '~ 0.5%' : '0.00%'} {/* temporary */}
       </Text>
 
       <Box
