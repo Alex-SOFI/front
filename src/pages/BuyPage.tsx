@@ -8,7 +8,7 @@ import {
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { useTransak } from 'hooks';
+import { useIsMobile, useTransak } from 'hooks';
 import { Address } from 'viem';
 
 import routes from 'constants/routes';
@@ -22,8 +22,8 @@ import { BuyPageMain } from 'components/pagesComponents/buyPage';
 import { Layout } from 'components';
 
 const BuyPage: FunctionComponent = () => {
-  const { address: magicLinkAddress } = useSelector(selectWalletInfo);
-
+  const { magicLinkAddress } = useSelector(selectWalletInfo);
+  const isMobile = useIsMobile();
   const navigate = useNavigate();
 
   const [usdtInputValue, setUsdtInputValue] = useState<string>('');
@@ -73,6 +73,7 @@ const BuyPage: FunctionComponent = () => {
             sophieInputValue={sophieInputValue}
             handleSophieInputChange={handleSophieInputChange}
             isTransactionSuccess={isTransactionSuccess}
+            isMobile={isMobile}
           />
         }
       />

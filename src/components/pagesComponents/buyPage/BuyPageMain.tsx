@@ -13,13 +13,25 @@ import { theme } from 'styles/theme';
 const StyledBox = styled(Box)`
   display: flex;
   flex-direction: column;
-  width: 40%;
   align-items: center;
   justify-content: center;
   margin: 5dvh auto 0 auto;
+`;
+
+const GridBox = styled(Box)`
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
   @media (max-width: ${theme.breakpoints.sm}) {
-    width: 60%;
+    grid-template-columns: 0.5fr 3fr 0.5fr;
   }
+`;
+
+const TokenBox = styled(Box)`
+  display: flex;
+  align-items: center;
 `;
 
 interface BuyPageMainProps {
@@ -29,6 +41,7 @@ interface BuyPageMainProps {
   sophieInputValue: string;
   handleSophieInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
   isTransactionSuccess: boolean;
+  isMobile: boolean;
 }
 
 const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
@@ -38,42 +51,58 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
   sophieInputValue,
   handleSophieInputChange,
   isTransactionSuccess,
+  isMobile,
 }) => {
   return (
     <StyledBox>
-      <TextInput
-        placeholder={'SOPHIE Shares'}
-        textAlign='left'
-        value={sophieInputValue}
-        onChange={handleSophieInputChange}
-      />
-      <TextInput
-        placeholder={'Amount to Invest'}
-        textAlign='left'
-        value={usdtInputValue}
-        onChange={handleUsdtInputChange}
-      />
-      {
-        <>
-          <Box
-            sx={{
-              marginTop: '1dvh',
-              minHeight: 'clamp(3rem, 6.4dvh, 4rem)',
-              alignSelf: 'start',
-            }}
+      <GridBox marginBottom='6dvh'>
+        <TextInput
+          placeholder={'SOPHIE Shares'}
+          textAlign='left'
+          value={sophieInputValue}
+          onChange={handleSophieInputChange}
+          gridColumn={2}
+        />
+        <TokenBox marginLeft='1.5dvh'>
+          <Picture
+            src={`${PUBLIC_URL}/icons/logo_sophie.png`}
+            alt='SOPHIE logo'
+          />
+          {!isMobile && <Text pl='0.5rem'>SOPHIE</Text>}
+        </TokenBox>
+      </GridBox>
+      <GridBox>
+        <TextInput
+          placeholder={'Amount to Invest'}
+          textAlign='left'
+          value={usdtInputValue}
+          onChange={handleUsdtInputChange}
+          gridColumn={2}
+        />
+        <TokenBox marginLeft='1.5dvh'>
+          <Picture src={`${PUBLIC_URL}/icons/logo_usdt.svg`} alt='USDT logo' />
+          {!isMobile && <Text pl='0.5rem'>USDT</Text>}
+        </TokenBox>
+      </GridBox>
+
+      <Box
+        sx={{
+          marginTop: '1dvh',
+          minHeight: 'clamp(3rem, 6.4dvh, 4rem)',
+          alignSelf: 'start',
+        }}
+      >
+        {isTransactionSuccess && (
+          <Text
+            sx={{ gridColumn: 2 }}
+            variant='body2'
+            color={theme.colors.success}
           >
-            {isTransactionSuccess && (
-              <Text
-                sx={{ gridColumn: 2 }}
-                variant='body2'
-                color={theme.colors.success}
-              >
-                {statusTexts.TRANSACTION_SUCCESSFUL}
-              </Text>
-            )}
-          </Box>
-        </>
-      }
+            {statusTexts.TRANSACTION_SUCCESSFUL}
+          </Text>
+        )}
+      </Box>
+
       <Button
         disabled={Number(usdtInputValue) <= 0 || usdtInputValue === '.'}
         onClick={handleButtonClick}

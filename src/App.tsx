@@ -163,9 +163,9 @@ const App = () => {
       key={routes.BUY}
       path={routes.BUY}
       element={
-        // <PrivateRoute isLoggedIn={isLoggedIn}>
-        <BuyPage />
-        // </PrivateRoute>
+        <PrivateRoute isLoggedIn={isLoggedIn}>
+          <BuyPage />
+        </PrivateRoute>
       }
     />,
     <Route

@@ -11,7 +11,7 @@ const statusTexts = {
   REDEEM_FAILED: 'Redeem failed',
   TRANSACTION_ERROR: 'Transaction error',
   TRANSACTION_SUCCESSFUL:
-    'The transaction was successful, Sophie Tokens will be transferred within a few minutes', // temporary
+    'Sophie Tokens will be transferred within a few minutes', // temporary
 };
 
 export default statusTexts;
