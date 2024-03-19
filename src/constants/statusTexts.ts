@@ -10,8 +10,7 @@ const statusTexts = {
   MINT_FAILED: 'Mint failed',
   REDEEM_FAILED: 'Redeem failed',
   TRANSACTION_ERROR: 'Transaction error',
-  TRANSACTION_SUCCESSFUL:
-    'Sophie Tokens will be transferred within a few minutes', // temporary
+  TRANSACTION_SUCCESSFUL: 'Check your email for the result', // temporary
 };
 
 export default statusTexts;
