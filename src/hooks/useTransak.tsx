@@ -40,7 +40,10 @@ const useTransak = ({
   const transakConfig: TransakConfig = useMemo(() => {
     return {
       apiKey: import.meta.env.VITE_TRANSAK_API_KEY,
-      environment: Transak.ENVIRONMENTS.STAGING,
+      environment:
+        import.meta.env.VITE_ENV === 'staging'
+          ? Transak.ENVIRONMENTS.STAGING
+          : Transak.ENVIRONMENTS.PRODUCTION,
       network: 'polygon',
       walletAddress: address,
       disableWalletAddressForm: true,
@@ -58,8 +61,11 @@ const useTransak = ({
         {
           cryptoCurrencyCode: 'SOPHIE',
           cryptoCurrencyName: 'SOPHIE Token',
-          cryptoCurrencyImageURL:
-            'https://sofi-t-1823e8891b19.herokuapp.com/icons/logo_sophie.png', // TODO: change
+          cryptoCurrencyImageURL: `https://${
+            import.meta.env.VITE_ENV === 'staging'
+              ? 'sofi-t-1823e8891b19.herokuapp.com'
+              : 'sophie-dapp-705fda84174a.herokuapp.com'
+          }/icons/logo_sophie.png`, // TODO: change
         },
       ],
       isTransakOne: true,
