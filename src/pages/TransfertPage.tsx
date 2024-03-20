@@ -8,7 +8,7 @@ import {
 import { useSelector } from 'react-redux';
 
 import { SelectChangeEvent } from '@mui/material/Select';
-import { useMagic } from 'hooks';
+import { useDecimals, useMagic } from 'hooks';
 import {
   Address,
   encodeFunctionData,
@@ -16,10 +16,9 @@ import {
   isAddress,
   parseUnits,
 } from 'viem';
-import { polygonMumbai } from 'viem/chains';
+import { polygon, polygonMumbai } from 'viem/chains';
 
 import addresses from 'constants/addresses';
-import { publicClient, tokenContract } from 'constants/contracts';
 import { TOKEN_NAMES } from 'constants/textConstants';
 
 import { selectWalletInfo } from 'ducks/wallet';
@@ -49,6 +48,12 @@ const TransfertPage: FunctionComponent = () => {
     [],
   );
 
+  const decimals = useDecimals(
+    tokenInputValue === TOKEN_NAMES.SOPHIE
+      ? addresses.SOPHIE_TOKEN
+      : addresses.USDT,
+  );
+
   const handleAmountInputChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       if (
@@ -56,33 +61,18 @@ const TransfertPage: FunctionComponent = () => {
         (!isNaN(Number(event.target.value)) && Number(event.target.value) >= 0)
       ) {
         const float = event.target.value.split('.')?.[1];
-        if (
-          !float ||
-          (float &&
-            float?.length <= /* decimals */ 18) /* TODO: get USDT(?) decimals */
-        ) {
+        if (!float || (float && float?.length <= decimals!)) {
           setAmountInputValue(event.target.value.trim());
         }
       }
     },
-    [],
+    [decimals],
   );
-  // TODO: change to mainnet
-  const handleSendButtonClick = useCallback(async () => {
-    const decimals =
-      tokenInputValue === TOKEN_NAMES.SOPHIE
-        ? await publicClient.readContract({
-            ...tokenContract(addresses.SOPHIE_TOKEN),
-            functionName: 'decimals',
-          })
-        : await publicClient.readContract({
-            ...tokenContract(addresses.USDT),
-            functionName: 'decimals',
-          });
 
+  const handleSendButtonClick = useCallback(async () => {
     const hash = await walletClient?.sendTransaction({
       account: magicLinkAddress,
-      chain: polygonMumbai,
+      chain: import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : polygon,
       to:
         tokenInputValue === TOKEN_NAMES.SOPHIE
           ? addresses.SOPHIE_TOKEN
@@ -92,7 +82,7 @@ const TransfertPage: FunctionComponent = () => {
         functionName: 'transfer',
         args: [
           addressInputValue as Address,
-          parseUnits(amountInputValue, decimals as number),
+          parseUnits(amountInputValue, decimals!),
         ],
       }),
     });
@@ -100,10 +90,11 @@ const TransfertPage: FunctionComponent = () => {
       setTokenInputValue(TOKEN_NAMES.SOPHIE);
       setAddressInputValue('');
       setAmountInputValue('');
-    } // temporary
+    }
   }, [
     addressInputValue,
     amountInputValue,
+    decimals,
     magicLinkAddress,
     tokenInputValue,
     walletClient,

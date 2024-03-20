@@ -8,7 +8,7 @@ import {
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { useMagic } from 'hooks';
+import { useDecimals, useMagic } from 'hooks';
 import {
   Address,
   encodeFunctionData,
@@ -16,7 +16,7 @@ import {
   formatUnits,
   parseUnits,
 } from 'viem';
-import { polygonMumbai } from 'viem/chains';
+import { polygon, polygonMumbai } from 'viem/chains';
 
 import addresses from 'constants/addresses';
 import { publicClient, tokenContract } from 'constants/contracts';
@@ -27,7 +27,7 @@ import { selectWalletInfo } from 'ducks/wallet';
 
 import { handleInputChange } from 'tools';
 
-import { BuyPageMain } from 'components/pagesComponents/buyPage';
+import { SellPageMain } from 'components/pagesComponents/sellPage';
 
 import { Layout } from 'components';
 import { LoadingSpinner } from 'components/basic';
@@ -58,6 +58,8 @@ const SellPage: FunctionComponent = () => {
       setIsMaxValueError(false);
     }
   }, [inputValue, balance]);
+
+  const decimals = useDecimals(addresses.SOPHIE_TOKEN);
 
   useEffect(() => {
     const getAllowance = async () => {
@@ -94,35 +96,33 @@ const SellPage: FunctionComponent = () => {
 
   const handleInvestInputChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      handleInputChange(event, setInputValue);
+      handleInputChange(event, setInputValue, decimals!);
       setIsTransactionError(false);
     },
-    [],
+    [decimals],
   );
   const { walletClient } = useMagic(window.location.pathname);
 
-  // TODO: change to mainnet
   const handleSellButtonClick = useCallback(async () => {
     setIsTransactionLoading(true);
-    const decimals = await publicClient.readContract({
-      ...tokenContract(addresses.SOPHIE_TOKEN),
-      functionName: 'decimals',
-    });
     const hash = await walletClient
       ?.sendTransaction({
         account: magicLinkAddress,
-        chain: polygonMumbai,
+        chain: import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : polygon,
         to: hasAllownace ? addresses.TOKEN_MANAGER : addresses.SOPHIE_TOKEN,
         data: hasAllownace
           ? encodeFunctionData({
               abi: sophieAbi,
               functionName: 'redeem',
-              args: [parseUnits(inputValue, decimals)],
+              args: [parseUnits(inputValue, decimals!)],
             })
           : encodeFunctionData({
               abi: erc20Abi,
               functionName: 'approve',
-              args: [addresses.TOKEN_MANAGER, parseUnits(inputValue, decimals)],
+              args: [
+                addresses.TOKEN_MANAGER,
+                parseUnits(inputValue, decimals!),
+              ],
             }),
       })
       .catch((error) => {
@@ -143,7 +143,14 @@ const SellPage: FunctionComponent = () => {
         navigate(routes.MAIN);
       }
     }
-  }, [hasAllownace, inputValue, magicLinkAddress, navigate, walletClient]);
+  }, [
+    decimals,
+    hasAllownace,
+    inputValue,
+    magicLinkAddress,
+    navigate,
+    walletClient,
+  ]);
 
   const setMaxValue = useCallback(() => {
     setInputValue(balance!);
@@ -157,11 +164,10 @@ const SellPage: FunctionComponent = () => {
           !balance ? (
             <LoadingSpinner position='relative' />
           ) : (
-            <BuyPageMain
+            <SellPageMain
               handleButtonClick={handleSellButtonClick}
               inputValue={inputValue}
               handleInputChange={handleInvestInputChange}
-              isSellPage
               balance={Number(balance)}
               setMaxValue={setMaxValue}
               isMaxValueError={isMaxValueError}

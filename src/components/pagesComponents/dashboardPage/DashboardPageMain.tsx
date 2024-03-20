@@ -193,22 +193,9 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
           </Text>
         </>
       ) : (
-        <>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              marginTop: '10dvh',
-              width: '100%',
-              height: '20%',
-            }}
-          >
-            <Text>You don&#39;t have any Tokens</Text>
-            <Button onClick={navigateToBuyPage}>Buy SOPHIE</Button>
-          </Box>
-        </>
+        <Button onClick={navigateToBuyPage} marginTop='10dvh'>
+          Buy SOPHIE
+        </Button>
       )}
       {isMobile && balance !== null && sellButton}
     </StyledBox>
