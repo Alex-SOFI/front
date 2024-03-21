@@ -72,7 +72,7 @@ const SellPage: FunctionComponent = () => {
       if (!allowance || allowance === 0n) {
         setHasAllowance(false);
       } else {
-        if (Number(inputValue) > Number(formatUnits(allowance, 18))) {
+        if (Number(inputValue) > Number(formatUnits(allowance, decimals!))) {
           setHasAllowance(false);
         } else {
           setHasAllowance(true);
@@ -80,7 +80,7 @@ const SellPage: FunctionComponent = () => {
       }
     };
     getAllowance();
-  }, [magicLinkAddress, isTransactionLoading, inputValue]);
+  }, [magicLinkAddress, isTransactionLoading, inputValue, decimals]);
 
   useEffect(() => {
     const getBalance = async () => {
@@ -89,10 +89,10 @@ const SellPage: FunctionComponent = () => {
         functionName: 'balanceOf',
         args: [magicLinkAddress as Address],
       });
-      setBalance(formatUnits(result as bigint, 18));
+      setBalance(formatUnits(result as bigint, decimals!));
     };
     getBalance();
-  }, [magicLinkAddress, isTransactionLoading]);
+  }, [magicLinkAddress, isTransactionLoading, decimals]);
 
   const handleInvestInputChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {

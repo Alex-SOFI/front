@@ -2,7 +2,7 @@ import { FunctionComponent, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { useIsMobile } from 'hooks';
+import { useDecimals, useIsMobile } from 'hooks';
 import { Address, formatUnits } from 'viem';
 
 import addresses from 'constants/addresses';
@@ -42,6 +42,10 @@ const DashboardPage: FunctionComponent = () => {
     navigate(routes.SELL);
   }, [navigate]);
 
+  const usdtDecimals = useDecimals(addresses.USDT);
+  const sophieDecimals = useDecimals(addresses.SOPHIE_TOKEN);
+  const maticDecimals = useDecimals(addresses.MATIC);
+
   useEffect(() => {
     const getBalance = async () => {
       const results = await publicClient.multicall({
@@ -67,21 +71,27 @@ const DashboardPage: FunctionComponent = () => {
         setMagicLinkBalance({
           ...(results[0].status === 'success' &&
             results[0].result !== 0n && {
-              SOPHIE: Number(formatUnits(results[0].result as bigint, 18)),
+              SOPHIE: Number(
+                formatUnits(results[0].result as bigint, sophieDecimals!),
+              ),
             }),
           ...(results[1].status === 'success' &&
             results[1].result !== 0n && {
-              USDT: Number(formatUnits(results[1].result as bigint, 18)),
+              USDT: Number(
+                formatUnits(results[1].result as bigint, usdtDecimals!),
+              ),
             }),
           ...(results[2].status === 'success' &&
             results[2].result !== 0n && {
-              MATIC: Number(formatUnits(results[2].result as bigint, 18)),
+              MATIC: Number(
+                formatUnits(results[2].result as bigint, maticDecimals!),
+              ),
             }),
         }),
       );
     };
     getBalance();
-  }, [dispatch, magicLinkAddress]);
+  }, [dispatch, magicLinkAddress, maticDecimals, sophieDecimals, usdtDecimals]);
 
   useEffect(() => {
     if (
