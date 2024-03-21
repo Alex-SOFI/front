@@ -24,7 +24,7 @@ import { BuyPageMain } from 'components/pagesComponents/buyPage';
 import { Layout } from 'components';
 
 const BuyPage: FunctionComponent = () => {
-  const { magicLinkAddress } = useSelector(selectWalletInfo);
+  const { address: magicLinkAddress } = useSelector(selectWalletInfo);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
@@ -67,12 +67,17 @@ const BuyPage: FunctionComponent = () => {
       await publicClient
         .readContract({
           ...tokenManagerContract,
-          functionName: 'estimateRedeem',
-          args: [parseUnits(sophieInputValue, sophieDecimals!)],
+          functionName: 'estimateMint',
+          args: [parseUnits('1', usdtDecimals!)],
         })
-        .then((value) =>
-          setUsdtInputValue(formatUnits(value as bigint, usdtDecimals!)),
-        );
+        .then((value) => {
+          setUsdtInputValue(
+            String(
+              Number(parseUnits(sophieInputValue, sophieDecimals!)) /
+                Number(value as bigint),
+            ),
+          );
+        });
     };
 
     if (isUsdtValueChanged) {
