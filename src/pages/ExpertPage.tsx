@@ -153,7 +153,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
   ]);
 
   const activeValue = useMemo(
-    () => (activeInputValue === '.' ? '0' : activeInputValue),
+    () => (Number(activeInputValue) === 0 ? '0' : activeInputValue),
     [activeInputValue],
   );
 

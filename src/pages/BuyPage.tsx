@@ -3,6 +3,7 @@ import {
   FunctionComponent,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
@@ -24,7 +25,7 @@ import { BuyPageMain } from 'components/pagesComponents/buyPage';
 import { Layout } from 'components';
 
 const BuyPage: FunctionComponent = () => {
-  const { address: magicLinkAddress } = useSelector(selectWalletInfo);
+  const { magicLinkAddress } = useSelector(selectWalletInfo);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
@@ -50,13 +51,22 @@ const BuyPage: FunctionComponent = () => {
   const usdtDecimals = useDecimals(addresses.USDT);
   const sophieDecimals = useDecimals(addresses.SOPHIE_TOKEN);
 
+  const activeUsdtValue = useMemo(
+    () => (Number(usdtInputValue) === 0 ? '0' : usdtInputValue),
+    [usdtInputValue],
+  );
+  const activeSophieValue = useMemo(
+    () => (Number(sophieInputValue) === 0 ? '0' : sophieInputValue),
+    [sophieInputValue],
+  );
+
   useEffect(() => {
     const estimateMint = async () => {
       await publicClient
         .readContract({
           ...tokenManagerContract,
           functionName: 'estimateMint',
-          args: [parseUnits(usdtInputValue, usdtDecimals!)],
+          args: [parseUnits(activeUsdtValue, usdtDecimals!)],
         })
         .then((value) =>
           setSophieInputValue(formatUnits(value as bigint, sophieDecimals!)),
@@ -73,26 +83,26 @@ const BuyPage: FunctionComponent = () => {
         .then((value) => {
           setUsdtInputValue(
             String(
-              Number(parseUnits(sophieInputValue, sophieDecimals!)) /
+              Number(parseUnits(activeSophieValue, sophieDecimals!)) /
                 Number(value as bigint),
             ),
           );
         });
     };
 
-    if (isUsdtValueChanged) {
+    if (isUsdtValueChanged && activeUsdtValue !== '0') {
       estimateMint();
     }
-    if (isSophiealueChanged) {
+    if (isSophiealueChanged && activeSophieValue !== '0') {
       estimateRedeem();
     }
   }, [
+    activeSophieValue,
+    activeUsdtValue,
     isSophiealueChanged,
     isUsdtValueChanged,
     sophieDecimals,
-    sophieInputValue,
     usdtDecimals,
-    usdtInputValue,
   ]);
 
   const handleUsdtInputChange = useCallback(
