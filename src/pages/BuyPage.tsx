@@ -90,12 +90,15 @@ const BuyPage: FunctionComponent = () => {
         });
     };
 
-    if (isUsdtValueChanged && activeUsdtValue !== '0') {
-      estimateMint();
-    }
-    if (isSophiealueChanged && activeSophieValue !== '0') {
-      estimateRedeem();
-    }
+    const timeout = setTimeout(() => {
+      if (isUsdtValueChanged && activeUsdtValue !== '0') {
+        estimateMint();
+      }
+      if (isSophiealueChanged && activeSophieValue !== '0') {
+        estimateRedeem();
+      }
+    }, 200);
+    return () => clearTimeout(timeout);
   }, [
     activeSophieValue,
     activeUsdtValue,
@@ -124,7 +127,7 @@ const BuyPage: FunctionComponent = () => {
   );
 
   const { openModal } = useTransak({
-    amount: Number(usdtInputValue) || 0,
+    amount: Number(activeUsdtValue) || 0,
     address: magicLinkAddress as Address,
     setInputValue: setUsdtInputValue,
     setIsTransactionSuccessful,

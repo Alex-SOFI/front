@@ -6,8 +6,10 @@ const handleInputChange = (
   decimals: number,
 ) => {
   if (
-    (event.target.value.length === 1 && event.target.value === '.') ||
-    (!isNaN(Number(event.target.value)) && Number(event.target.value) >= 0)
+    ((event.target.value.length === 1 && event.target.value === '.') ||
+      (!isNaN(Number(event.target.value)) &&
+        Number(event.target.value) >= 0)) &&
+    Number(event.target.value) <= Number.MAX_SAFE_INTEGER
   ) {
     const float = event.target.value.split('.')?.[1];
     if (!float || (float && float?.length <= decimals)) {

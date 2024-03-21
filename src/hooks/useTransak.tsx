@@ -18,7 +18,7 @@ const getMintCalldata = (address: Address, amount: number) => {
   return encodeFunctionData({
     abi: sophieAbi,
     functionName: 'mint',
-    args: [address, parseUnits(amount.toString(), 18)],
+    args: [address, parseUnits(String(amount), 18)],
   });
 };
 
@@ -65,7 +65,7 @@ const useTransak = ({
             import.meta.env.VITE_ENV === 'staging'
               ? 'sofi-t-1823e8891b19.herokuapp.com'
               : 'sophie-dapp-705fda84174a.herokuapp.com'
-          }/icons/logo_sophie.png`, // TODO: change
+          }/icons/logo_sophie.png`,
         },
       ],
       isTransakOne: true,
