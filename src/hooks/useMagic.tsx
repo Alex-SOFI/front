@@ -136,6 +136,7 @@ const useMagic = (pathname: string) => {
             navigate(routes.MAIN, { replace: true });
           }
         } catch (error) {
+          navigate(routes.LOGIN, { replace: true });
           throw new Error('Oauth login failed');
         }
       }
