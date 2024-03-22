@@ -137,6 +137,7 @@ const SwapPage: FunctionComponent = () => {
 
       if (transaction.status === 'success') {
         setIsTransactionLoading(false);
+        setIsTransactionError(false);
       }
 
       if (hasAllownace) {

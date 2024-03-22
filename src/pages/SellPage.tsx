@@ -99,6 +99,7 @@ const SellPage: FunctionComponent = () => {
 
       if (transaction.status === 'success') {
         setIsTransactionLoading(false);
+        setIsTransactionError(false);
       }
 
       navigate(routes.MAIN);
