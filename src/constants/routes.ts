@@ -7,6 +7,7 @@ const routes = {
   BUY: '/buy',
   SELL: '/sell',
   TRANSFERT: '/transfert',
+  SWAP: '/swap',
 };
 
 export default routes;

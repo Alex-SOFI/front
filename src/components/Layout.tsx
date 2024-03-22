@@ -26,7 +26,6 @@ const Main = styled.main`
   max-width: ${theme.breakpoints.sm};
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: ${theme.space.primaryMd};
   width: 100%;
 `;
 

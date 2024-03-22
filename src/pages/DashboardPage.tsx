@@ -42,6 +42,10 @@ const DashboardPage: FunctionComponent = () => {
     navigate(routes.SELL);
   }, [navigate]);
 
+  const navigateToSwapPage = useCallback(() => {
+    navigate(routes.SWAP);
+  }, [navigate]);
+
   const usdtDecimals = useDecimals(addresses.USDT);
   const sophieDecimals = useDecimals(addresses.SOPHIE_TOKEN);
   const maticDecimals = useDecimals(addresses.MATIC);
@@ -136,6 +140,7 @@ const DashboardPage: FunctionComponent = () => {
             }}
             navigateToBuyPage={navigateToBuyPage}
             navigateToSellPage={navigateToSellPage}
+            navigateToSwapPage={navigateToSwapPage}
             isMobile={isMobile}
           />
         ) : (

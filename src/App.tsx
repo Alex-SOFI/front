@@ -37,6 +37,7 @@ const HomePage = lazyWithRetry(() => import('pages/HomePage'));
 const BuyPage = lazyWithRetry(() => import('pages/BuyPage'));
 const SellPage = lazyWithRetry(() => import('pages/SellPage'));
 const TransfertPage = lazyWithRetry(() => import('pages/TransfertPage'));
+const SwapPage = lazyWithRetry(() => import('pages/SwapPage'));
 
 const App = () => {
   const dispatch = useDispatch();
@@ -174,6 +175,15 @@ const App = () => {
       element={
         <PrivateRoute isLoggedIn={isLoggedIn}>
           <SellPage />
+        </PrivateRoute>
+      }
+    />,
+    <Route
+      key={routes.SWAP}
+      path={routes.SWAP}
+      element={
+        <PrivateRoute isLoggedIn={isLoggedIn}>
+          <SwapPage />
         </PrivateRoute>
       }
     />,

@@ -64,6 +64,7 @@ interface DashboardPageMainProps {
   };
   navigateToBuyPage: () => void;
   navigateToSellPage: () => void;
+  navigateToSwapPage: () => void;
   isMobile: boolean;
 }
 
@@ -72,13 +73,14 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
   balanceValue,
   navigateToBuyPage,
   navigateToSellPage,
+  navigateToSwapPage,
   isMobile,
 }) => {
   const sellButton = useMemo(
     () => (
       <Button
         onClick={navigateToSellPage}
-        margin={isMobile ? '5dvh auto 0 auto' : '0'}
+        margin={isMobile ? '3dvh auto 0 auto' : '0'}
         {...(!isMobile
           ? {
               minHeight: '0rem',
@@ -97,6 +99,30 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
       </Button>
     ),
     [isMobile, navigateToSellPage],
+  );
+
+  const swapButton = useMemo(
+    () => (
+      <Button
+        onClick={navigateToSwapPage}
+        margin={isMobile ? '1dvh auto 0 auto' : '0'}
+        {...(!isMobile
+          ? {
+              minHeight: '0rem',
+              padding: 0,
+              justifySelf: 'start',
+              marginLeft: '1rem',
+              height: '120%',
+              width: '100%',
+              fontSize: '16px',
+              lineHeight: 'inherit',
+            }
+          : {})}
+      >
+        Swap {isMobile && 'USDT'} to SOPHIE
+      </Button>
+    ),
+    [isMobile, navigateToSwapPage],
   );
 
   return (
@@ -144,7 +170,14 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
             {!isMobile && sellButton}
           </GridBox>
 
-          <GridBox marginTop='1dvh'>
+          <GridBox
+            marginTop='1dvh'
+            {...(!isMobile && {
+              marginLeft: 'auto',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              width: '133.5%',
+            })}
+          >
             <TokenBox>
               <Picture
                 src={`${PUBLIC_URL}/icons/logo_usdt.svg`}
@@ -161,6 +194,7 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
                 : 0}
               $
             </BalanceText>
+            {!isMobile && swapButton}
           </GridBox>
 
           <GridBox marginTop='1dvh'>
@@ -197,6 +231,7 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
           Buy SOPHIE
         </Button>
       )}
+      {isMobile && balance !== null && swapButton}
       {isMobile && balance !== null && sellButton}
     </StyledBox>
   );

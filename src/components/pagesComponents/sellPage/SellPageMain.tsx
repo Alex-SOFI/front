@@ -1,4 +1,4 @@
-import { ChangeEvent, FunctionComponent } from 'react';
+import { ChangeEvent, FunctionComponent, useMemo } from 'react';
 
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
@@ -31,6 +31,8 @@ interface SellPageMainProps {
   isTransactionLoading: boolean;
   isTransactionError: boolean;
   transactionErrorText: string;
+  isSwapPage?: boolean;
+  hasAllownace?: boolean;
 }
 
 const SellPageMain: FunctionComponent<SellPageMainProps> = ({
@@ -43,11 +45,27 @@ const SellPageMain: FunctionComponent<SellPageMainProps> = ({
   isTransactionLoading,
   isTransactionError,
   transactionErrorText,
+  isSwapPage,
+  hasAllownace,
 }) => {
+  const buttonText = useMemo(() => {
+    if (isSwapPage) {
+      if (hasAllownace) {
+        return 'Buy SOPHIE';
+      } else {
+        return 'Approve USDT';
+      }
+    } else {
+      return 'Sell SOPHIE';
+    }
+  }, [hasAllownace, isSwapPage]);
+
   return (
     <StyledBox>
       <TextInput
-        placeholder={'SOPHIE Amount to Sell'}
+        placeholder={
+          isSwapPage ? 'USDT Amount to Swap' : 'SOPHIE Amount to Sell'
+        }
         textAlign='left'
         value={inputValue}
         onChange={handleInputChange}
@@ -82,7 +100,9 @@ const SellPageMain: FunctionComponent<SellPageMainProps> = ({
               variant='body2'
               color={theme.colors.error}
             >
-              {statusTexts.MAX_SOPHIE_VALUE}
+              {isSwapPage
+                ? statusTexts.MAX_USDT_VALUE
+                : statusTexts.MAX_SOPHIE_VALUE}
             </Text>
           )}
           {isTransactionError && (
@@ -108,7 +128,7 @@ const SellPageMain: FunctionComponent<SellPageMainProps> = ({
       >
         <Box display='flex' justifyContent='space-between' alignItems='center'>
           <Text color='inherit' fontWeight={500} mr='0.15rem'>
-            Sell SOPHIE
+            {buttonText}
           </Text>
           {isTransactionLoading && (
             <LoadingSpinner position='relative' size='22' />
