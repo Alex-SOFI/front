@@ -9,13 +9,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { useDecimals, useMagic } from 'hooks';
-import {
-  Address,
-  encodeFunctionData,
-  erc20Abi,
-  formatUnits,
-  parseUnits,
-} from 'viem';
+import { Address, encodeFunctionData, formatUnits, parseUnits } from 'viem';
 import { polygon, polygonMumbai } from 'viem/chains';
 
 import addresses from 'constants/addresses';
@@ -42,8 +36,6 @@ const SellPage: FunctionComponent = () => {
 
   const [isMaxValueError, setIsMaxValueError] = useState<boolean>(false);
 
-  const [hasAllownace, setHasAllowance] = useState<boolean>(false);
-
   const [isTransactionLoading, setIsTransactionLoading] =
     useState<boolean>(false);
 
@@ -60,27 +52,6 @@ const SellPage: FunctionComponent = () => {
   }, [inputValue, balance]);
 
   const decimals = useDecimals(addresses.SOPHIE_TOKEN);
-
-  useEffect(() => {
-    const getAllowance = async () => {
-      const allowance = await publicClient.readContract({
-        ...tokenContract(addresses.SOPHIE_TOKEN),
-        functionName: 'allowance',
-        args: [magicLinkAddress, addresses.TOKEN_MANAGER],
-      });
-
-      if (!allowance || allowance === 0n) {
-        setHasAllowance(false);
-      } else {
-        if (Number(inputValue) > Number(formatUnits(allowance, decimals!))) {
-          setHasAllowance(false);
-        } else {
-          setHasAllowance(true);
-        }
-      }
-    };
-    getAllowance();
-  }, [magicLinkAddress, isTransactionLoading, inputValue, decimals]);
 
   useEffect(() => {
     const getBalance = async () => {
@@ -109,21 +80,12 @@ const SellPage: FunctionComponent = () => {
       ?.sendTransaction({
         account: magicLinkAddress,
         chain: import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : polygon,
-        to: hasAllownace ? addresses.TOKEN_MANAGER : addresses.SOPHIE_TOKEN,
-        data: hasAllownace
-          ? encodeFunctionData({
-              abi: sophieAbi,
-              functionName: 'redeem',
-              args: [parseUnits(inputValue, decimals!)],
-            })
-          : encodeFunctionData({
-              abi: erc20Abi,
-              functionName: 'approve',
-              args: [
-                addresses.TOKEN_MANAGER,
-                parseUnits(inputValue, decimals!),
-              ],
-            }),
+        to: addresses.TOKEN_MANAGER,
+        data: encodeFunctionData({
+          abi: sophieAbi,
+          functionName: 'redeem',
+          args: [parseUnits(inputValue, decimals!)],
+        }),
       })
       .catch((error) => {
         setIsTransactionLoading(false);
@@ -139,18 +101,9 @@ const SellPage: FunctionComponent = () => {
         setIsTransactionLoading(false);
       }
 
-      if (hasAllownace) {
-        navigate(routes.MAIN);
-      }
+      navigate(routes.MAIN);
     }
-  }, [
-    decimals,
-    hasAllownace,
-    inputValue,
-    magicLinkAddress,
-    navigate,
-    walletClient,
-  ]);
+  }, [decimals, inputValue, magicLinkAddress, navigate, walletClient]);
 
   const setMaxValue = useCallback(() => {
     setInputValue(balance!);
@@ -171,7 +124,6 @@ const SellPage: FunctionComponent = () => {
               balance={Number(balance)}
               setMaxValue={setMaxValue}
               isMaxValueError={isMaxValueError}
-              hasAllownace={hasAllownace}
               isTransactionLoading={isTransactionLoading}
               isTransactionError={isTransactionError}
               transactionErrorText={transactionErrorText}

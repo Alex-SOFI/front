@@ -12,6 +12,7 @@ interface SelectProps extends PropsWithChildren {
   labelId?: string;
   gridColumn?: number;
   textColor?: string;
+  readOnly: boolean;
   [x: string]: any;
 }
 
@@ -20,6 +21,7 @@ const Select: FunctionComponent<SelectProps> = ({
   onChange,
   children,
   labelId,
+  readOnly,
   ...props
 }) => {
   return (
@@ -34,6 +36,7 @@ const Select: FunctionComponent<SelectProps> = ({
       aria-label={labelId}
       fullWidth
       value={value}
+      readOnly={readOnly}
     >
       {children}
     </BasicSelect>

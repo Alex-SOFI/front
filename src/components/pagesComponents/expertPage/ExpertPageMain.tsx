@@ -94,13 +94,15 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           </Button>
         );
       } else {
-        if (isApproveButtonVisible) {
+        if (isApproveButtonVisible && isMintSelected) {
           return (
             <Button
               onClick={approveToken}
               disabled={
-                isMaxValueError || isLoading || !activeInputValue /* ||
-                !calculatedInputValue */ // TODO: return calculatedInputValue
+                isMaxValueError ||
+                isLoading ||
+                !activeInputValue ||
+                !calculatedInputValue
               }
             >
               <Box
@@ -109,7 +111,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
                 alignItems='center'
               >
                 <Text color='inherit' fontWeight={500} mr='0.15rem'>
-                  Approve {isMintSelected ? 'USDT' : 'SOPHIE'}
+                  Approve USDT
                 </Text>
                 {isLoading && <LoadingSpinner position='relative' size='22' />}
               </Box>
@@ -120,8 +122,10 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
             <Button
               onClick={mint}
               disabled={
-                status?.error || isLoading || !activeInputValue /* ||
-                !calculatedInputValue */ // TODO: return calculatedInputValue
+                status?.error ||
+                isLoading ||
+                !activeInputValue ||
+                !calculatedInputValue
               }
             >
               <Text color='inherit' fontWeight={500} mr='0.15rem'>
@@ -144,6 +148,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
     isMaxValueError,
     isLoading,
     activeInputValue,
+    calculatedInputValue,
     isMintSelected,
     mint,
     status?.error,

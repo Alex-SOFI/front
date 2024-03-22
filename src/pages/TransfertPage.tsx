@@ -2,10 +2,12 @@ import {
   ChangeEvent,
   FunctionComponent,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { SelectChangeEvent } from '@mui/material/Select';
 import { useDecimals, useMagic } from 'hooks';
@@ -13,12 +15,15 @@ import {
   Address,
   encodeFunctionData,
   erc20Abi,
+  formatUnits,
   isAddress,
   parseUnits,
 } from 'viem';
 import { polygon, polygonMumbai } from 'viem/chains';
 
 import addresses from 'constants/addresses';
+import { publicClient, tokenContract } from 'constants/contracts';
+import routes from 'constants/routes';
 import { TOKEN_NAMES } from 'constants/textConstants';
 
 import { selectWalletInfo } from 'ducks/wallet';
@@ -30,12 +35,61 @@ import { Layout } from 'components';
 const TransfertPage: FunctionComponent = () => {
   const { magicLinkAddress } = useSelector(selectWalletInfo);
   const { walletClient } = useMagic(window.location.pathname);
+  const navigate = useNavigate();
 
   const [tokenInputValue, setTokenInputValue] = useState<string>(
     TOKEN_NAMES.SOPHIE,
   );
   const [addressInputValue, setAddressInputValue] = useState<string>('');
   const [amountInputValue, setAmountInputValue] = useState<string>('');
+
+  const [balance, setBalance] = useState<string>('');
+  const [isTransactionLoading, setIsTransactionLoading] =
+    useState<boolean>(false);
+
+  const [isTransactionError, setIsTransactionError] = useState<boolean>(false);
+
+  const [transactionErrorText, setTransactionErrorText] = useState<string>('');
+  const [isMaxValueError, setIsMaxValueError] = useState<boolean>(false);
+  useEffect(() => {
+    if (Number(amountInputValue) > Number(balance)) {
+      setIsMaxValueError(true);
+    } else {
+      setIsMaxValueError(false);
+    }
+  }, [amountInputValue, balance]);
+
+  const sophieDecimals = useDecimals(addresses.SOPHIE_TOKEN);
+  const usdtDecimals = useDecimals(addresses.USDT);
+
+  useEffect(() => {
+    const getBalance = async () => {
+      const result = await publicClient.readContract({
+        ...tokenContract(
+          tokenInputValue === TOKEN_NAMES.SOPHIE
+            ? addresses.SOPHIE_TOKEN
+            : addresses.USDT,
+        ),
+        functionName: 'balanceOf',
+        args: [magicLinkAddress as Address],
+      });
+      setBalance(
+        formatUnits(
+          result as bigint,
+          tokenInputValue === TOKEN_NAMES.SOPHIE
+            ? sophieDecimals!
+            : usdtDecimals!,
+        ),
+      );
+    };
+    getBalance();
+  }, [
+    magicLinkAddress,
+    isTransactionLoading,
+    tokenInputValue,
+    sophieDecimals,
+    usdtDecimals,
+  ]);
 
   const handleTokenInputChange = useCallback((event: SelectChangeEvent) => {
     setTokenInputValue(event.target.value);
@@ -70,32 +124,47 @@ const TransfertPage: FunctionComponent = () => {
   );
 
   const handleSendButtonClick = useCallback(async () => {
-    const hash = await walletClient?.sendTransaction({
-      account: magicLinkAddress,
-      chain: import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : polygon,
-      to:
-        tokenInputValue === TOKEN_NAMES.SOPHIE
-          ? addresses.SOPHIE_TOKEN
-          : addresses.USDT,
-      data: encodeFunctionData({
-        abi: erc20Abi,
-        functionName: 'transfer',
-        args: [
-          addressInputValue as Address,
-          parseUnits(amountInputValue, decimals!),
-        ],
-      }),
-    });
+    setIsTransactionLoading(true);
+    const hash = await walletClient
+      ?.sendTransaction({
+        account: magicLinkAddress,
+        chain: import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : polygon,
+        to:
+          tokenInputValue === TOKEN_NAMES.SOPHIE
+            ? addresses.SOPHIE_TOKEN
+            : addresses.USDT,
+        data: encodeFunctionData({
+          abi: erc20Abi,
+          functionName: 'transfer',
+          args: [
+            addressInputValue as Address,
+            parseUnits(amountInputValue, decimals!),
+          ],
+        }),
+      })
+      .catch((error) => {
+        setIsTransactionLoading(false);
+        setIsTransactionError(true);
+        setTransactionErrorText(error?.details);
+      });
     if (hash) {
+      const transaction = await publicClient.waitForTransactionReceipt({
+        hash,
+      });
+      if (transaction.status === 'success') {
+        setIsTransactionLoading(false);
+      }
       setTokenInputValue(TOKEN_NAMES.SOPHIE);
       setAddressInputValue('');
       setAmountInputValue('');
+      navigate(routes.MAIN);
     }
   }, [
     addressInputValue,
     amountInputValue,
     decimals,
     magicLinkAddress,
+    navigate,
     tokenInputValue,
     walletClient,
   ]);
@@ -104,6 +173,10 @@ const TransfertPage: FunctionComponent = () => {
     () => !!(addressInputValue && !isAddress(addressInputValue)),
     [addressInputValue],
   );
+
+  const setMaxValue = useCallback(() => {
+    setAmountInputValue(balance!);
+  }, [balance]);
 
   return (
     <>
@@ -118,6 +191,12 @@ const TransfertPage: FunctionComponent = () => {
             invalidAddressError={invalidAddressError}
             tokenInputValue={tokenInputValue}
             handleTokenInputChange={handleTokenInputChange}
+            isTransactionLoading={isTransactionLoading}
+            isTransactionError={isTransactionError}
+            transactionErrorText={transactionErrorText}
+            isMaxValueError={isMaxValueError}
+            setMaxValue={setMaxValue}
+            balance={Number(balance)}
           />
         }
       />

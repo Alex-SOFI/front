@@ -111,11 +111,17 @@ const useMagic = (pathname: string) => {
   }, [dispatch, getToken, user?.email, user?.isLoggedIn]);
 
   const customNodeOptions = useMemo(
-    () => ({
-      rpcUrl:
-        'https://polygon-mumbai.g.alchemy.com/v2/9b1326CuGOhpxr_RhB2QoPXKpfbuJsDF',
-      chainId: 80001,
-    }),
+    () =>
+      import.meta.env.VITE_ENV === 'staging'
+        ? {
+            rpcUrl:
+              'https://polygon-mumbai.g.alchemy.com/v2/9b1326CuGOhpxr_RhB2QoPXKpfbuJsDF',
+            chainId: 80001,
+          }
+        : {
+            rpcUrl: 'https://polygon-rpc.com',
+            chainId: 137,
+          },
     [],
   );
 

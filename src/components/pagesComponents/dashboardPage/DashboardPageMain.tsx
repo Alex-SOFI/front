@@ -91,7 +91,7 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
               fontSize: '16px',
               lineHeight: 'inherit',
             }
-          : {})}
+          : { variant: 'outlined', isPrimaryColor: true })}
       >
         Sell{`${isMobile ? ' SOPHIE' : ''}`}
       </Button>
