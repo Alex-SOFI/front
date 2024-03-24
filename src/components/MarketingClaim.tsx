@@ -16,7 +16,7 @@ const MarketingClaim: FunctionComponent = () => {
         $SOPHIE Token (Pre-launching)
       </Text>
       <Text marginTop='1.5dvh' variant='h3'>
-        So easy - So secured - So Effective (Test Mode)
+        So easy - So secured - So Effective
       </Text>
     </Box>
   );
