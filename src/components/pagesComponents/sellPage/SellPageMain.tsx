@@ -88,11 +88,15 @@ const SellPageMain: FunctionComponent<SellPageMainProps> = ({
         </Button>
 
         <Box
-          sx={{
+          sx={(theme) => ({
             marginTop: '1dvh',
             minHeight: 'clamp(3rem, 6.4dvh, 4rem)',
             alignSelf: 'start',
-          }}
+            [theme.breakpoints.down('sm')]: {
+              textAlign: 'center',
+              marginBottom: '0.5rem',
+            },
+          })}
         >
           {isMaxValueError && (
             <Text

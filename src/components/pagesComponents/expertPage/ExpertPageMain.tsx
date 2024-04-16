@@ -283,6 +283,8 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           marginLeft: '3rem',
           [theme.breakpoints.down('sm')]: {
             marginLeft: '0',
+            textAlign: 'center',
+            marginBottom: '0.5rem',
           },
         })}
       >
