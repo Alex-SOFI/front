@@ -9,8 +9,15 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
-import { Address, formatUnits, parseUnits } from 'viem';
 import {
+  Address,
+  formatEther,
+  formatUnits,
+  parseEther,
+  parseUnits,
+} from 'viem';
+import {
+  useBalance,
   useReadContract,
   useSwitchChain,
   useWaitForTransactionReceipt,
@@ -69,6 +76,10 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
 
   const { address, isConnected, balance, decimals } =
     useSelector(selectWalletInfo);
+
+  const { data: nativeBalance } = useBalance({
+    address: address,
+  });
 
   const { switchChain } = useSwitchChain();
 
@@ -163,24 +174,16 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     }
   }, [data]);
 
-  useEffect(() => {
-    if (Number(activeValue) > Number(balance)) {
-      setIsMaxValueError(true);
-    } else {
-      setIsMaxValueError(false);
-    }
-  }, [activeValue, balance]);
-
   const estimate = useCallback(
     async (value: string) => {
       const data = await readContract(wagmiConfig, {
         ...tokenManagerContract,
         functionName: isMintSelected ? 'estimateMint' : 'estimateRedeem',
-        args: [parseUnits(value, decimals)],
+        args: [parseEther(value)],
       });
-      return formatUnits(data as bigint, decimals);
+      return formatEther(data);
     },
-    [decimals, isMintSelected],
+    [isMintSelected],
   );
 
   useEffect(() => {
@@ -224,17 +227,22 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     setHash(undefined);
     setIsFunctionCalled(true);
     if (address) {
-      setIsApproveButtonClicked(false);
-      await writeContractAsync({
-        ...tokenManagerContract,
-        functionName: isMintSelected ? 'mint' : 'redeem',
-        args: [
-          ...(isMintSelected ? [address] : []),
-          parseUnits(activeValue, decimals),
-        ],
-      });
+      if (isMintSelected) {
+        await writeContractAsync({
+          ...tokenManagerContract,
+          functionName: 'mint',
+          args: [address, parseEther(activeValue)],
+          value: parseEther(activeValue),
+        });
+      } else {
+        await writeContractAsync({
+          ...tokenManagerContract,
+          functionName: 'redeem',
+          args: [parseEther(activeValue)],
+        });
+      }
     }
-  }, [address, activeValue, writeContractAsync, isMintSelected, decimals]);
+  }, [address, activeValue, writeContractAsync, isMintSelected]);
 
   const transactionStatus = useMemo(
     () =>
@@ -294,11 +302,30 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     switchChain({ chainId: Number(import.meta.env.VITE_POLYGON_CHAIN_ID) });
   }, [switchChain]);
 
-  const setMaxActiveValue = useCallback(() => {
-    if (balance) {
-      setActiveInputValue(balance);
+  const formatedBalance = useMemo(() => {
+    if (isMintSelected) {
+      if (!nativeBalance) {
+        return 0;
+      }
+
+      return formatEther(nativeBalance?.value);
     }
-  }, [balance]);
+    return formatBalance(balance, 3);
+  }, [balance, isMintSelected, nativeBalance]);
+
+  const setMaxActiveValue = useCallback(() => {
+    if (formatedBalance) {
+      setActiveInputValue(formatedBalance);
+    }
+  }, [formatedBalance]);
+
+  useEffect(() => {
+    if (Number(activeValue) > Number(formatedBalance)) {
+      setIsMaxValueError(true);
+    } else {
+      setIsMaxValueError(false);
+    }
+  }, [activeValue, formatedBalance]);
 
   return (
     <Layout
@@ -308,7 +335,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
       main={
         <ExpertPageMain
           isConnected={isConnected}
-          balance={formatBalance(balance, 3)}
+          balance={formatedBalance}
           isWrongNetwork={isWrongNetwork}
           isMaxValueError={isMaxValueError}
           status={transactionStatus}

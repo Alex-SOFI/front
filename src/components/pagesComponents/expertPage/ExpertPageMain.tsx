@@ -94,47 +94,22 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           </Button>
         );
       } else {
-        if (isApproveButtonVisible && isMintSelected) {
-          return (
-            <Button
-              onClick={approveToken}
-              disabled={
-                isMaxValueError ||
-                isLoading ||
-                !activeInputValue ||
-                !calculatedInputValue
-              }
-            >
-              <Box
-                display='flex'
-                justifyContent='space-between'
-                alignItems='center'
-              >
-                <Text color='inherit' fontWeight={500} mr='0.15rem'>
-                  Approve USDT
-                </Text>
-                {isLoading && <LoadingSpinner position='relative' size='22' />}
-              </Box>
-            </Button>
-          );
-        } else {
-          return (
-            <Button
-              onClick={mint}
-              disabled={
-                status?.error ||
-                isLoading ||
-                !activeInputValue ||
-                !calculatedInputValue
-              }
-            >
-              <Text color='inherit' fontWeight={500} mr='0.15rem'>
-                {isMintSelected ? 'Mint SOPHIE' : 'Redeem SOPHIE'}
-              </Text>
-              {isLoading && <LoadingSpinner position='relative' size='22' />}
-            </Button>
-          );
-        }
+        return (
+          <Button
+            onClick={mint}
+            disabled={
+              status?.error ||
+              isLoading ||
+              !activeInputValue ||
+              !calculatedInputValue
+            }
+          >
+            <Text color='inherit' fontWeight={500} mr='0.15rem'>
+              {isMintSelected ? 'Mint SOPHIE' : 'Redeem SOPHIE'}
+            </Text>
+            {isLoading && <LoadingSpinner position='relative' size='22' />}
+          </Button>
+        );
       }
     } else {
       return <Button onClick={() => open()}>Connect Wallet</Button>;
@@ -155,12 +130,12 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
     open,
   ]);
 
-  const USDT = useMemo(
+  const MATIC = useMemo(
     () => (
       <>
-        <Picture src={`${PUBLIC_URL}/icons/logo_usdt.svg`} alt='USDT logo' />
+        <Picture src={`${PUBLIC_URL}/icons/logo_matic.svg`} alt='MATIC logo' />
         <Text pl='0.5rem' pr='1rem' variant='body1'>
-          USDT
+          MATIC
         </Text>
       </>
     ),
@@ -207,7 +182,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
             },
           })}
         >
-          {isMintSelected ? USDT : SOPHIE}
+          {isMintSelected ? MATIC : SOPHIE}
         </Box>
         <TextInput
           placeholder='0'
@@ -260,7 +235,7 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
             },
           })}
         >
-          {isMintSelected ? SOPHIE : USDT}
+          {isMintSelected ? SOPHIE : MATIC}
         </Box>
 
         <TextInput

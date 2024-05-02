@@ -198,6 +198,6 @@ const sophieAbi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export default sophieAbi;
