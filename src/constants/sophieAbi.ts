@@ -108,7 +108,7 @@ const sophieAbi = [
     ],
     name: 'mint',
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'payable',
     type: 'function',
   },
   {
