@@ -119,8 +119,8 @@ const useMagic = (pathname: string) => {
             chainId: 80001,
           }
         : {
-            rpcUrl: 'https://polygon-rpc.com',
-            chainId: 137,
+            rpcUrl: 'https://arbitrum.public-rpc.com',
+            chainId: 42161,
           },
     [],
   );
