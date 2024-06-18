@@ -113,7 +113,7 @@ const useMagic = (pathname: string) => {
   const customNodeOptions = useMemo(
     () => ({
       rpcUrl: import.meta.env.VITE_RPC_URL_MAGIC,
-      chainId: import.meta.env.VITE_CHAIN_ID_MAGIC
+      chainId: import.meta.env.VITE_CHAIN_ID_MAGIC,
     }),
     [],
   );
