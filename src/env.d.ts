@@ -11,6 +11,8 @@ interface ImportMetaEnv {
   readonly VITE_POLYGON_CHAIN_ID: string;
   readonly VITE_TRANSAK_API_KEY: string;
   readonly VITE_ENV: string;
+  readonly VITE_RPC_URL_MAGIC: string;
+  readonly VITE_CHAIN_ID_MAGIC: number;
 }
 
 interface ImportMeta {
