@@ -22,7 +22,7 @@ function* getBalanceValueSaga({ payload }: ReturnType<typeof getBalanceValue>) {
       const estimateBalance = async (sophie: number) => {
         const data = await publicClient.readContract({
           ...tokenManagerContract,
-          functionName: 'estimateRedeem',
+          functionName: 'previewRedeem',
           args: [parseUnits(sophie.toString(), 18)],
         });
         return Number(formatUnits(data as bigint, 18));

@@ -178,7 +178,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
     async (value: string) => {
       const data = await readContract(wagmiConfig, {
         ...tokenManagerContract,
-        functionName: isMintSelected ? 'estimateMint' : 'estimateRedeem',
+        functionName: isMintSelected ? 'previewMint' : 'previewRedeem',
         args: [parseEther(value)],
       });
       return formatEther(data);

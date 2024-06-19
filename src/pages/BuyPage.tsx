@@ -65,7 +65,7 @@ const BuyPage: FunctionComponent = () => {
       await publicClient
         .readContract({
           ...tokenManagerContract,
-          functionName: 'estimateMint',
+          functionName: 'previewMint',
           args: [parseUnits(activeUsdtValue, usdtDecimals!)],
         })
         .then((value) =>
@@ -77,7 +77,7 @@ const BuyPage: FunctionComponent = () => {
       await publicClient
         .readContract({
           ...tokenManagerContract,
-          functionName: 'estimateMint',
+          functionName: 'previewMint',
           args: [parseUnits('1', usdtDecimals!)],
         })
         .then((value) => {

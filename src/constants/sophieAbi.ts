@@ -89,14 +89,14 @@ const sophieAbi = [
   },
   {
     inputs: [{ internalType: 'uint256', name: '_amountIn', type: 'uint256' }],
-    name: 'estimateMint',
+    name: 'previewMint',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [{ internalType: 'uint256', name: '_amount', type: 'uint256' }],
-    name: 'estimateRedeem',
+    name: 'previewRedeem',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
