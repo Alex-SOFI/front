@@ -107,8 +107,8 @@ const Header: FunctionComponent<HeaderProps> = ({
         return (
           <>
             <Picture
-              src={`${PUBLIC_URL}/icons/logo_polygon.svg`}
-              alt='Polygon logo'
+              src={`${PUBLIC_URL}/icons/logo_arb.svg`}
+              alt='Arbitrum logo'
               width={40}
               height={40}
               marginRight='1rem'

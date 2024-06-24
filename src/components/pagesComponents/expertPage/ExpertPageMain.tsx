@@ -69,7 +69,6 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   balance,
   status,
   isWrongNetwork,
-  isMaxValueError,
   isMintSelected,
   setIsMintSelected,
   activeInputValue,
@@ -77,11 +76,9 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   calculatedInputValue,
   setCalculatedInputValue,
   handleSwitchButtonClick,
-  approveToken,
   isApproveSuccess,
   isLoading,
   mint,
-  isApproveButtonVisible,
   setMaxActiveValue,
 }) => {
   const { open } = useWeb3Modal();
@@ -118,9 +115,6 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
     isConnected,
     isWrongNetwork,
     handleSwitchButtonClick,
-    isApproveButtonVisible,
-    approveToken,
-    isMaxValueError,
     isLoading,
     activeInputValue,
     calculatedInputValue,
@@ -133,9 +127,9 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   const MATIC = useMemo(
     () => (
       <>
-        <Picture src={`${PUBLIC_URL}/icons/logo_matic.svg`} alt='MATIC logo' />
+        <Picture src={`${PUBLIC_URL}/icons/logo_arb.svg`} alt='ARB logo' />
         <Text pl='0.5rem' pr='1rem' variant='body1'>
-          MATIC
+          ARB
         </Text>
       </>
     ),

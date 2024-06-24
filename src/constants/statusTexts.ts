@@ -1,6 +1,6 @@
 const statusTexts = {
   UNSUPPORTED_NETWORK:
-    'Unsupported network detected, switch to Polygon to continue.',
+    'Unsupported network detected, switch to Arbitrum to continue.',
   MAX_USDT_VALUE: 'You must enter a quantity less than the (MAX) USDT.',
   MAX_SOPHIE_VALUE: 'You must enter a quantity less than the (MAX) SOPHIE.',
   MINT_LOADING: 'Mint in progress',
