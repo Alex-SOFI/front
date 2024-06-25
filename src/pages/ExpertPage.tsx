@@ -283,19 +283,17 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
       if (transactionStatus !== null) {
         reset();
       }
+
+      const floatRegexp = new RegExp(/([0-9]*[.])?[0-9]*/);
+
       if (
-        ((event.target.value.length === 1 && event.target.value === '.') ||
-          (!isNaN(Number(event.target.value)) &&
-            Number(event.target.value) >= 0)) &&
+        floatRegexp.test(event.target.value) &&
         Number(event.target.value) <= Number.MAX_SAFE_INTEGER
       ) {
-        const float = event.target.value.split('.')?.[1];
-        if (!float || (float && float?.length <= decimals)) {
-          setActiveInputValue(event.target.value.trim());
-        }
+        setActiveInputValue(event.target.value.trim());
       }
     },
-    [decimals, reset, transactionStatus],
+    [reset, transactionStatus],
   );
 
   const handleSwitchButtonClick = useCallback(() => {
