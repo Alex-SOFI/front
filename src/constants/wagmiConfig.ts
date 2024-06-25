@@ -1,6 +1,6 @@
-import { Chain, polygon, polygonMumbai } from 'viem/chains';
+import { Chain, arbitrum, polygonMumbai } from 'viem/chains';
 
-export const chains: [Chain, ...Chain[]] = [polygon, polygonMumbai];
+export const chains: [Chain, ...Chain[]] = [arbitrum, polygonMumbai];
 
 export const metadata = {
   name: 'Web3Modal',

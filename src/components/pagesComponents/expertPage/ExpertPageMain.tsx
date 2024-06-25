@@ -127,9 +127,9 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   const MATIC = useMemo(
     () => (
       <>
-        <Picture src={`${PUBLIC_URL}/icons/logo_arb.svg`} alt='ARB logo' />
+        <Picture src={`${PUBLIC_URL}/icons/logo_eth.svg`} alt='ARB logo' />
         <Text pl='0.5rem' pr='1rem' variant='body1'>
-          ARB
+          ETH
         </Text>
       </>
     ),
