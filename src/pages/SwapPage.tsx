@@ -16,7 +16,7 @@ import {
   formatUnits,
   parseUnits,
 } from 'viem';
-import { polygon, polygonMumbai } from 'viem/chains';
+import { arbitrum, polygonMumbai } from 'viem/chains';
 
 import addresses from 'constants/addresses';
 import { publicClient, tokenContract } from 'constants/contracts';
@@ -108,13 +108,13 @@ const SwapPage: FunctionComponent = () => {
     const hash = await walletClient
       ?.sendTransaction({
         account: magicLinkAddress,
-        chain: import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : polygon,
+        chain: import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : arbitrum,
         to: hasAllownace ? addresses.TOKEN_MANAGER : addresses.USDT,
         data: hasAllownace
           ? encodeFunctionData({
               abi: sophieAbi,
               functionName: 'mint',
-              args: [magicLinkAddress, parseUnits(inputValue, decimals!)],
+              args: [magicLinkAddress],
             })
           : encodeFunctionData({
               abi: erc20Abi,
