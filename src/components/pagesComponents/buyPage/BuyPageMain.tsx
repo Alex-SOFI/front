@@ -80,8 +80,8 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
           gridColumn={2}
         />
         <TokenBox marginLeft='1.5dvh'>
-          <Picture src={`${PUBLIC_URL}/icons/logo_usdt.svg`} alt='USDT logo' />
-          {!isMobile && <Text pl='0.5rem'>USDT</Text>}
+          <Picture src={`${PUBLIC_URL}/icons/logo_eth.svg`} alt='USDT logo' />
+          {!isMobile && <Text pl='0.5rem'>ETH</Text>}
         </TokenBox>
       </GridBox>
 

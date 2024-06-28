@@ -18,7 +18,7 @@ const getMintCalldata = (address: Address, amount: number) => {
   return encodeFunctionData({
     abi: sophieAbi,
     functionName: 'mint',
-    args: [address, parseUnits(String(amount), 18)],
+    args: [address],
   });
 };
 
@@ -44,7 +44,7 @@ const useTransak = ({
         import.meta.env.VITE_ENV === 'staging'
           ? Transak.ENVIRONMENTS.STAGING
           : Transak.ENVIRONMENTS.PRODUCTION,
-      network: 'polygon',
+      network: 'arbitrum',
       walletAddress: address,
       disableWalletAddressForm: true,
       defaultPaymentMethod: 'credit_debit_card',

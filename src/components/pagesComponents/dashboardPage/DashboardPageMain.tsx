@@ -71,7 +71,6 @@ interface DashboardPageMainProps {
 const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
   balance,
   balanceValue,
-  navigateToBuyPage,
   navigateToSellPage,
   navigateToSwapPage,
   isMobile,
@@ -119,7 +118,7 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
             }
           : {})}
       >
-        Swap {isMobile && 'USDT'} to SOPHIE
+        Swap {isMobile && 'USD'} to SOPHIE
       </Button>
     ),
     [isMobile, navigateToSwapPage],
@@ -144,93 +143,62 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
           Value
         </Text>
       </GridBox>
-      {balance !== null ? (
-        <>
-          <GridBox
-            marginTop='3dvh'
-            {...(!isMobile && {
-              marginLeft: 'auto',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              width: '133.5%',
-            })}
-          >
-            <TokenBox>
-              <Picture
-                src={`${PUBLIC_URL}/icons/logo_sophie.png`}
-                alt='SOPHIE logo'
-              />
-              <Text pl='0.5rem'>SOPHIE</Text>
-            </TokenBox>
-            <BalanceText>
-              {balance?.SOPHIE ? Number(balance?.SOPHIE.toFixed(4)) : '0'}
-            </BalanceText>
-            <BalanceText>
-              {balance?.SOPHIE ? Number(balanceValue?.SOPHIE?.toFixed(4)) : 0}$
-            </BalanceText>
-            {!isMobile && sellButton}
-          </GridBox>
+      <GridBox
+        marginTop='3dvh'
+        {...(!isMobile && {
+          marginLeft: 'auto',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          width: '133.5%',
+        })}
+      >
+        <TokenBox>
+          <Picture
+            src={`${PUBLIC_URL}/icons/logo_sophie.png`}
+            alt='SOPHIE logo'
+          />
+          <Text pl='0.5rem'>SOPHIE</Text>
+        </TokenBox>
+        <BalanceText>
+          {balance?.SOPHIE ? Number(balance?.SOPHIE.toFixed(4)) : '0'}
+        </BalanceText>
+        <BalanceText>
+          {balance?.SOPHIE ? Number(balanceValue?.SOPHIE?.toFixed(4)) : 0}$
+        </BalanceText>
+        {!isMobile && sellButton}
+      </GridBox>
 
-          <GridBox
-            marginTop='1dvh'
-            {...(!isMobile && {
-              marginLeft: 'auto',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              width: '133.5%',
-            })}
-          >
-            <TokenBox>
-              <Picture
-                src={`${PUBLIC_URL}/icons/logo_usdt.svg`}
-                alt='USDT logo'
-              />
-              <Text pl='0.5rem'>USDT</Text>
-            </TokenBox>
-            <BalanceText>
-              {balance?.USDT ? Number(balance?.USDT.toFixed(4)) : '0'}
-            </BalanceText>
-            <BalanceText>
-              {balance?.USDT && balanceValue?.USDT
-                ? Number((balance?.USDT * balanceValue?.USDT).toFixed(4))
-                : 0}
-              $
-            </BalanceText>
-            {!isMobile && swapButton}
-          </GridBox>
-
-          <GridBox marginTop='1dvh'>
-            <TokenBox>
-              <Picture
-                src={`${PUBLIC_URL}/icons/logo_matic.svg`}
-                alt='MATIC logo'
-              />
-              <Text pl='0.5rem'>MATIC</Text>
-            </TokenBox>
-            <BalanceText>
-              {balance?.MATIC ? Number(balance?.MATIC.toFixed(4)) : '0'}
-            </BalanceText>
-            <BalanceText>
-              {balance?.MATIC && balanceValue?.MATIC
-                ? Number((balance?.MATIC * balanceValue?.MATIC).toFixed(4))
-                : '0'}
-              $
-            </BalanceText>
-          </GridBox>
-
-          <Text
-            sx={{
-              marginTop: '5dvh',
-              width: '100%',
-              textAlign: 'center',
-            }}
-          >
-            (*) we just display SOPHIE, USDT and MATIC Tokens
-          </Text>
-        </>
-      ) : (
-        <Button onClick={navigateToBuyPage} marginTop='10dvh'>
-          Buy SOPHIE
-        </Button>
-      )}
+      <GridBox
+        marginTop='1dvh'
+        {...(!isMobile && {
+          marginLeft: 'auto',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          width: '133.5%',
+        })}
+      >
+        <TokenBox>
+          <Picture src={`${PUBLIC_URL}/icons/logo_eth.svg`} alt='USDT logo' />
+          <Text pl='0.5rem'>ETH</Text>
+        </TokenBox>
+        <BalanceText>
+          {balance?.USDT ? Number(balance?.USDT.toFixed(4)) : '0'}
+        </BalanceText>
+        <BalanceText>
+          {balance?.USDT && balanceValue?.USDT
+            ? Number((balance?.USDT * balanceValue?.USDT).toFixed(4))
+            : 0}
+          $
+        </BalanceText>
+        {!isMobile && swapButton}
+      </GridBox>
+      <Text
+        sx={{
+          marginTop: '5dvh',
+          width: '100%',
+          textAlign: 'center',
+        }}
+      >
+        (*) we just display SOPHIE, ETH Tokens
+      </Text>
       {isMobile && balance !== null && swapButton}
       {isMobile && balance !== null && sellButton}
     </StyledBox>

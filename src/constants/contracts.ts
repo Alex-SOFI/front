@@ -8,7 +8,7 @@ import {
   getContract,
   http,
 } from 'viem';
-import { polygon, polygonMumbai } from 'viem/chains';
+import { arbitrum, polygonMumbai } from 'viem/chains';
 
 import addresses from './addresses';
 import sophieAbi from './sophieAbi';
@@ -24,13 +24,13 @@ export const tokenContract = (address: Address) => ({
 });
 
 export const publicClient = createPublicClient({
-  chain: import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : polygon,
+  chain: import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : arbitrum,
   transport: http(),
 });
 
 export const walletClient = (provider: never) =>
   createWalletClient({
-    chain: import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : polygon,
+    chain: import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : arbitrum,
     transport: custom(provider),
   });
 
