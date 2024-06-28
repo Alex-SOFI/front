@@ -231,7 +231,7 @@ const ExpertPage: FunctionComponent<ExpertPageProps> = ({
         await writeContractAsync({
           ...tokenManagerContract,
           functionName: 'mint',
-          args: [address, parseEther(activeValue)],
+          args: [address],
           value: parseEther(activeValue),
         });
       } else {

@@ -102,10 +102,7 @@ const sophieAbi = [
     type: 'function',
   },
   {
-    inputs: [
-      { internalType: 'address', name: '_receiver', type: 'address' },
-      { internalType: 'uint256', name: '_amountIn', type: 'uint256' },
-    ],
+    inputs: [{ internalType: 'address', name: '_receiver', type: 'address' }],
     name: 'mint',
     outputs: [],
     stateMutability: 'payable',
