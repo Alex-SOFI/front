@@ -7,7 +7,7 @@ import {
 } from 'react';
 
 import { Transak, TransakConfig } from '@transak/transak-sdk';
-import { Address, encodeFunctionData, parseUnits } from 'viem';
+import { Address, encodeFunctionData } from 'viem';
 
 import addresses from 'constants/addresses';
 import sophieAbi from 'constants/sophieAbi';
