@@ -3,7 +3,7 @@ import { Address } from 'viem';
 export interface MagicLinkBalance {
   SOPHIE?: number | null;
   USDT?: number | null;
-  MATIC?: number | null;
+  ETH?: number | null;
 }
 
 interface WalletInfoState {

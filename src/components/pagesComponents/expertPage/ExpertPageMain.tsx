@@ -11,6 +11,7 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import Box from '@mui/material/Box';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { PUBLIC_URL } from 'config';
+import useEthPrice from 'hooks/useEthPrice';
 
 import {
   Button,
@@ -82,6 +83,8 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
   setMaxActiveValue,
 }) => {
   const { open } = useWeb3Modal();
+  const ethPrice = useEthPrice();
+
   const renderButton = useMemo(() => {
     if (isConnected) {
       if (isWrongNetwork) {
@@ -188,6 +191,11 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
             isLoading ||
             (isApproveSuccess && !!activeInputValue)
           }
+          usdValue={
+            isMintSelected
+              ? (ethPrice * Number(activeInputValue)).toFixed(2)
+              : undefined
+          }
         />
       </InputGridBox>
       <InputGridBox>
@@ -238,6 +246,11 @@ const ExpertPageMain: FunctionComponent<ExpertPageMainProps> = ({
           onChange={(e) => setCalculatedInputValue(e.target.value)}
           disabled={!isConnected || isWrongNetwork}
           readOnly
+          usdValue={
+            !isMintSelected
+              ? (ethPrice * Number(calculatedInputValue)).toFixed(2)
+              : undefined
+          }
         />
       </InputGridBox>
       <Text variant='body2' color={theme.colors.grayMedium} mb='3dvh'>

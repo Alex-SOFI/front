@@ -60,7 +60,7 @@ interface DashboardPageMainProps {
   balanceValue: {
     SOPHIE?: number | null;
     USDT?: number | null;
-    MATIC?: number | null;
+    ETH?: number | null;
   };
   navigateToBuyPage: () => void;
   navigateToSellPage: () => void;

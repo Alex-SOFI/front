@@ -57,6 +57,19 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
     <StyledBox>
       <GridBox marginBottom='6dvh'>
         <TextInput
+          placeholder={'Amount to Invest'}
+          textAlign='left'
+          value={usdtInputValue}
+          onChange={handleUsdtInputChange}
+          gridColumn={2}
+        />
+        <TokenBox marginLeft='1.5dvh'>
+          <Picture src={`${PUBLIC_URL}/icons/dollar.svg`} alt='USDT logo' />
+          {!isMobile && <Text pl='0.5rem'>USD</Text>}
+        </TokenBox>
+      </GridBox>
+      <GridBox>
+        <TextInput
           placeholder={'SOPHIE Shares'}
           textAlign='left'
           value={sophieInputValue}
@@ -69,19 +82,6 @@ const BuyPageMain: FunctionComponent<BuyPageMainProps> = ({
             alt='SOPHIE logo'
           />
           {!isMobile && <Text pl='0.5rem'>SOPHIE</Text>}
-        </TokenBox>
-      </GridBox>
-      <GridBox>
-        <TextInput
-          placeholder={'Amount to Invest'}
-          textAlign='left'
-          value={usdtInputValue}
-          onChange={handleUsdtInputChange}
-          gridColumn={2}
-        />
-        <TokenBox marginLeft='1.5dvh'>
-          <Picture src={`${PUBLIC_URL}/icons/logo_eth.svg`} alt='USDT logo' />
-          {!isMobile && <Text pl='0.5rem'>ETH</Text>}
         </TokenBox>
       </GridBox>
 

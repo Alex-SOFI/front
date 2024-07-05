@@ -1,7 +1,7 @@
 interface BalanceValueState {
   sophieValue: number;
   usdtValue: number;
-  maticValue: number;
+  ethValue: number;
   isLoading: boolean;
   error: boolean;
 }

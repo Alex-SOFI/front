@@ -132,8 +132,8 @@ const TransfertPageMain: FunctionComponent<TransfertPageMainProps> = ({
       </InputBox>
 
       <Text fontSize={16} textAlign='center' width='100%' variant='body2'>
-        ⚠️ This transaction is on the Polygon Blockchain, and you cannot reverse
-        it when completed.
+        ⚠️ This transaction is on the Arbitrum Blockchain, and you cannot
+        reverse it when completed.
       </Text>
 
       <Box

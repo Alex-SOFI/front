@@ -31,7 +31,7 @@ const DashboardPage: FunctionComponent = () => {
   const { magicLinkAddress, magicLinkBalance, isMagicLinkBalanceSet } =
     useSelector(selectWalletInfo);
 
-  const { isLoading, sophieValue, usdtValue, maticValue } =
+  const { isLoading, sophieValue, usdtValue, ethValue } =
     useSelector(selectBalanceValue);
 
   const navigateToBuyPage = useCallback(() => {
@@ -48,7 +48,7 @@ const DashboardPage: FunctionComponent = () => {
 
   const usdtDecimals = useDecimals(addresses.USDT);
   const sophieDecimals = useDecimals(addresses.SOPHIE_TOKEN);
-  const maticDecimals = useDecimals(addresses.MATIC);
+  const ethDecimals = useDecimals(addresses.MATIC);
 
   useEffect(() => {
     const getBalance = async () => {
@@ -88,34 +88,34 @@ const DashboardPage: FunctionComponent = () => {
           ...(results[2].status === 'success' &&
             results[2].result !== 0n && {
               MATIC: Number(
-                formatUnits(results[2].result as bigint, maticDecimals!),
+                formatUnits(results[2].result as bigint, ethDecimals!),
               ),
             }),
         }),
       );
     };
     getBalance();
-  }, [dispatch, magicLinkAddress, maticDecimals, sophieDecimals, usdtDecimals]);
+  }, [dispatch, magicLinkAddress, ethDecimals, sophieDecimals, usdtDecimals]);
 
   useEffect(() => {
     if (
       isMagicLinkBalanceSet &&
       (magicLinkBalance?.SOPHIE ||
         magicLinkBalance?.USDT ||
-        magicLinkBalance?.MATIC)
+        magicLinkBalance?.ETH)
     ) {
       dispatch(
         getBalanceValue({
           ...(magicLinkBalance?.SOPHIE && { SOPHIE: magicLinkBalance?.SOPHIE }),
           ...(magicLinkBalance?.USDT && { USDT: magicLinkBalance?.USDT }),
-          ...(magicLinkBalance?.MATIC && { MATIC: magicLinkBalance?.MATIC }),
+          ...(magicLinkBalance?.ETH && { ETH: magicLinkBalance?.ETH }),
         }),
       );
     }
   }, [
     dispatch,
     isMagicLinkBalanceSet,
-    magicLinkBalance?.MATIC,
+    magicLinkBalance?.ETH,
     magicLinkBalance?.SOPHIE,
     magicLinkBalance?.USDT,
   ]);
@@ -136,7 +136,7 @@ const DashboardPage: FunctionComponent = () => {
             balanceValue={{
               SOPHIE: sophieValue,
               USDT: usdtValue,
-              MATIC: maticValue,
+              ETH: ethValue,
             }}
             navigateToBuyPage={navigateToBuyPage}
             navigateToSellPage={navigateToSellPage}

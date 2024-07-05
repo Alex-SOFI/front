@@ -16,7 +16,7 @@ export const balanceSlice = createSlice({
         payload: {
           SOPHIE?: number;
           USDT?: number;
-          MATIC?: number;
+          ETH?: number;
         };
       },
     ) {
@@ -33,14 +33,14 @@ export const balanceSlice = createSlice({
     setUsdtBalanceValue(state, { payload }: { payload: number }) {
       state.usdtValue = payload;
     },
-    setMaticBalanceValue(state, { payload }: { payload: number }) {
-      state.maticValue = payload;
+    setEthBalanceValue(state, { payload }: { payload: number }) {
+      state.ethValue = payload;
     },
     resetBalanceValue(state) {
       state.isLoading = false;
       state.sophieValue = 0;
       state.usdtValue = 0;
-      state.maticValue = 0;
+      state.ethValue = 0;
       state.error = false;
     },
     resetIsLoading(state) {
@@ -55,7 +55,7 @@ export const {
   getBalanceValue,
   setSophieBalanceValue,
   setUsdtBalanceValue,
-  setMaticBalanceValue,
+  setEthBalanceValue,
   getBalanceValueError,
   resetBalanceValue,
   resetIsLoading,

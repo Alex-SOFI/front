@@ -8,7 +8,7 @@ import {
   getBalanceValueError,
   getValue,
   resetIsLoading,
-  setMaticBalanceValue,
+  setEthBalanceValue,
   setSophieBalanceValue,
   setUsdtBalanceValue,
 } from 'ducks/balanceValue';
@@ -33,11 +33,11 @@ function* getBalanceValueSaga({ payload }: ReturnType<typeof getBalanceValue>) {
     if (payload?.USDT) {
       yield put(setUsdtBalanceValue(usd));
     }
-    if (payload?.MATIC) {
+    if (payload?.ETH) {
       const {
         maticNetwork: { usd },
       } = yield call(getValue, 'matic-network', 'USD');
-      yield put(setMaticBalanceValue(usd));
+      yield put(setEthBalanceValue(usd));
     }
     yield put(resetIsLoading());
   } catch (error) {
