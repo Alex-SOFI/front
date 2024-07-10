@@ -108,8 +108,7 @@ const SwapPage: FunctionComponent = () => {
     const hash = await walletClient
       ?.sendTransaction({
         account: magicLinkAddress,
-        chain:
-          import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : arbitrum,
+        chain: import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : arbitrum,
         to: hasAllownace ? addresses.TOKEN_MANAGER : addresses.USDT,
         data: hasAllownace
           ? encodeFunctionData({

@@ -94,6 +94,7 @@ const TransfertPageMain: FunctionComponent<TransfertPageMainProps> = ({
         >
           <MenuItem value={TOKEN_NAMES.SOPHIE}>SOPHIE</MenuItem>
           <MenuItem value={TOKEN_NAMES.USDT}>USDT</MenuItem>
+          <MenuItem value={TOKEN_NAMES.ETH}>ETH</MenuItem>
         </Select>
       </InputBox>
       <InputBox>

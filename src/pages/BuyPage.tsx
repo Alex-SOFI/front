@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { useDecimals, useIsMobile, useTransak } from 'hooks';
+import useEthPrice from 'hooks/useEthPrice';
 import { Address, formatUnits, parseUnits } from 'viem';
 
 import addresses from 'constants/addresses';
@@ -28,6 +29,7 @@ const BuyPage: FunctionComponent = () => {
   const { magicLinkAddress } = useSelector(selectWalletInfo);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const ethPrice = useEthPrice();
 
   const [usdtInputValue, setUsdtInputValue] = useState<string>('');
   const [sophieInputValue, setSophieInputValue] = useState<string>('');
@@ -66,7 +68,10 @@ const BuyPage: FunctionComponent = () => {
         .readContract({
           ...tokenManagerContract,
           functionName: 'previewMint',
-          args: [parseUnits(activeUsdtValue, usdtDecimals!)],
+          args: [
+            parseUnits(activeUsdtValue, usdtDecimals! * 2) /
+              parseUnits(ethPrice.toString(), usdtDecimals!),
+          ],
         })
         .then((value) =>
           setSophieInputValue(formatUnits(value as bigint, sophieDecimals!)),
@@ -106,6 +111,7 @@ const BuyPage: FunctionComponent = () => {
     isUsdtValueChanged,
     sophieDecimals,
     usdtDecimals,
+    ethPrice,
   ]);
 
   const handleUsdtInputChange = useCallback(

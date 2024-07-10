@@ -12,18 +12,11 @@ const useEthPrice = () => {
   const [price, setPrice] = useState<number>(0);
 
   const updatePrice = async () => {
-    try {
-      const {
-        ethereum: { usd },
-      } = (await getValue(
-        'ethereum',
-        'USD',
-      )) as unknown as EthereumPriceResponse;
+    const {
+      ethereum: { usd },
+    } = (await getValue('ethereum', 'USD')) as unknown as EthereumPriceResponse;
 
-      setPrice(usd);
-    } catch (err) {
-      console.log(err);
-    }
+    setPrice(usd);
   };
 
   useEffect(() => {

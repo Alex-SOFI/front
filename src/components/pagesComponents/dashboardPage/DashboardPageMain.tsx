@@ -188,7 +188,7 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
             : 0}
           $
         </BalanceText>
-        {!isMobile && swapButton}
+        {!isMobile && Number(balance?.USDT) > 0 && swapButton}
       </GridBox>
       <Text
         sx={{
