@@ -53,7 +53,7 @@ const useTransak = ({
       calldata,
       sourceTokenData: [
         {
-          sourceTokenCode: 'USDT',
+          sourceTokenCode: 'ETH',
           sourceTokenAmount: amount,
         },
       ],
