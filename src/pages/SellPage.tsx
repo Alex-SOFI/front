@@ -79,7 +79,8 @@ const SellPage: FunctionComponent = () => {
     const hash = await walletClient
       ?.sendTransaction({
         account: magicLinkAddress,
-        chain: import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : arbitrum,
+        chain:
+          import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : arbitrum,
         to: addresses.TOKEN_MANAGER,
         data: encodeFunctionData({
           abi: sophieAbi,

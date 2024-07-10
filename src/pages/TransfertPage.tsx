@@ -128,7 +128,8 @@ const TransfertPage: FunctionComponent = () => {
     const hash = await walletClient
       ?.sendTransaction({
         account: magicLinkAddress,
-        chain: import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : arbitrum,
+        chain:
+          import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : arbitrum,
         to:
           tokenInputValue === TOKEN_NAMES.SOPHIE
             ? addresses.SOPHIE_TOKEN
