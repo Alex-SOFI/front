@@ -133,7 +133,8 @@ const BuyPage: FunctionComponent = () => {
   );
 
   const { openModal } = useTransak({
-    amount: Number(activeUsdtValue) || 0,
+    amount: Number(parseUnits(activeUsdtValue, usdtDecimals! * 2) /
+              parseUnits(ethPrice.toString(), usdtDecimals!)) || 0,
     address: magicLinkAddress as Address,
     setInputValue: setUsdtInputValue,
     setIsTransactionSuccessful,
