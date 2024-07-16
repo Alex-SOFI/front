@@ -132,8 +132,20 @@ const BuyPage: FunctionComponent = () => {
     [sophieDecimals],
   );
 
+  const calculateAmount = (
+    activeUsdtValue: string,
+    ethPrice: number | null,
+    usdtDecimals: number,
+  ): number => {
+    if (!ethPrice) return 0;
+
+    const numerator = parseUnits(activeUsdtValue, usdtDecimals * 2);
+    const denominator = parseUnits(ethPrice.toString(), usdtDecimals);
+    return Number(numerator / denominator);
+  };
+
   const { openModal } = useTransak({
-    amount: Number(parseUnits(activeUsdtValue, usdtDecimals! * 2) /parseUnits(ethPrice.toString(), usdtDecimals!)) || 0,
+    amount: calculateAmount(activeUsdtValue, ethPrice, usdtDecimals!),
     address: magicLinkAddress as Address,
     setInputValue: setUsdtInputValue,
     setIsTransactionSuccessful,

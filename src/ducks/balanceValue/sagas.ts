@@ -18,6 +18,11 @@ function* getBalanceValueSaga({ payload }: ReturnType<typeof getBalanceValue>) {
     const {
       tether: { usd },
     } = yield call(getValue, 'tether', 'USD');
+
+    const {
+      ethereum: { usd: ethUsd },
+    } = yield call(getValue, 'ethereum', 'USD');
+
     if (payload?.SOPHIE) {
       const estimateBalance = async (sophie: number) => {
         const data = await publicClient.readContract({
@@ -28,7 +33,7 @@ function* getBalanceValueSaga({ payload }: ReturnType<typeof getBalanceValue>) {
         return Number(formatUnits(data as bigint, 18));
       };
       const balance: number = yield call(estimateBalance, payload?.SOPHIE);
-      yield put(setSophieBalanceValue(balance * usd));
+      yield put(setSophieBalanceValue(balance * usd * ethUsd));
     }
     if (payload?.USDT) {
       yield put(setUsdtBalanceValue(usd));
