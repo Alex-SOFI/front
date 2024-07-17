@@ -141,7 +141,7 @@ const BuyPage: FunctionComponent = () => {
 
     const numerator = parseUnits(activeUsdtValue, usdtDecimals * 2);
     const denominator = parseUnits(ethPrice.toString(), usdtDecimals);
-    return Number(numerator / denominator);
+    return Number(formatUnits(numerator / denominator, usdtDecimals));
   };
 
   const { openModal } = useTransak({
