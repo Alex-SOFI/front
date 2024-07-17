@@ -14,6 +14,7 @@ import {
   encodeFunctionData,
   erc20Abi,
   formatUnits,
+  parseEther,
   parseUnits,
 } from 'viem';
 import { arbitrum, polygonMumbai } from 'viem/chains';
@@ -111,6 +112,7 @@ const SwapPage: FunctionComponent = () => {
         chain:
           import.meta.env.VITE_ENV === 'staging' ? polygonMumbai : arbitrum,
         to: hasAllownace ? addresses.TOKEN_MANAGER : addresses.USDT,
+        value: parseEther(inputValue),
         data: hasAllownace
           ? encodeFunctionData({
               abi: sophieAbi,
