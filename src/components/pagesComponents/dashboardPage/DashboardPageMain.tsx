@@ -118,7 +118,7 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
             }
           : {})}
       >
-        Swap {isMobile && 'USD'} to SOPHIE
+        Swap {isMobile && 'ETH'} to SOPHIE
       </Button>
     ),
     [isMobile, navigateToSwapPage],
@@ -199,7 +199,7 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
       >
         (*) we just display SOPHIE, ETH Tokens
       </Text>
-      {isMobile && balance !== null && swapButton}
+      {isMobile && Number(balance?.USDT) > 0 && swapButton}
       {isMobile && balance !== null && sellButton}
     </StyledBox>
   );
