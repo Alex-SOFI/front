@@ -13,7 +13,7 @@ const MarketingClaim: FunctionComponent = () => {
       marginTop='5dvh'
     >
       <Text fontSize={30} fontWeight={800} variant='h3' textAlign='center'>
-        $SOPHIE Token (Pre-launching)
+        $SOPHIE Token
       </Text>
       <Text marginTop='1.5dvh' variant='h3'>
         So easy - So secured - So Effective
