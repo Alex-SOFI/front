@@ -197,7 +197,7 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
           textAlign: 'center',
         }}
       >
-        (*) we just display SOPHIE, ETH Tokens
+        Resell your $SOPHIE tokens anytime with full liquidity.
       </Text>
       {isMobile && Number(balance?.USDT) > 0 && swapButton}
       {isMobile && balance !== null && sellButton}
