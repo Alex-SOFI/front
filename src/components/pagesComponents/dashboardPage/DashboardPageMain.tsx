@@ -197,7 +197,7 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
           textAlign: 'center',
         }}
       >
-        Resell your $SOPHIE tokens anytime with full liquidity. We ensure a seamless and flexible investment experience.
+        (*) we just display SOPHIE, ETH Tokens
       </Text>
       {isMobile && Number(balance?.USDT) > 0 && swapButton}
       {isMobile && balance !== null && sellButton}
