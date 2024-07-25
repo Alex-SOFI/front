@@ -87,7 +87,7 @@ const DashboardPage: FunctionComponent = () => {
             }),
           ...(results[2].status === 'success' &&
             results[2].result !== 0n && {
-              MATIC: Number(
+              ETH: Number(
                 formatUnits(results[2].result as bigint, ethDecimals!),
               ),
             }),

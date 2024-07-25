@@ -76,6 +76,16 @@ const SellPage: FunctionComponent = () => {
 
   const handleSellButtonClick = useCallback(async () => {
     setIsTransactionLoading(true);
+    const estimatedGas = await publicClient.estimateGas({
+      account: magicLinkAddress,
+      to: addresses.TOKEN_MANAGER,
+      data: encodeFunctionData({
+        abi: sophieAbi,
+        functionName: 'redeem',
+        args: [parseUnits(inputValue, decimals!)],
+      }),
+    });
+
     const hash = await walletClient
       ?.sendTransaction({
         account: magicLinkAddress,
@@ -87,12 +97,14 @@ const SellPage: FunctionComponent = () => {
           functionName: 'redeem',
           args: [parseUnits(inputValue, decimals!)],
         }),
+        gas: estimatedGas,
       })
       .catch((error) => {
         setIsTransactionLoading(false);
         setIsTransactionError(true);
         setTransactionErrorText(error?.details);
       });
+
     if (hash) {
       const transaction = await publicClient.waitForTransactionReceipt({
         hash,

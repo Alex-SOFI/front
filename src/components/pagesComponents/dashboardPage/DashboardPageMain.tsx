@@ -180,15 +180,15 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
           <Text pl='0.5rem'>ETH</Text>
         </TokenBox>
         <BalanceText>
-          {balance?.USDT ? Number(balance?.USDT.toFixed(4)) : '0'}
+          {balance?.USDT ? Number(balance?.ETH?.toFixed(4)) : '0'}
         </BalanceText>
         <BalanceText>
-          {balance?.USDT && balanceValue?.USDT
-            ? Number((balance?.USDT * balanceValue?.USDT).toFixed(4))
+          {balance?.ETH && balanceValue?.ETH
+            ? Number((balance?.ETH * balanceValue?.ETH).toFixed(4))
             : 0}
           $
         </BalanceText>
-        {!isMobile && Number(balance?.USDT) > 0 && swapButton}
+        {!isMobile && Number(balance?.ETH) > 0 && swapButton}
       </GridBox>
       <Text
         sx={{
@@ -199,7 +199,7 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
       >
         Resell your $SOPHIE tokens anytime with full liquidity.
       </Text>
-      {isMobile && Number(balance?.USDT) > 0 && swapButton}
+      {isMobile && Number(balance?.ETH) > 0 && swapButton}
       {isMobile && balance !== null && sellButton}
     </StyledBox>
   );
