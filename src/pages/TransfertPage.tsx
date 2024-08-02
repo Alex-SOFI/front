@@ -125,6 +125,19 @@ const TransfertPage: FunctionComponent = () => {
 
   const handleSendButtonClick = useCallback(async () => {
     setIsTransactionLoading(true);
+    const estimatedGas = await publicClient.estimateGas({
+      account: magicLinkAddress,
+      to: addresses.TOKEN_MANAGER,
+      data: encodeFunctionData({
+        abi: erc20Abi,
+        functionName: 'transfer',
+        args: [
+          addressInputValue as Address,
+          parseUnits(amountInputValue, decimals!),
+        ],
+      }),
+    });
+
     const hash = await walletClient
       ?.sendTransaction({
         account: magicLinkAddress,
@@ -142,6 +155,7 @@ const TransfertPage: FunctionComponent = () => {
             parseUnits(amountInputValue, decimals!),
           ],
         }),
+        gas: estimatedGas,
       })
       .catch((error) => {
         setIsTransactionLoading(false);
