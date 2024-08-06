@@ -1,4 +1,4 @@
-import { FunctionComponent, useCallback, useEffect } from 'react';
+import { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -49,6 +49,7 @@ const DashboardPage: FunctionComponent = () => {
   const usdtDecimals = useDecimals(addresses.USDT);
   const sophieDecimals = useDecimals(addresses.SOPHIE_TOKEN);
   const ethDecimals = useDecimals(addresses.MATIC);
+  const [ethNativeBalance, setEthNativeBalance] = useState(0n);
 
   useEffect(() => {
     const getBalance = async () => {
@@ -120,6 +121,18 @@ const DashboardPage: FunctionComponent = () => {
     magicLinkBalance?.USDT,
   ]);
 
+  const fetchNativeBalance = useCallback(async () => {
+    const balance = await publicClient.getBalance({
+      address: magicLinkAddress,
+    });
+
+    setEthNativeBalance(balance);
+  }, [magicLinkAddress]);
+
+  useEffect(() => {
+    fetchNativeBalance();
+  }, [fetchNativeBalance]);
+
   useEffect(() => {
     return () => {
       dispatch(resetMagicLinkBalance());
@@ -138,6 +151,7 @@ const DashboardPage: FunctionComponent = () => {
               USDT: usdtValue,
               ETH: ethValue,
             }}
+            ethNativeBalance={ethNativeBalance}
             navigateToBuyPage={navigateToBuyPage}
             navigateToSellPage={navigateToSellPage}
             navigateToSwapPage={navigateToSwapPage}

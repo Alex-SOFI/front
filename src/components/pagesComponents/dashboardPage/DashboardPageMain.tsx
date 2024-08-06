@@ -66,6 +66,7 @@ interface DashboardPageMainProps {
   navigateToSellPage: () => void;
   navigateToSwapPage: () => void;
   isMobile: boolean;
+  ethNativeBalance: bigint;
 }
 
 const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
@@ -74,6 +75,7 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
   navigateToSellPage,
   navigateToSwapPage,
   isMobile,
+  ethNativeBalance,
 }) => {
   const sellButton = useMemo(
     () => (
@@ -177,7 +179,7 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
       >
         <TokenBox>
           <Picture src={`${PUBLIC_URL}/icons/logo_eth.svg`} alt='USDT logo' />
-          <Text pl='0.5rem'>ETH</Text>
+          <Text pl='0.5rem'>WETH</Text>
         </TokenBox>
         <BalanceText>
           {balance?.USDT ? Number(balance?.ETH?.toFixed(4)) : '0'}
@@ -185,6 +187,30 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
         <BalanceText>
           {balance?.ETH && balanceValue?.ETH
             ? Number((balance?.ETH * balanceValue?.ETH).toFixed(4))
+            : 0}
+          $
+        </BalanceText>
+        {!isMobile && Number(balance?.ETH) > 0 && swapButton}
+      </GridBox>
+
+      <GridBox
+        marginTop='1dvh'
+        {...(!isMobile && {
+          marginLeft: 'auto',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          width: '133.5%',
+        })}
+      >
+        <TokenBox>
+          <Picture src={`${PUBLIC_URL}/icons/logo_eth.svg`} alt='USDT logo' />
+          <Text pl='0.5rem'>ETH</Text>
+        </TokenBox>
+        <BalanceText>
+          {ethNativeBalance ? Number(ethNativeBalance).toFixed(4) : '0'}
+        </BalanceText>
+        <BalanceText>
+          {ethNativeBalance && balanceValue?.ETH
+            ? (Number(ethNativeBalance) * balanceValue?.ETH).toFixed(4)
             : 0}
           $
         </BalanceText>
