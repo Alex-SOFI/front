@@ -3,6 +3,7 @@ import { FunctionComponent, useMemo } from 'react';
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 import { PUBLIC_URL } from 'config';
+import { formatUnits } from 'viem';
 
 import { MagicLinkBalance } from 'interfaces/WalletInfoState';
 
@@ -206,11 +207,15 @@ const DashboardPageMain: FunctionComponent<DashboardPageMainProps> = ({
           <Text pl='0.5rem'>ETH</Text>
         </TokenBox>
         <BalanceText>
-          {ethNativeBalance ? Number(ethNativeBalance).toFixed(4) : '0'}
+          {ethNativeBalance
+            ? Number(formatUnits(ethNativeBalance, 18)).toFixed(4)
+            : '0'}
         </BalanceText>
         <BalanceText>
           {ethNativeBalance && balanceValue?.ETH
-            ? (Number(ethNativeBalance) * balanceValue?.ETH).toFixed(4)
+            ? (
+                Number(formatUnits(ethNativeBalance, 18)) * balanceValue?.ETH
+              ).toFixed(4)
             : 0}
           $
         </BalanceText>
