@@ -23,6 +23,8 @@ function* getBalanceValueSaga({ payload }: ReturnType<typeof getBalanceValue>) {
       ethereum: { usd: ethUsd },
     } = yield call(getValue, 'ethereum', 'USD');
 
+    yield put(setEthBalanceValue(ethUsd));
+
     if (payload?.SOPHIE) {
       const estimateBalance = async (sophie: number) => {
         const data = await publicClient.readContract({
@@ -37,12 +39,6 @@ function* getBalanceValueSaga({ payload }: ReturnType<typeof getBalanceValue>) {
     }
     if (payload?.USDT) {
       yield put(setUsdtBalanceValue(usd));
-    }
-    if (payload?.ETH) {
-      const {
-        maticNetwork: { usd },
-      } = yield call(getValue, 'matic-network', 'USD');
-      yield put(setEthBalanceValue(usd));
     }
     yield put(resetIsLoading());
   } catch (error) {
