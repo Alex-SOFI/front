@@ -64,15 +64,24 @@ const TransfertPage: FunctionComponent = () => {
 
   useEffect(() => {
     const getBalance = async () => {
-      const result = await publicClient.readContract({
-        ...tokenContract(
-          tokenInputValue === TOKEN_NAMES.SOPHIE
-            ? addresses.SOPHIE_TOKEN
-            : addresses.USDT,
-        ),
-        functionName: 'balanceOf',
-        args: [magicLinkAddress as Address],
-      });
+      let result;
+
+      if (tokenInputValue !== TOKEN_NAMES.ETH) {
+        result = await publicClient.readContract({
+          ...tokenContract(
+            tokenInputValue === TOKEN_NAMES.SOPHIE
+              ? addresses.SOPHIE_TOKEN
+              : addresses.USDT,
+          ),
+          functionName: 'balanceOf',
+          args: [magicLinkAddress as Address],
+        });
+      } else {
+        result = await publicClient.getBalance({
+          address: magicLinkAddress,
+        });
+      }
+
       setBalance(
         formatUnits(
           result as bigint,
